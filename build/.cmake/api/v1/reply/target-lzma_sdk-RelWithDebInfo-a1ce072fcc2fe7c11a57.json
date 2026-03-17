@@ -12,7 +12,7 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "Release/lzma_sdk.lib"
+			"path" : "RelWithDebInfo/lzma_sdk.lib"
 		}
 	],
 	"backtrace" : 2,
@@ -39,7 +39,7 @@
 			{
 				"command" : 1,
 				"file" : 1,
-				"line" : 15,
+				"line" : 14,
 				"parent" : 0
 			},
 			{
@@ -51,19 +51,19 @@
 			{
 				"command" : 2,
 				"file" : 1,
-				"line" : 19,
+				"line" : 18,
 				"parent" : 0
 			},
 			{
 				"command" : 3,
 				"file" : 1,
-				"line" : 17,
+				"line" : 16,
 				"parent" : 0
 			},
 			{
 				"command" : 4,
 				"file" : 1,
-				"line" : 16,
+				"line" : 15,
 				"parent" : 0
 			}
 		]
@@ -74,7 +74,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD"
+					"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /Zi /O2 /Ob1 /DNDEBUG -std:c++17 -MD"
 				},
 				{
 					"backtrace" : 3,
@@ -92,7 +92,7 @@
 			[
 				{
 					"backtrace" : 0,
-					"path" : "D:/Build/ULC2/build/lzma_sdk_autogen/include_Release"
+					"path" : "D:/Build/ULC2/build/lzma_sdk_autogen/include_RelWithDebInfo"
 				},
 				{
 					"backtrace" : 5,
@@ -117,7 +117,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "/DWIN32 /D_WINDOWS /O2 /Ob2 /DNDEBUG -MD"
+					"fragment" : "/DWIN32 /D_WINDOWS /Zi /O2 /Ob1 /DNDEBUG -MD"
 				},
 				{
 					"backtrace" : 3,
@@ -135,7 +135,7 @@
 			[
 				{
 					"backtrace" : 0,
-					"path" : "D:/Build/ULC2/build/lzma_sdk_autogen/include_Release"
+					"path" : "D:/Build/ULC2/build/lzma_sdk_autogen/include_RelWithDebInfo"
 				},
 				{
 					"backtrace" : 5,
@@ -272,7 +272,7 @@
 			"backtrace" : 0,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
-			"path" : "build/lzma_sdk_autogen/mocs_compilation_Release.cpp",
+			"path" : "build/lzma_sdk_autogen/mocs_compilation_RelWithDebInfo.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{

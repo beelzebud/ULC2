@@ -336,15 +336,33 @@
 			null
 		],
 		[
+			"D:/Build/ULC2/src/emulator_tab.h",
+			"Mu",
+			"UVLADIE3JM/moc_emulator_tab.cpp",
+			null
+		],
+		[
 			"D:/Build/ULC2/src/etag_cache.h",
 			"Mu",
 			"UVLADIE3JM/moc_etag_cache.cpp",
 			null
 		],
 		[
+			"D:/Build/ULC2/src/github_updater.h",
+			"Mu",
+			"UVLADIE3JM/moc_github_updater.cpp",
+			null
+		],
+		[
 			"D:/Build/ULC2/src/mainwindow.h",
 			"Mu",
 			"UVLADIE3JM/moc_mainwindow.cpp",
+			null
+		],
+		[
+			"D:/Build/ULC2/src/retroarch_tab.h",
+			"Mu",
+			"UVLADIE3JM/moc_retroarch_tab.cpp",
 			null
 		],
 		[
@@ -545,9 +563,12 @@
 		[ "D:/Build/ULC2/src/archive_7z.cpp", "Mu", null ],
 		[ "D:/Build/ULC2/src/archive_zip.cpp", "Mu", null ],
 		[ "D:/Build/ULC2/src/downloader.cpp", "Mu", null ],
+		[ "D:/Build/ULC2/src/emulator_tab.cpp", "Mu", null ],
 		[ "D:/Build/ULC2/src/etag_cache.cpp", "Mu", null ],
+		[ "D:/Build/ULC2/src/github_updater.cpp", "Mu", null ],
 		[ "D:/Build/ULC2/src/main.cpp", "Mu", null ],
 		[ "D:/Build/ULC2/src/mainwindow.cpp", "Mu", null ],
+		[ "D:/Build/ULC2/src/retroarch_tab.cpp", "Mu", null ],
 		[ "D:/Build/ULC2/src/settings.cpp", "Mu", null ],
 		[ "D:/Build/ULC2/src/updater.cpp", "Mu", null ]
 	],

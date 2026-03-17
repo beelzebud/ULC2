@@ -545,6 +545,9 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </ClCompile>
     <ClCompile Include="D:\Build\ULC2\src\main.cpp" />
     <ClCompile Include="D:\Build\ULC2\src\mainwindow.cpp" />
+    <ClCompile Include="D:\Build\ULC2\src\retroarch_tab.cpp" />
+    <ClCompile Include="D:\Build\ULC2\src\emulator_tab.cpp" />
+    <ClCompile Include="D:\Build\ULC2\src\github_updater.cpp" />
     <ClCompile Include="D:\Build\ULC2\src\aboutdialog.cpp" />
     <ClCompile Include="D:\Build\ULC2\src\downloader.cpp" />
     <ClCompile Include="D:\Build\ULC2\src\archive_zip.cpp" />

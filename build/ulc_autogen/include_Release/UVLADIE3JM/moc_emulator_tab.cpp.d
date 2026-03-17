@@ -1,11 +1,10 @@
-D:/Build/ULC2/build/ulc_autogen/include_Release/UVLADIE3JM/moc_mainwindow.cpp: D:/Build/ULC2/src/mainwindow.h \
+D:/Build/ULC2/build/ulc_autogen/include_Release/UVLADIE3JM/moc_emulator_tab.cpp: D:/Build/ULC2/src/emulator_tab.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/QDir \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/QFlags \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/QList \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/QMap \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/QMetaType \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/QObject \
-  C:/Qt/6.5.3/msvc2019_64/include/QtCore/QSemaphore \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/QSharedDataPointer \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/QString \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/QThread \
@@ -75,7 +74,6 @@ D:/Build/ULC2/build/ulc_autogen/include_Release/UVLADIE3JM/moc_mainwindow.cpp: D
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qmetacontainer.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qmetatype.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qminmax.h \
-  C:/Qt/6.5.3/msvc2019_64/include/QtCore/qmutex.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qnamespace.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qnumeric.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qobject.h \
@@ -91,7 +89,6 @@ D:/Build/ULC2/build/ulc_autogen/include_Release/UVLADIE3JM/moc_mainwindow.cpp: D
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qregularexpression.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qscopedpointer.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qscopeguard.h \
-  C:/Qt/6.5.3/msvc2019_64/include/QtCore/qsemaphore.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qset.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qshareddata.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qshareddata_impl.h \
@@ -124,7 +121,6 @@ D:/Build/ULC2/build/ulc_autogen/include_Release/UVLADIE3JM/moc_mainwindow.cpp: D
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qtnoop.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qtpreprocessorsupport.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qtresource.h \
-  C:/Qt/6.5.3/msvc2019_64/include/QtCore/qtsan_impl.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qttranslation.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qttypetraits.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qtversion.h \
@@ -189,10 +185,8 @@ D:/Build/ULC2/build/ulc_autogen/include_Release/UVLADIE3JM/moc_mainwindow.cpp: D
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QComboBox \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QLabel \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QLineEdit \
-  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QMainWindow \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QProgressBar \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QPushButton \
-  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QTabWidget \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QTextEdit \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QWidget \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qabstractbutton.h \
@@ -204,7 +198,6 @@ D:/Build/ULC2/build/ulc_autogen/include_Release/UVLADIE3JM/moc_mainwindow.cpp: D
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qframe.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qlabel.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qlineedit.h \
-  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qmainwindow.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qprogressbar.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qpushbutton.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qrubberband.h \
@@ -220,9 +213,6 @@ D:/Build/ULC2/build/ulc_autogen/include_Release/UVLADIE3JM/moc_mainwindow.cpp: D
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qtwidgetsglobal.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qwidget.h \
   D:/Build/ULC2/src/emulator_config.h \
-  D:/Build/ULC2/src/emulator_tab.h \
   D:/Build/ULC2/src/etag_cache.h \
   D:/Build/ULC2/src/github_updater.h \
-  D:/Build/ULC2/src/retroarch_tab.h \
-  D:/Build/ULC2/src/settings.h \
-  D:/Build/ULC2/src/updater.h
+  D:/Build/ULC2/src/settings.h

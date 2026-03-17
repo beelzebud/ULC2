@@ -10,7 +10,6 @@ find_package(Qt6 REQUIRED COMPONENTS Core Widgets Network Concurrent)
 find_package(OpenSSL REQUIRED)
 find_package(ZLIB REQUIRED)
 
-# ── LZMA SDK (7-zip) — compiled directly into the binary ─────────────────────
 file(GLOB LZMA_SOURCES third_party/lzma/*.c)
 add_library(lzma_sdk STATIC ${LZMA_SOURCES})
 target_include_directories(lzma_sdk PUBLIC third_party/lzma)
@@ -21,10 +20,12 @@ else()
     target_compile_options(lzma_sdk PRIVATE -w)
 endif()
 
-# ── Main executable ───────────────────────────────────────────────────────────
 set(SOURCES
     src/main.cpp
     src/mainwindow.cpp
+    src/retroarch_tab.cpp
+    src/emulator_tab.cpp
+    src/github_updater.cpp
     src/aboutdialog.cpp
     src/downloader.cpp
     src/archive_zip.cpp
@@ -37,30 +38,21 @@ set(SOURCES
 
 if(WIN32)
     set(SOURCES ${SOURCES} resources/app.rc)
-endif()
-if(WIN32)
     add_executable(ulc WIN32 ${SOURCES})
 else()
     add_executable(ulc ${SOURCES})
 endif()
 
 target_link_libraries(ulc PRIVATE
-    Qt6::Core
-    Qt6::Widgets
-    Qt6::Network
-    Qt6::Concurrent
-    OpenSSL::Crypto
-    ZLIB::ZLIB
-    lzma_sdk
+    Qt6::Core Qt6::Widgets Qt6::Network Qt6::Concurrent
+    OpenSSL::Crypto ZLIB::ZLIB lzma_sdk
 )
-
 target_include_directories(ulc PRIVATE src third_party/lzma)
 
 if(WIN32)
     target_compile_definitions(ulc PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
     target_link_libraries(ulc PRIVATE version)
 endif()
-
 if(MSVC)
     target_compile_options(ulc PRIVATE /W3 /utf-8)
 else()

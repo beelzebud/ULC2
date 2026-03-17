@@ -2,10 +2,10 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "RelWithDebInfo/ulc.exe"
+			"path" : "Release/ulc.exe"
 		},
 		{
-			"path" : "RelWithDebInfo/ulc.pdb"
+			"path" : "Release/ulc.pdb"
 		}
 	],
 	"backtrace" : 2,
@@ -54,7 +54,7 @@
 			{
 				"command" : 1,
 				"file" : 1,
-				"line" : 42,
+				"line" : 41,
 				"parent" : 0
 			},
 			{
@@ -66,13 +66,13 @@
 			{
 				"command" : 2,
 				"file" : 1,
-				"line" : 47,
+				"line" : 46,
 				"parent" : 0
 			},
 			{
 				"command" : 2,
 				"file" : 1,
-				"line" : 61,
+				"line" : 54,
 				"parent" : 0
 			},
 			{
@@ -304,19 +304,19 @@
 			{
 				"command" : 9,
 				"file" : 1,
-				"line" : 65,
+				"line" : 57,
 				"parent" : 0
 			},
 			{
 				"command" : 10,
 				"file" : 1,
-				"line" : 60,
+				"line" : 53,
 				"parent" : 0
 			},
 			{
 				"command" : 11,
 				"file" : 1,
-				"line" : 57,
+				"line" : 50,
 				"parent" : 0
 			}
 		]
@@ -327,7 +327,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /Zi /O2 /Ob1 /DNDEBUG -std:c++17 -MD"
+					"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD"
 				},
 				{
 					"backtrace" : 47,
@@ -417,7 +417,7 @@
 			[
 				{
 					"backtrace" : 0,
-					"path" : "D:/Build/ULC2/build/ulc_autogen/include_RelWithDebInfo"
+					"path" : "D:/Build/ULC2/build/ulc_autogen/include_Release"
 				},
 				{
 					"backtrace" : 49,
@@ -490,7 +490,10 @@
 				7,
 				8,
 				9,
-				12
+				10,
+				11,
+				12,
+				15
 			]
 		},
 		{
@@ -567,7 +570,7 @@
 			[
 				{
 					"backtrace" : 0,
-					"path" : "D:/Build/ULC2/build/ulc_autogen/include_RelWithDebInfo"
+					"path" : "D:/Build/ULC2/build/ulc_autogen/include_Release"
 				},
 				{
 					"backtrace" : 49,
@@ -621,18 +624,18 @@
 			"language" : "RC",
 			"sourceIndexes" : 
 			[
-				11
+				14
 			]
 		}
 	],
 	"dependencies" : 
 	[
 		{
-			"id" : "ZERO_CHECK::@6890427a1f51a3e7e1df"
-		},
-		{
 			"backtrace" : 3,
 			"id" : "lzma_sdk::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "ZERO_CHECK::@6890427a1f51a3e7e1df"
 		}
 	],
 	"id" : "ulc::@6890427a1f51a3e7e1df",
@@ -641,11 +644,11 @@
 		"commandFragments" : 
 		[
 			{
-				"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /Zi /O2 /Ob1 /DNDEBUG -MD",
+				"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /O2 /Ob2 /DNDEBUG -MD",
 				"role" : "flags"
 			},
 			{
-				"fragment" : "/machine:x64 /debug /INCREMENTAL /subsystem:windows",
+				"fragment" : "/machine:x64 /INCREMENTAL:NO /subsystem:windows",
 				"role" : "flags"
 			},
 			{
@@ -675,7 +678,7 @@
 			},
 			{
 				"backtrace" : 3,
-				"fragment" : "RelWithDebInfo\\lzma_sdk.lib",
+				"fragment" : "Release\\lzma_sdk.lib",
 				"role" : "libraries"
 			},
 			{
@@ -763,22 +766,25 @@
 				7,
 				8,
 				9,
+				10,
 				11,
-				12
+				12,
+				14,
+				15
 			]
 		},
 		{
 			"name" : "",
 			"sourceIndexes" : 
 			[
-				10
+				13
 			]
 		},
 		{
 			"name" : "CMake Rules",
 			"sourceIndexes" : 
 			[
-				13
+				16
 			]
 		}
 	],
@@ -788,7 +794,7 @@
 			"backtrace" : 0,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
-			"path" : "build/ulc_autogen/mocs_compilation_RelWithDebInfo.cpp",
+			"path" : "build/ulc_autogen/mocs_compilation_Release.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
@@ -801,6 +807,24 @@
 			"backtrace" : 2,
 			"compileGroupIndex" : 0,
 			"path" : "src/mainwindow.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 2,
+			"compileGroupIndex" : 0,
+			"path" : "src/retroarch_tab.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 2,
+			"compileGroupIndex" : 0,
+			"path" : "src/emulator_tab.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 2,
+			"compileGroupIndex" : 0,
+			"path" : "src/github_updater.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
