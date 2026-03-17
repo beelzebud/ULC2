@@ -1,0 +1,23 @@
+Download the LZMA SDK from https://www.7-zip.org/sdk.html
+Extract the archive and copy all files from its C\ subfolder into this directory.
+
+You should end up with files including:
+  7z.h
+  7zAlloc.c / 7zAlloc.h
+  7zBuf.c / 7zBuf.h
+  7zCrc.c / 7zCrc.h
+  7zCrcOpt.c
+  7zDec.c
+  7zFile.c / 7zFile.h
+  7zStream.c
+  Bcj2.c / Bcj2.h
+  Bra.c / Bra.h
+  Bra86.c
+  BraIA64.c
+  CpuArch.c / CpuArch.h
+  Delta.c / Delta.h
+  Lzma2Dec.c / Lzma2Dec.h
+  LzmaDec.c / LzmaDec.h
+  Ppmd7.c / Ppmd7.h
+  Ppmd7Dec.c
+  ... and others

@@ -1,0 +1,4 @@
+D:/Build/ULC2/build/CMakeFiles/lzma_sdk.dir
+D:/Build/ULC2/build/CMakeFiles/ulc.dir
+D:/Build/ULC2/build/CMakeFiles/ALL_BUILD.dir
+D:/Build/ULC2/build/CMakeFiles/ZERO_CHECK.dir
