@@ -1,4 +1,4 @@
-#include "emulator_tab.h"
+﻿#include "emulator_tab.h"
 #include "constants.h"
 
 #include <QVBoxLayout>
@@ -46,7 +46,6 @@ void EmulatorTab::applySettings(const EmulatorSettings& s)
 
     m_lastKnownTag = s.lastKnownTag;
 
-    // Set channel dropdown
     m_channelBox->setCurrentIndex(
         s.channel == ReleaseChannel::Nightly ? 1 : 0);
 
@@ -96,11 +95,11 @@ void EmulatorTab::buildUi()
         m_channelBox->setFixedWidth(90);
         m_channelBox->setCurrentIndex(
             m_config.defaultChannel == ReleaseChannel::Nightly ? 1 : 0);
-        // Style the combo to match the theme
         m_channelBox->setStyleSheet(
             "QComboBox { background:#000; color:#00FF00; border:1px solid #005500; padding:2px 6px; }"
             "QComboBox::drop-down { border: none; }"
-            "QComboBox QAbstractItemView { background:#000; color:#00FF00; selection-background-color:#003300; }");
+            "QComboBox QAbstractItemView { background:#000; color:#00FF00; "
+            "selection-background-color:#003300; }");
 
         m_btnBrowse = new QPushButton("Browse");
         m_btnBrowse->setFixedWidth(72);
@@ -198,19 +197,22 @@ void EmulatorTab::onCheckForUpdate()
         .arg(channelLabel, m_config.displayName));
     m_btnCheck->setEnabled(false);
 
-    const QString      repo = m_config.githubRepo;
+    const EmulatorConfig cfg = m_config;   // full config, not just repo string
     const ReleaseChannel channel = selectedChannel();
 
     QMetaObject::invokeMethod(m_updater,
-        [this, repo, channel]() {
-            const GitHubRelease r = m_updater->fetchLatestRelease(repo, channel);
+        [this, cfg, channel]() {
+            const GitHubRelease r = m_updater->fetchLatestRelease(cfg, channel);
             QMetaObject::invokeMethod(this, [this, r]() {
                 m_btnCheck->setEnabled(true);
+
                 if (!r.valid) {
                     appendLog("Could not fetch release info.");
                     return;
                 }
+
                 const QString preTag = r.isPreRelease ? " [pre-release]" : "";
+
                 if (m_lastKnownTag.isEmpty())
                     appendLog(QString("Latest available: %1%2")
                         .arg(r.tagName, preTag));
@@ -224,6 +226,7 @@ void EmulatorTab::onCheckForUpdate()
                     QString("Installed: %1   |   Latest: %2%3")
                     .arg(m_lastKnownTag.isEmpty() ? "unknown" : m_lastKnownTag,
                         r.tagName, preTag));
+
                 }, Qt::QueuedConnection);
         }, Qt::QueuedConnection);
 }
@@ -248,10 +251,16 @@ void EmulatorTab::appendLog(const QString& msg)
     m_log->verticalScrollBar()->setValue(m_log->verticalScrollBar()->maximum());
 }
 
-void EmulatorTab::setProgMax(int max) { m_bar->setMaximum(max); m_bar->setValue(0); }
+void EmulatorTab::setProgMax(int max)
+{
+    m_bar->setMaximum(max);
+    m_bar->setValue(0);
+}
+
 void EmulatorTab::incProgress()
 {
-    if (m_bar->value() < m_bar->maximum()) m_bar->setValue(m_bar->value() + 1);
+    if (m_bar->value() < m_bar->maximum())
+        m_bar->setValue(m_bar->value() + 1);
 }
 
 void EmulatorTab::onDone(bool updated, const QString& newTag)

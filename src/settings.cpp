@@ -1,5 +1,5 @@
 #include "settings.h"
-#include "emulator_config.h"
+
 #include <QFile>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -21,7 +21,7 @@ AppSettings AppSettings::defaults()
     s.databasePath = ra + "database/rdb/";
     s.retroarchPath = ra;
 #endif
-    for (const auto& cfg : allEmulatorConfigs()) {
+    for (const EmulatorConfig& cfg : allEmulatorConfigs()) {
         EmulatorSettings es;
         es.installPath = cfg.defaultInstallPath;
         es.channel = cfg.defaultChannel;
@@ -38,7 +38,7 @@ AppSettings SettingsManager::load() const
     QFile f(m_path);
     if (!f.open(QIODevice::ReadOnly)) return s;
 
-    const auto root = QJsonDocument::fromJson(f.readAll()).object();
+    const QJsonObject root = QJsonDocument::fromJson(f.readAll()).object();
 
     auto get = [&](const QString& key, QString& dst) {
         const QString v = root.value(key).toString();
@@ -51,13 +51,13 @@ AppSettings SettingsManager::load() const
     get("databasePath", s.databasePath);
     get("retroarchPath", s.retroarchPath);
 
-    const auto emuObj = root.value("emulators").toObject();
+    const QJsonObject emuObj = root.value("emulators").toObject();
     for (auto it = emuObj.begin(); it != emuObj.end(); ++it) {
-        const auto obj = it.value().toObject();
+        const QJsonObject obj = it.value().toObject();
         EmulatorSettings es;
         es.installPath = obj.value("installPath").toString();
         es.lastKnownTag = obj.value("lastKnownTag").toString();
-        es.channel = obj.value("channel").toString() == "nightly"
+        es.channel = (obj.value("channel").toString() == "nightly")
             ? ReleaseChannel::Nightly
             : ReleaseChannel::Stable;
         if (!es.installPath.isEmpty())
@@ -80,7 +80,7 @@ void SettingsManager::save(const AppSettings& s) const
         QJsonObject obj;
         obj["installPath"] = it.value().installPath;
         obj["lastKnownTag"] = it.value().lastKnownTag;
-        obj["channel"] = it.value().channel == ReleaseChannel::Nightly
+        obj["channel"] = (it.value().channel == ReleaseChannel::Nightly)
             ? "nightly" : "stable";
         emuObj[it.key()] = obj;
     }

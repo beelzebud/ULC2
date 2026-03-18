@@ -1,10 +1,10 @@
-#pragma once
+﻿#pragma once
 #include <QString>
 #include <QList>
 #include <QDir>
 
 enum class ArchiveType { Zip, SevenZ, SingleFile };
-enum class UpdateSource { GitHub };
+enum class UpdateSource { GitHub, DolphinBuildbot };
 enum class ReleaseChannel { Stable, Nightly };
 
 struct EmulatorConfig {
@@ -12,130 +12,170 @@ struct EmulatorConfig {
     QString        displayName;
     UpdateSource   source;
     QString        githubRepo;
-    // Two asset patterns � used based on selected channel.
-    // If nightlyAssetPattern is empty, stableAssetPattern is used for both.
+    QString        buildbotApiUrl;
     QString        stableAssetPattern;
     QString        nightlyAssetPattern;
     ArchiveType    archiveType;
     QString        defaultInstallPath;
     QString        exeName;
     bool           stripTopLevelDir;
-    // Which channel to default to when first added
     ReleaseChannel defaultChannel;
+    QString        iconResource;
 };
 
 inline QList<EmulatorConfig> allEmulatorConfigs()
 {
 #ifdef Q_OS_WIN
-#  define EMU_BASE R"(C:\Emulators\)"
+    const QString base = R"(C:\Emulators\)";
 #else
-#  define EMU_BASE (QDir::homePath() + "/Emulators/").toStdString().c_str()
+    const QString base = QDir::homePath() + "/Emulators/";
 #endif
 
     return {
         {
             "pcsx2", "PCSX2  (PS2)",
-            UpdateSource::GitHub, "PCSX2/pcsx2",
-            R"(PCSX2-.*windows.*64.*\.7z)",          // stable
-            R"(PCSX2-.*windows.*64.*\.7z)",          // nightly (same repo, pre-release flag)
+            UpdateSource::GitHub, "PCSX2/pcsx2", {},
+            R"(PCSX2-.*windows.*64.*\.7z)",
+            R"(PCSX2-.*windows.*64.*\.7z)",
             ArchiveType::SevenZ,
-#ifdef Q_OS_WIN
-            R"(C:\Emulators\PCSX2\)",
-#else
-            QDir::homePath() + "/Emulators/PCSX2/",
-#endif
-            "pcsx2-qt.exe", true, ReleaseChannel::Stable
+            base + "PCSX2/",
+            "pcsx2-qt.exe", true, ReleaseChannel::Stable,
+            ":/icons/emulators/pcsx2.png"
         },
         {
             "rpcs3", "RPCS3  (PS3)",
-            UpdateSource::GitHub, "RPCS3/rpcs3-binaries-win",
+            UpdateSource::GitHub, "RPCS3/rpcs3-binaries-win", {},
             R"(rpcs3-.*_win64\.7z)",
             R"(rpcs3-.*_win64\.7z)",
             ArchiveType::SevenZ,
-#ifdef Q_OS_WIN
-            R"(C:\Emulators\RPCS3\)",
-#else
-            QDir::homePath() + "/Emulators/RPCS3/",
-#endif
-            "rpcs3.exe", true, ReleaseChannel::Nightly
+            base + "RPCS3/",
+            "rpcs3.exe", true, ReleaseChannel::Nightly,
+            ":/icons/emulators/rpcs3.png"
         },
         {
+            // Dolphin uses its own buildbot — no GitHub releases exist.
+            // API returns HTML; we scrape the first x64 build link.
+            // Dolphin only publishes development builds, no separate stable.
             "dolphin", "Dolphin  (GC / Wii)",
-            UpdateSource::GitHub, "dolphin-emu/dolphin",
-            R"(dolphin-.*-x64\.7z)",
-            R"(dolphin-.*-x64\.7z)",
+            UpdateSource::DolphinBuildbot, {},
+            "https://api.dolphin-emu.org/download/list/master/1/",
+            R"(dolphin-master-.*-x64\.7z)",
+            R"(dolphin-master-.*-x64\.7z)",
             ArchiveType::SevenZ,
-#ifdef Q_OS_WIN
-            R"(C:\Emulators\Dolphin\)",
-#else
-            QDir::homePath() + "/Emulators/Dolphin/",
-#endif
-            "Dolphin.exe", true, ReleaseChannel::Nightly
+            base + "Dolphin/",
+            "Dolphin.exe", true, ReleaseChannel::Nightly,
+            ":/icons/emulators/dolphin.png"
         },
         {
             "duckstation", "DuckStation  (PS1)",
-            UpdateSource::GitHub, "stenzek/duckstation",
+            UpdateSource::GitHub, "stenzek/duckstation", {},
             R"(duckstation-windows-x64-release\.zip)",
             R"(duckstation-windows-x64-release\.zip)",
             ArchiveType::Zip,
-#ifdef Q_OS_WIN
-            R"(C:\Emulators\DuckStation\)",
-#else
-            QDir::homePath() + "/Emulators/DuckStation/",
-#endif
-            "duckstation-qt-x64-ReleaseLTCG.exe", false, ReleaseChannel::Nightly
+            base + "DuckStation/",
+            "duckstation-qt-x64-ReleaseLTCG.exe", false, ReleaseChannel::Nightly,
+            ":/icons/emulators/duckstation.png"
         },
         {
             "ppsspp", "PPSSPP  (PSP)",
-            UpdateSource::GitHub, "hrydgard/ppsspp",
-            R"(PPSSPPWindows64\.zip)",
-            R"(PPSSPPWindows64\.zip)",
+            UpdateSource::GitHub, "hrydgard/ppsspp", {},
+            R"(PPSSPP-.*-Windows-x64\.zip)",
+            R"(PPSSPP-.*-Windows-x64\.zip)",
             ArchiveType::Zip,
-#ifdef Q_OS_WIN
-            R"(C:\Emulators\PPSSPP\)",
-#else
-            QDir::homePath() + "/Emulators/PPSSPP/",
-#endif
-            "PPSSPPWindows64.exe", true, ReleaseChannel::Stable
+            base + "PPSSPP/",
+            "PPSSPPWindows64.exe", true, ReleaseChannel::Stable,
+            ":/icons/emulators/ppsspp.png"
         },
         {
             "cemu", "Cemu  (Wii U)",
-            UpdateSource::GitHub, "cemu-project/Cemu",
+            UpdateSource::GitHub, "cemu-project/Cemu", {},
             R"(cemu-.*-windows-x64\.zip)",
             R"(cemu-.*-windows-x64\.zip)",
             ArchiveType::Zip,
-#ifdef Q_OS_WIN
-            R"(C:\Emulators\Cemu\)",
-#else
-            QDir::homePath() + "/Emulators/Cemu/",
-#endif
-            "Cemu.exe", true, ReleaseChannel::Stable
+            base + "Cemu/",
+            "Cemu.exe", true, ReleaseChannel::Stable,
+            ":/icons/emulators/cemu.png"
         },
         {
             "flycast", "Flycast  (Dreamcast)",
-            UpdateSource::GitHub, "flyinghead/flycast",
-            R"(flycast-win64\.zip)",
-            R"(flycast-win64\.zip)",
+            UpdateSource::GitHub, "flyinghead/flycast", {},
+            R"(flycast-win64-.*\.zip)",
+            R"(flycast-win64-.*\.zip)",
             ArchiveType::Zip,
-#ifdef Q_OS_WIN
-            R"(C:\Emulators\Flycast\)",
-#else
-            QDir::homePath() + "/Emulators/Flycast/",
-#endif
-            "flycast.exe", false, ReleaseChannel::Nightly
+            base + "Flycast/",
+            "flycast.exe", false, ReleaseChannel::Stable,
+            ":/icons/emulators/flycast.png"
         },
         {
             "mesen", "Mesen  (NES / SNES / GB)",
-            UpdateSource::GitHub, "SourMesen/Mesen2",
-            R"(Mesen\.exe)",
-            R"(Mesen\.exe)",
+            UpdateSource::GitHub, "SourMesen/Mesen2", {},
+            R"(Mesen_.*_Windows\.zip)",
+            R"(Mesen_.*_Windows\.zip)",
+            ArchiveType::Zip,
+            base + "Mesen/",
+            "Mesen.exe", false, ReleaseChannel::Stable,
+            ":/icons/emulators/mesen.png"
+        },
+        {
+            "supermodel", "Supermodel  (Sega Model 3)",
+            UpdateSource::GitHub, "trzy/Supermodel", {},
+            R"((?i)supermodel.*windows.*\.zip|(?i).*win.*supermodel.*\.zip)",
+            R"((?i)supermodel.*windows.*\.zip|(?i).*win.*supermodel.*\.zip)",
+            ArchiveType::Zip,
+            base + "Supermodel/",
+            "supermodel.exe", true, ReleaseChannel::Nightly,
+            ":/icons/emulators/supermodel.png"
+        },
+        {
+            "xemu", "xemu  (Xbox)",
+            UpdateSource::GitHub, "xemu-project/xemu", {},
+            R"(xemu-.*-windows-x86_64\.zip)",
+            R"(xemu-.*-windows-x86_64\.zip)",
+            ArchiveType::Zip,
+            base + "xemu/",
+            "xemu.exe", false, ReleaseChannel::Nightly,
+            ":/icons/emulators/xemu.png"
+        },
+        {
+            // Note: separate id from "xemu" to avoid settings collision
+            "xemu_chihiro", "xemu  (Chihiro)",
+            UpdateSource::GitHub, "xemu-project/xemu", {},
+            R"(xemu-.*-windows-x86_64\.zip)",
+            R"(xemu-.*-windows-x86_64\.zip)",
+            ArchiveType::Zip,
+            base + "xemu-chihiro/",
+            "xemu.exe", false, ReleaseChannel::Nightly,
+            ":/icons/emulators/xemu_chihiro.png"
+        },
+        {
+            "ymir", "Ymir  (Sega Saturn)",
+            UpdateSource::GitHub, "StrikerX3/Ymir", {},
+            R"(ymir-windows-x86_64-AVX2-.*\.zip)",
+            R"(ymir-windows-x86_64-AVX2-.*\.zip)",
+            ArchiveType::Zip,
+            base + "Ymir/",
+            "ymir.exe", true, ReleaseChannel::Nightly,
+            ":/icons/emulators/ymir.png"
+        },
+        {
+            "xenia_edge", "Xenia Edge  (Xbox 360)",
+            UpdateSource::GitHub, "has207/xenia-edge", {},
+            R"(xenia_edge_windows\.zip)",
+            R"(xenia_edge_windows\.zip)",
+            ArchiveType::Zip,
+            base + "XeniaEdge/",
+            "xenia_canary.exe", false, ReleaseChannel::Nightly,
+            ":/icons/emulators/xenia_edge.png"
+        },
+        {
+            "mame", "MAME  (Arcade / Multi-system)",
+            UpdateSource::GitHub, "mamedev/mame", {},
+            R"(mame\d+b_x64\.exe)",
+            R"(mame\d+b_x64\.exe)",
             ArchiveType::SingleFile,
-#ifdef Q_OS_WIN
-            R"(C:\Emulators\Mesen\)",
-#else
-            QDir::homePath() + "/Emulators/Mesen/",
-#endif
-            "Mesen.exe", false, ReleaseChannel::Stable
+            base + "MAME/",
+            "mame.exe", false, ReleaseChannel::Stable,
+            ":/icons/emulators/mame.png"
         },
     };
 }

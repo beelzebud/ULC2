@@ -1,6 +1,8 @@
 #pragma once
+
 #include <QMainWindow>
-#include <QTabWidget>
+#include <QListWidget>
+#include <QStackedWidget>
 #include "settings.h"
 #include "etag_cache.h"
 #include "retroarch_tab.h"
@@ -16,6 +18,7 @@ protected:
     void closeEvent(QCloseEvent*) override;
 
 private slots:
+    void onSidebarClicked(QListWidgetItem* item);
     void onSavePaths();
     void onAbout();
 
@@ -23,8 +26,13 @@ private:
     void buildUi();
     void loadSettings();
     void saveSettings();
+    void addPage(const QString& label,
+        const QString& subtitle,
+        const QString& iconResource,
+        QWidget* widget);
 
-    QTabWidget* m_tabs = nullptr;
+    QListWidget* m_sidebar = nullptr;
+    QStackedWidget* m_stack = nullptr;
     RetroArchTab* m_raTab = nullptr;
     QList<EmulatorTab*> m_emuTabs;
 

@@ -10,6 +10,9 @@
     <ClCompile Include="D:\Build\ULC2\src\mainwindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="D:\Build\ULC2\src\sidebar_delegate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="D:\Build\ULC2\src\retroarch_tab.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

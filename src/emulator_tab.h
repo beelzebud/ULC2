@@ -1,4 +1,5 @@
 #pragma once
+
 #include <QWidget>
 #include <QLineEdit>
 #include <QPushButton>
@@ -8,6 +9,7 @@
 #include <QComboBox>
 #include <QThread>
 #include <atomic>
+
 #include "emulator_config.h"
 #include "settings.h"
 #include "etag_cache.h"
@@ -33,23 +35,22 @@ private slots:
     void onUpdate();
     void onCheckForUpdate();
     void onBrowse();
-
     void appendLog(const QString& msg);
     void setProgMax(int max);
     void incProgress();
     void onDone(bool updated, const QString& newTag);
 
 private:
-    void buildUi();
-    void setButtonsEnabled(bool on);
-    void updateVersionLabel();
+    void           buildUi();
+    void           setButtonsEnabled(bool on);
+    void           updateVersionLabel();
     ReleaseChannel selectedChannel() const;
 
-    EmulatorConfig    m_config;
-    QString           m_lastKnownTag;
+    EmulatorConfig  m_config;
+    QString         m_lastKnownTag;
 
     QLineEdit* m_pathEdit = nullptr;
-    QComboBox* m_channelBox = nullptr;   // Stable / Nightly
+    QComboBox* m_channelBox = nullptr;
     QPushButton* m_btnUpdate = nullptr;
     QPushButton* m_btnCheck = nullptr;
     QPushButton* m_btnStop = nullptr;

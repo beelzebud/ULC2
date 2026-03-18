@@ -372,6 +372,12 @@
 			null
 		],
 		[
+			"D:/Build/ULC2/src/sidebar_delegate.h",
+			"Mu",
+			"UVLADIE3JM/moc_sidebar_delegate.cpp",
+			null
+		],
+		[
 			"D:/Build/ULC2/src/updater.h",
 			"Mu",
 			"UVLADIE3JM/moc_updater.cpp",
@@ -570,6 +576,7 @@
 		[ "D:/Build/ULC2/src/mainwindow.cpp", "Mu", null ],
 		[ "D:/Build/ULC2/src/retroarch_tab.cpp", "Mu", null ],
 		[ "D:/Build/ULC2/src/settings.cpp", "Mu", null ],
+		[ "D:/Build/ULC2/src/sidebar_delegate.cpp", "Mu", null ],
 		[ "D:/Build/ULC2/src/updater.cpp", "Mu", null ]
 	],
 	"USE_BETTER_GRAPH" : false,

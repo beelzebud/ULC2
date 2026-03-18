@@ -5,4 +5,5 @@
 #include <UVLADIE3JM/moc_github_updater.cpp>
 #include <UVLADIE3JM/moc_mainwindow.cpp>
 #include <UVLADIE3JM/moc_retroarch_tab.cpp>
+#include <UVLADIE3JM/moc_sidebar_delegate.cpp>
 #include <UVLADIE3JM/moc_updater.cpp>

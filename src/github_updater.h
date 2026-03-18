@@ -1,4 +1,5 @@
 #pragma once
+
 #include <QObject>
 #include <QNetworkAccessManager>
 #include <QString>
@@ -26,15 +27,14 @@ class GitHubUpdater : public QObject
 public:
     explicit GitHubUpdater(EtagCache* cache, QObject* parent = nullptr);
 
-    // Blocking — call from worker thread only.
     void update(const EmulatorConfig& config,
         const QString& installPath,
         const QString& knownTag,
-        ReleaseChannel        channel,
+        ReleaseChannel         channel,
         std::atomic<bool>& cancel);
 
-    GitHubRelease fetchLatestRelease(const QString& repo,
-        ReleaseChannel channel);
+    GitHubRelease fetchLatestRelease(const EmulatorConfig& config,
+        ReleaseChannel        channel);
 
 signals:
     void log(const QString& msg);
@@ -43,7 +43,12 @@ signals:
     void done(bool updated, const QString& newTag);
 
 private:
-    bool downloadSync(const QString& url, const QString& dest,
+    GitHubRelease fetchFromGitHub(const EmulatorConfig& config,
+        ReleaseChannel        channel);
+    GitHubRelease fetchFromBuildbot(const EmulatorConfig& config);
+
+    bool downloadSync(const QString& url,
+        const QString& dest,
         std::atomic<bool>& cancel);
 
     void extractAndInstall(const EmulatorConfig& config,

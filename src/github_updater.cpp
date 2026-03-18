@@ -25,24 +25,34 @@ GitHubUpdater::GitHubUpdater(EtagCache* cache, QObject* parent)
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Fetch release info
+// Public: fetch release — routes to the correct backend
 // ─────────────────────────────────────────────────────────────────────────────
 
-GitHubRelease GitHubUpdater::fetchLatestRelease(const QString& repo,
-    ReleaseChannel  channel)
+GitHubRelease GitHubUpdater::fetchLatestRelease(const EmulatorConfig& config,
+    ReleaseChannel        channel)
+{
+    switch (config.source) {
+    case UpdateSource::GitHub:
+        return fetchFromGitHub(config, channel);
+    case UpdateSource::DolphinBuildbot:
+        return fetchFromBuildbot(config);
+    }
+    return {};
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// GitHub Releases backend
+// ─────────────────────────────────────────────────────────────────────────────
+
+GitHubRelease GitHubUpdater::fetchFromGitHub(const EmulatorConfig& config,
+    ReleaseChannel        channel)
 {
     GitHubRelease result;
 
-    // Stable  → /releases/latest  (single object, no pre-releases)
-    // Nightly → /releases?per_page=10 (list, pick first pre-release or
-    //           first entry if no explicit pre-release exists)
-    QString endpoint;
-    if (channel == ReleaseChannel::Stable) {
-        endpoint = "https://api.github.com/repos/" + repo + "/releases/latest";
-    }
-    else {
-        endpoint = "https://api.github.com/repos/" + repo + "/releases?per_page=10";
-    }
+    const QString endpoint =
+        (channel == ReleaseChannel::Stable)
+        ? "https://api.github.com/repos/" + config.githubRepo + "/releases/latest"
+        : "https://api.github.com/repos/" + config.githubRepo + "/releases?per_page=10";
 
     QNetworkRequest req;
     req.setUrl(QUrl(endpoint));
@@ -58,15 +68,14 @@ GitHubRelease GitHubUpdater::fetchLatestRelease(const QString& repo,
     loop.exec();
 
     if (reply->error() != QNetworkReply::NoError) {
-        emit log("GitHub API error for " + repo + ": " + reply->errorString());
+        emit log("GitHub API error for " + config.githubRepo +
+            ": " + reply->errorString());
         reply->deleteLater();
         return result;
     }
 
-    const QByteArray body = reply->readAll();
+    const QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
     reply->deleteLater();
-
-    const QJsonDocument doc = QJsonDocument::fromJson(body);
 
     auto parseRelease = [&](const QJsonObject& obj) {
         result.tagName = obj.value("tag_name").toString();
@@ -83,14 +92,9 @@ GitHubRelease GitHubUpdater::fetchLatestRelease(const QString& repo,
         };
 
     if (channel == ReleaseChannel::Stable) {
-        // Response is a single JSON object
-        if (doc.isObject())
-            parseRelease(doc.object());
+        if (doc.isObject()) parseRelease(doc.object());
     }
     else {
-        // Response is an array — pick the first pre-release entry.
-        // If none are flagged as pre-release (some repos use releases for
-        // nightlies without the flag), fall back to the very first entry.
         if (doc.isArray()) {
             const QJsonArray arr = doc.array();
             QJsonObject best;
@@ -100,14 +104,87 @@ GitHubRelease GitHubUpdater::fetchLatestRelease(const QString& repo,
             }
             if (best.isEmpty() && !arr.isEmpty())
                 best = arr.first().toObject();
-            if (!best.isEmpty())
-                parseRelease(best);
+            if (!best.isEmpty()) parseRelease(best);
         }
     }
 
     return result;
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Dolphin-style buildbot JSON backend
+//
+// The Dolphin API returns an array like:
+// [
+//   {
+//     "url":     "https://dl.dolphin-emu.org/builds/win/x64/dolphin-master-5.0-21264-x64.7z",
+//     "version": "5.0-21264",
+//     "shortrev": "abc1234",
+//     ...
+//   },
+//   ...
+// ]
+// First entry is always the most recent build.
+// We use version as the tag and url as the single asset download.
+// ─────────────────────────────────────────────────────────────────────────────
+
+GitHubRelease GitHubUpdater::fetchFromBuildbot(const EmulatorConfig& config)
+{
+    GitHubRelease result;
+
+    QNetworkRequest req;
+    req.setUrl(QUrl(config.buildbotApiUrl));
+    req.setRawHeader("User-Agent", "ulc-emulator-updater/1.0");
+    req.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
+        QVariant::fromValue(QNetworkRequest::NoLessSafeRedirectPolicy));
+
+    QEventLoop loop;
+    QNetworkReply* reply = m_nam->get(req);
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    QTimer::singleShot(10000, &loop, &QEventLoop::quit);
+    loop.exec();
+
+    if (reply->error() != QNetworkReply::NoError) {
+        emit log("Buildbot fetch error for " + config.displayName +
+            ": " + reply->errorString());
+        reply->deleteLater();
+        return result;
+    }
+
+    const QString html = QString::fromUtf8(reply->readAll());
+    reply->deleteLater();
+
+    // Find the first Windows x64 .7z build link on the page.
+    // Links look like:
+    // https://dl.dolphin-emu.org/builds/a5/59/dolphin-master-2603-78-x64.7z
+    const QRegularExpression urlRx(
+        R"((https://dl\.dolphin-emu\.org/builds/\w+/\w+/(dolphin-master-[\d]+-[\d]+-x64\.7z)))",
+        QRegularExpression::CaseInsensitiveOption);
+
+    const auto match = urlRx.match(html);
+    if (!match.hasMatch()) {
+        emit log("Could not find a download link in Dolphin buildbot page.");
+        return result;
+    }
+
+    const QString downloadUrl = match.captured(1);
+    const QString filename = match.captured(2);
+
+    // Extract version from filename: dolphin-master-2603-78-x64.7z -> 2603-78
+    const QRegularExpression verRx(R"(dolphin-master-([\d]+-[\d]+)-x64\.7z)");
+    const auto verMatch = verRx.match(filename);
+
+    result.tagName = verMatch.hasMatch() ? verMatch.captured(1) : filename;
+    result.isPreRelease = true;
+
+    GitHubAsset asset;
+    asset.name = filename;
+    asset.downloadUrl = downloadUrl;
+    result.assets.append(asset);
+    result.valid = true;
+
+    return result;
+}
 // ─────────────────────────────────────────────────────────────────────────────
 // Main update entry point
 // ─────────────────────────────────────────────────────────────────────────────
@@ -118,13 +195,13 @@ void GitHubUpdater::update(const EmulatorConfig& config,
     ReleaseChannel        channel,
     std::atomic<bool>& cancel)
 {
-    const QString channelLabel = (channel == ReleaseChannel::Nightly)
-        ? "nightly" : "stable";
+    const QString channelLabel =
+        (channel == ReleaseChannel::Nightly) ? "nightly" : "stable";
 
     emit log(QString("[%1] Checking for updates (%2)...")
         .arg(config.displayName, channelLabel));
 
-    const GitHubRelease release = fetchLatestRelease(config.githubRepo, channel);
+    const GitHubRelease release = fetchLatestRelease(config, channel);
 
     if (!release.valid) {
         emit log(QString("[%1] Could not fetch release info.").arg(config.displayName));
@@ -142,9 +219,9 @@ void GitHubUpdater::update(const EmulatorConfig& config,
         return;
     }
 
-    // Pick the right asset pattern for the channel
-    const QString& pattern = (channel == ReleaseChannel::Nightly &&
-        !config.nightlyAssetPattern.isEmpty())
+    // Pick asset pattern for channel
+    const QString& pattern =
+        (channel == ReleaseChannel::Nightly && !config.nightlyAssetPattern.isEmpty())
         ? config.nightlyAssetPattern
         : config.stableAssetPattern;
 
@@ -155,8 +232,11 @@ void GitHubUpdater::update(const EmulatorConfig& config,
     }
 
     if (chosen.downloadUrl.isEmpty()) {
-        emit log(QString("[%1] No matching asset found for pattern: %2")
+        emit log(QString("[%1] No matching asset for pattern: %2")
             .arg(config.displayName, pattern));
+        emit log(QString("[%1] Available assets:").arg(config.displayName));
+        for (const auto& a : release.assets)
+            emit log(QString("[%1]   - %2").arg(config.displayName, a.name));
         emit done(false, knownTag);
         return;
     }
@@ -212,8 +292,7 @@ bool GitHubUpdater::downloadSync(const QString& url,
     QEventLoop loop;
     connect(&dl, &Downloader::finished, &loop,
         [&](const QString&, const QString& e) {
-            if (e.isEmpty()) ok = true;
-            else if (e == "NOT_MODIFIED") ok = true; // treat as success
+            if (e.isEmpty() || e == "NOT_MODIFIED") ok = true;
             else err = e;
             done_ = true;
             loop.quit();
@@ -275,7 +354,7 @@ void GitHubUpdater::extractAndInstall(const EmulatorConfig& config,
             });
     }
 
-    // Detect common top-level prefix to strip
+    // Strip common top-level prefix if configured
     QString stripPrefix;
     if (config.stripTopLevelDir && !entries.isEmpty()) {
         const int slash = entries.first().relPath.indexOf('/');
