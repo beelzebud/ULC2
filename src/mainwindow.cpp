@@ -188,6 +188,7 @@ void MainWindow::buildUi()
     splitter->setStretchFactor(1, 1);
     splitter->setHandleWidth(2);
     splitter->setChildrenCollapsible(false);
+    splitter->setSizes({ 120, 860 });
 
     root->addWidget(splitter, 1);
 

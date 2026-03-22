@@ -177,5 +177,15 @@ inline QList<EmulatorConfig> allEmulatorConfigs()
             "mame.exe", false, ReleaseChannel::Stable,
             ":/icons/emulators/mame.png"
         },
+        {
+            "hypseus_singe", "Hypseus Singe  (Laserdisc)",
+            UpdateSource::GitHub, "DirtBagXon/hypseus-singe", {},
+            R"((?i)hypseus.*win.*\.zip)",
+            R"((?i)hypseus.*win.*\.zip)",
+            ArchiveType::Zip,
+            base + "HypseusSinge/",
+            "hypseus.exe", true, ReleaseChannel::Stable,
+            ":/icons/emulators/hypseus.png"
+        },
     };
 }

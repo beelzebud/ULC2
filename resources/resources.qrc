@@ -14,9 +14,10 @@
 	<file>icons/emulators/mesen.png</file>
 	<file>icons/emulators/supermodel.png</file>
 	<file>icons/emulators/xemu.png</file>
-	<file>icons/emulators/xemu-chihiro.png</file>
+	<file>icons/emulators/xemu_chihiro.png</file>
 	<file>icons/emulators/ymir.png</file>
 	<file>icons/emulators/xenia_edge.png</file>
 	<file>icons/emulators/mame.png</file>
+	<file>icons/emulators/hypseus.png</file>
   </qresource>
 </RCC>
