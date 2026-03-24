@@ -1,6 +1,15 @@
 #pragma once
+
 #include <QString>
+#include <QMap>
 #include <QDir>
+#include "emulator_config.h"
+
+struct EmulatorSettings {
+    QString        installPath;
+    QString        lastKnownTag;
+    ReleaseChannel channel = ReleaseChannel::Stable;
+};
 
 struct AppSettings {
     QString corePath;
@@ -8,33 +17,16 @@ struct AppSettings {
     QString infoPath;
     QString databasePath;
     QString retroarchPath;
+    QMap<QString, EmulatorSettings> emulators;
 
-    static AppSettings defaults()
-    {
-        AppSettings s;
-#ifdef Q_OS_WIN
-        s.corePath      = R"(C:\RetroArch\cores\)";
-        s.assetsPath    = R"(C:\RetroArch\assets\)";
-        s.infoPath      = R"(C:\RetroArch\info\)";
-        s.databasePath  = R"(C:\RetroArch\database\rdb\)";
-        s.retroarchPath = R"(C:\RetroArch\)";
-#else
-        const QString ra = QDir::homePath() + "/.config/retroarch/";
-        s.corePath      = ra + "cores/";
-        s.assetsPath    = ra + "assets/";
-        s.infoPath      = ra + "cores/";
-        s.databasePath  = ra + "database/rdb/";
-        s.retroarchPath = ra;
-#endif
-        return s;
-    }
+    static AppSettings defaults();
 };
 
 class SettingsManager {
 public:
-    explicit SettingsManager(const QString &path);
+    explicit SettingsManager(const QString& path);
     AppSettings load() const;
-    void        save(const AppSettings &s) const;
+    void        save(const AppSettings& s) const;
 private:
     QString m_path;
 };
