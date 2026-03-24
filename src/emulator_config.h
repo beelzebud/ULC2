@@ -1,10 +1,11 @@
 ﻿#pragma once
+
 #include <QString>
 #include <QList>
 #include <QDir>
 
 enum class ArchiveType { Zip, SevenZ, SingleFile };
-enum class UpdateSource { GitHub, DolphinBuildbot };
+enum class UpdateSource { GitHub, DolphinBuildbot, Rpcs3Net };
 enum class ReleaseChannel { Stable, Nightly };
 
 struct EmulatorConfig {
@@ -31,12 +32,12 @@ inline QList<EmulatorConfig> allEmulatorConfigs()
     const QString base = QDir::homePath() + "/Emulators/";
 #endif
 
-    return {
+    return QList<EmulatorConfig>({
         {
             "pcsx2", "PCSX2  (PS2)",
             UpdateSource::GitHub, "PCSX2/pcsx2", {},
-            R"(PCSX2-.*windows.*64.*\.7z)",
-            R"(PCSX2-.*windows.*64.*\.7z)",
+            R"(PCSX2-(?!.*symbols).*windows.*64.*\.7z)",
+            R"(PCSX2-(?!.*symbols).*windows.*64.*\.7z)",
             ArchiveType::SevenZ,
             base + "PCSX2/",
             "pcsx2-qt.exe", true, ReleaseChannel::Stable,
@@ -44,18 +45,16 @@ inline QList<EmulatorConfig> allEmulatorConfigs()
         },
         {
             "rpcs3", "RPCS3  (PS3)",
-            UpdateSource::GitHub, "RPCS3/rpcs3-binaries-win", {},
-            R"(rpcs3-.*_win64\.7z)",
-            R"(rpcs3-.*_win64\.7z)",
+            UpdateSource::Rpcs3Net, {},
+            "https://update.rpcs3.net/?api=v2&c=0000000",
+            R"(rpcs3-.*_win64.*\.7z)",
+            R"(rpcs3-.*_win64.*\.7z)",
             ArchiveType::SevenZ,
             base + "RPCS3/",
             "rpcs3.exe", true, ReleaseChannel::Nightly,
             ":/icons/emulators/rpcs3.png"
         },
         {
-            // Dolphin uses its own buildbot — no GitHub releases exist.
-            // API returns HTML; we scrape the first x64 build link.
-            // Dolphin only publishes development builds, no separate stable.
             "dolphin", "Dolphin  (GC / Wii)",
             UpdateSource::DolphinBuildbot, {},
             "https://api.dolphin-emu.org/download/list/master/1/",
@@ -137,7 +136,6 @@ inline QList<EmulatorConfig> allEmulatorConfigs()
             ":/icons/emulators/xemu.png"
         },
         {
-            // Note: separate id from "xemu" to avoid settings collision
             "xemu_chihiro", "xemu  (Chihiro)",
             UpdateSource::GitHub, "xemu-project/xemu", {},
             R"(xemu-.*-windows-x86_64\.zip)",
@@ -185,7 +183,7 @@ inline QList<EmulatorConfig> allEmulatorConfigs()
             ArchiveType::Zip,
             base + "HypseusSinge/",
             "hypseus.exe", true, ReleaseChannel::Stable,
-            ":/icons/emulators/hypseus.png"
+            ":/icons/emulators/hypseus_singe.png"
         },
-    };
+        });
 }

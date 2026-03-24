@@ -36,6 +36,8 @@ GitHubRelease GitHubUpdater::fetchLatestRelease(const EmulatorConfig& config,
         return fetchFromGitHub(config, channel);
     case UpdateSource::DolphinBuildbot:
         return fetchFromBuildbot(config);
+    case UpdateSource::Rpcs3Net:
+        return fetchFromRpcs3Net(config);
     }
     return {};
 }
@@ -185,6 +187,71 @@ GitHubRelease GitHubUpdater::fetchFromBuildbot(const EmulatorConfig& config)
 
     return result;
 }
+GitHubRelease GitHubUpdater::fetchFromRpcs3Net(const EmulatorConfig& config)
+{
+    GitHubRelease result;
+
+    QNetworkRequest req;
+    req.setUrl(QUrl(config.buildbotApiUrl));
+    req.setRawHeader("User-Agent", "ulc-emulator-updater/1.0");
+    req.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
+        QVariant::fromValue(QNetworkRequest::NoLessSafeRedirectPolicy));
+
+    QEventLoop loop;
+    QNetworkReply* reply = m_nam->get(req);
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    QTimer::singleShot(10000, &loop, &QEventLoop::quit);
+    loop.exec();
+
+    if (reply->error() != QNetworkReply::NoError) {
+        emit log("RPCS3 update API error: " + reply->errorString());
+        reply->deleteLater();
+        return result;
+    }
+
+    const QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+    reply->deleteLater();
+
+    if (!doc.isObject()) {
+        emit log("RPCS3 update API: unexpected response format.");
+        return result;
+    }
+
+    const QJsonObject root = doc.object();
+    const int returnCode = root.value("return_code").toInt(-99);
+
+    // return_code:
+    //  0  = update available
+    //  1  = already up to date
+    // -1  = unknown commit (our dummy hash) — still contains valid latest_build
+    // -2+ = real server error
+    if (returnCode < -1) {
+        emit log(QString("RPCS3 update API returned server error: %1").arg(returnCode));
+        return result;
+    }
+
+    const QJsonObject latest = root.value("latest_build").toObject();
+    const QString version = latest.value("version").toString();
+    const QString datetime = latest.value("datetime").toString();
+    const QString downloadUrl = latest.value("windows").toObject()
+        .value("download").toString();
+
+    if (version.isEmpty() || downloadUrl.isEmpty()) {
+        emit log("RPCS3 update API: missing version or download URL.");
+        return result;
+    }
+
+    result.tagName = QString("%1 (%2)").arg(version, datetime);
+    result.isPreRelease = true;
+
+    GitHubAsset asset;
+    asset.name = QFileInfo(QUrl(downloadUrl).path()).fileName();
+    asset.downloadUrl = downloadUrl;
+    result.assets.append(asset);
+    result.valid = true;
+
+    return result;
+}
 // ─────────────────────────────────────────────────────────────────────────────
 // Main update entry point
 // ─────────────────────────────────────────────────────────────────────────────
@@ -212,9 +279,20 @@ void GitHubUpdater::update(const EmulatorConfig& config,
     emit log(QString("[%1] Latest %2 release: %3")
         .arg(config.displayName, channelLabel, release.tagName));
 
-    if (!knownTag.isEmpty() && knownTag == release.tagName) {
+    // For repos that use a floating tag (e.g. "latest-nightly"), the tag
+    // never changes so we compare the asset filename instead.
+    const bool floatingTag = !release.assets.isEmpty() &&
+        (release.tagName == "latest-nightly" ||
+            release.tagName == "latest" ||
+            release.tagName == "nightly");
+
+    const QString compareKey = floatingTag
+        ? release.assets.first().name
+        : release.tagName;
+
+    if (!knownTag.isEmpty() && knownTag == compareKey) {
         emit log(QString("[%1] Already up to date (%2).")
-            .arg(config.displayName, knownTag));
+            .arg(config.displayName, compareKey));
         emit done(false, knownTag);
         return;
     }
@@ -262,9 +340,12 @@ void GitHubUpdater::update(const EmulatorConfig& config,
         QDir().mkpath(installPath);
         extractAndInstall(config, archivePath, installPath, cancel);
 
-        emit log(QString("[%1] Updated to %2.")
-            .arg(config.displayName, release.tagName));
-        emit done(true, release.tagName);
+    const QString storedTag = (floatingTag && !chosen.name.isEmpty())
+            ? chosen.name
+            : release.tagName;
+
+        emit log(QString("[%1] Updated to %2.").arg(config.displayName, storedTag));
+        emit done(true, storedTag);
 
     }
     catch (const std::exception& ex) {

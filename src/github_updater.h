@@ -46,6 +46,7 @@ private:
     GitHubRelease fetchFromGitHub(const EmulatorConfig& config,
         ReleaseChannel        channel);
     GitHubRelease fetchFromBuildbot(const EmulatorConfig& config);
+    GitHubRelease fetchFromRpcs3Net(const EmulatorConfig& config);
 
     bool downloadSync(const QString& url,
         const QString& dest,

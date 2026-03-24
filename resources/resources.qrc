@@ -18,6 +18,6 @@
 	<file>icons/emulators/ymir.png</file>
 	<file>icons/emulators/xenia_edge.png</file>
 	<file>icons/emulators/mame.png</file>
-	<file>icons/emulators/hypseus.png</file>
+	<file>icons/emulators/hypseus_singe.png</file>
   </qresource>
 </RCC>

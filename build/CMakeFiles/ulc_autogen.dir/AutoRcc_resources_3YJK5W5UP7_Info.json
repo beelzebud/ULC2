@@ -21,6 +21,7 @@
 		"D:/Build/ULC2/resources/icons/emulators/mesen.png",
 		"D:/Build/ULC2/resources/icons/emulators/rpcs3.png",
 		"D:/Build/ULC2/resources/icons/emulators/mame.png",
+		"D:/Build/ULC2/resources/icons/emulators/hypseus_singe.png",
 		"D:/Build/ULC2/resources/icons/emulators/xemu.png",
 		"D:/Build/ULC2/resources/icons/emulators/xemu_chihiro.png",
 		"D:/Build/ULC2/resources/icons/emulators/dolphin.png",
@@ -29,7 +30,6 @@
 		"D:/Build/ULC2/resources/icons/emulators/ppsspp.png",
 		"D:/Build/ULC2/resources/icons/emulators/retroarch.png",
 		"D:/Build/ULC2/resources/icons/emulators/supermodel.png",
-		"D:/Build/ULC2/resources/icons/emulators/hypseus.png",
 		"D:/Build/ULC2/resources/icons/emulators/xenia_edge.png"
 	],
 	"LOCK_FILE" : "D:/Build/ULC2/build/CMakeFiles/ulc_autogen.dir/AutoRcc_resources_3YJK5W5UP7_Lock.lock",
