@@ -2,5 +2,22 @@
 <RCC version="1.0">
   <qresource prefix="/">
     <file>icons/ulc.png</file>
+	<file>icons/emulators/retroarch.png</file>
+	<file>icons/emulators/cemu.png</file> 
+	<file>icons/emulators/pcsx2.png</file>
+	<file>icons/emulators/rpcs3.png</file>
+	<file>icons/emulators/dolphin.png</file>
+	<file>icons/emulators/duckstation.png</file>
+	<file>icons/emulators/ppsspp.png</file>
+	<file>icons/emulators/cemu.png</file>
+	<file>icons/emulators/flycast.png</file>
+	<file>icons/emulators/mesen.png</file>
+	<file>icons/emulators/supermodel.png</file>
+	<file>icons/emulators/xemu.png</file>
+	<file>icons/emulators/xemu_chihiro.png</file>
+	<file>icons/emulators/ymir.png</file>
+	<file>icons/emulators/xenia_edge.png</file>
+	<file>icons/emulators/mame.png</file>
+	<file>icons/emulators/hypseus_singe.png</file>
   </qresource>
 </RCC>

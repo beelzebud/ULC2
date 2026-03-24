@@ -1,11 +1,19 @@
 D:/Build/ULC2/build/ulc_autogen/include_Release/UVLADIE3JM/moc_mainwindow.cpp: D:/Build/ULC2/src/mainwindow.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/QDir \
+  C:/Qt/6.5.3/msvc2019_64/include/QtCore/QFlags \
+  C:/Qt/6.5.3/msvc2019_64/include/QtCore/QList \
+  C:/Qt/6.5.3/msvc2019_64/include/QtCore/QMap \
+  C:/Qt/6.5.3/msvc2019_64/include/QtCore/QMetaType \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/QObject \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/QSemaphore \
+  C:/Qt/6.5.3/msvc2019_64/include/QtCore/QSharedDataPointer \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/QString \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/QThread \
+  C:/Qt/6.5.3/msvc2019_64/include/QtCore/QUrl \
+  C:/Qt/6.5.3/msvc2019_64/include/QtCore/QVariant \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/q20memory.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/q20type_traits.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtCore/qabstractitemmodel.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qalgorithms.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qanystringview.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qarraydata.h \
@@ -31,6 +39,7 @@ D:/Build/ULC2/build/ulc_autogen/include_Release/UVLADIE3JM/moc_mainwindow.cpp: D
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qcontainerinfo.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qcontainertools_impl.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qcontiguouscache.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtCore/qcryptographichash.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qdarwinhelpers.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qdatastream.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qdatetime.h \
@@ -53,6 +62,7 @@ D:/Build/ULC2/build/ulc_autogen/include_Release/UVLADIE3JM/moc_mainwindow.cpp: D
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qhashfunctions.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qiodevice.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qiodevicebase.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtCore/qitemselectionmodel.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qiterable.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qiterator.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qline.h \
@@ -79,6 +89,7 @@ D:/Build/ULC2/build/ulc_autogen/include_Release/UVLADIE3JM/moc_mainwindow.cpp: D
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qprocessordetection.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qrect.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qrefcount.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtCore/qregularexpression.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qscopedpointer.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qscopeguard.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qsemaphore.h \
@@ -141,6 +152,7 @@ D:/Build/ULC2/build/ulc_autogen/include_Release/UVLADIE3JM/moc_mainwindow.cpp: D
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qpaintdevice.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qpalette.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qpen.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtGui/qpicture.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qpixelformat.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qpixmap.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qpolygon.h \
@@ -155,27 +167,68 @@ D:/Build/ULC2/build/ulc_autogen/include_Release/UVLADIE3JM/moc_mainwindow.cpp: D
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qtguiexports.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qtguiglobal.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qtransform.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtGui/qvalidator.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qwindowdefs.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qwindowdefs_win.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtNetwork/QNetworkAccessManager \
+  C:/Qt/6.5.3/msvc2019_64/include/QtNetwork/QSslConfiguration \
+  C:/Qt/6.5.3/msvc2019_64/include/QtNetwork/QSslPreSharedKeyAuthenticator \
+  C:/Qt/6.5.3/msvc2019_64/include/QtNetwork/qabstractsocket.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtNetwork/qhostaddress.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtNetwork/qnetworkaccessmanager.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtNetwork/qnetworkrequest.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtNetwork/qssl.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtNetwork/qsslcertificate.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtNetwork/qsslconfiguration.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtNetwork/qsslerror.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtNetwork/qsslpresharedkeyauthenticator.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtNetwork/qsslsocket.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtNetwork/qtcpsocket.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtNetwork/qtnetwork-config.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtNetwork/qtnetworkexports.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtNetwork/qtnetworkglobal.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QComboBox \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QLabel \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QLineEdit \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QListWidget \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QMainWindow \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QProgressBar \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QPushButton \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QStackedWidget \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QTextEdit \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QWidget \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qabstractbutton.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qabstractitemdelegate.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qabstractitemview.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qabstractscrollarea.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qabstractslider.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qabstractspinbox.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qcombobox.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qframe.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qlabel.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qlineedit.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qlistview.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qlistwidget.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qmainwindow.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qprogressbar.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qpushbutton.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qrubberband.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qsizepolicy.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qslider.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qstackedwidget.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qstyle.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qstyleoption.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qtabbar.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qtabwidget.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qtextedit.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qtwidgets-config.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qtwidgetsexports.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qtwidgetsglobal.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qwidget.h \
+  D:/Build/ULC2/src/emulator_config.h \
+  D:/Build/ULC2/src/emulator_tab.h \
   D:/Build/ULC2/src/etag_cache.h \
+  D:/Build/ULC2/src/github_updater.h \
+  D:/Build/ULC2/src/retroarch_tab.h \
   D:/Build/ULC2/src/settings.h \
   D:/Build/ULC2/src/updater.h
