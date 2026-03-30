@@ -5,7 +5,7 @@
 #include <QDir>
 
 enum class ArchiveType { Zip, SevenZ, SingleFile };
-enum class UpdateSource { GitHub, DolphinBuildbot, Rpcs3Net };
+enum class UpdateSource { GitHub, DolphinBuildbot, Rpcs3Net, Gitea };
 enum class ReleaseChannel { Stable, Nightly };
 
 struct EmulatorConfig {
@@ -174,6 +174,17 @@ inline QList<EmulatorConfig> allEmulatorConfigs()
             base + "MAME/",
             "mame.exe", false, ReleaseChannel::Stable,
             ":/icons/emulators/mame.png"
+        },
+        {
+            "eden", "Eden  (Switch)",
+            UpdateSource::Gitea, {},
+            "https://git.eden-emu.dev/api/v1/repos/eden-emu/eden/releases/latest",
+            R"(Eden-Windows-.*-amd64-msvc-standard\.zip)",
+            R"(Eden-Windows-.*-amd64-msvc-standard\.zip)",
+            ArchiveType::Zip,
+            base + "Eden/",
+            "eden.exe", true, ReleaseChannel::Stable,
+            ":/icons/emulators/eden.png"
         },
         {
             "hypseus_singe", "Hypseus Singe  (Laserdisc)",

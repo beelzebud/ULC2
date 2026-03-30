@@ -63,4 +63,6 @@ private:
     QThread* m_worker = nullptr;
     std::atomic<bool>  m_cancel{ false };
     std::atomic<bool>  m_running{ false };
+signals:
+    void versionChanged();   // emitted after a successful update so MainWindow can save immediately
 };

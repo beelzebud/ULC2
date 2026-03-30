@@ -209,6 +209,15 @@ void MainWindow::buildUi()
     bar->addWidget(btnSave);
     bar->addWidget(btnAbout);
     root->addWidget(bottomWidget);
+
+    for (const auto& cfg : allEmulatorConfigs()) {
+        auto* tab = new EmulatorTab(cfg, m_cache);
+        m_emuTabs.append(tab);
+        addPage(cfg.displayName, {}, cfg.iconResource, tab);
+
+        // Save settings immediately whenever an emulator is updated
+        connect(tab, &EmulatorTab::versionChanged, this, &MainWindow::saveSettings);
+    }
 }
 
 void MainWindow::addPage(const QString& label,

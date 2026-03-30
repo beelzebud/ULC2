@@ -38,6 +38,8 @@ GitHubRelease GitHubUpdater::fetchLatestRelease(const EmulatorConfig& config,
         return fetchFromBuildbot(config);
     case UpdateSource::Rpcs3Net:
         return fetchFromRpcs3Net(config);
+    case UpdateSource::Gitea:
+        return fetchFromGitea(config);
     }
     return {};
 }
@@ -250,6 +252,58 @@ GitHubRelease GitHubUpdater::fetchFromRpcs3Net(const EmulatorConfig& config)
     result.assets.append(asset);
     result.valid = true;
 
+    return result;
+}
+GitHubRelease GitHubUpdater::fetchFromGitea(const EmulatorConfig& config)
+{
+    GitHubRelease result;
+
+    // config.buildbotApiUrl holds the full Gitea API endpoint
+    QNetworkRequest req;
+    req.setUrl(QUrl(config.buildbotApiUrl));
+    req.setRawHeader("User-Agent", "ulc-emulator-updater/1.0");
+    req.setRawHeader("Accept", "application/json");
+    req.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
+        QVariant::fromValue(QNetworkRequest::NoLessSafeRedirectPolicy));
+
+    QEventLoop loop;
+    QNetworkReply* reply = m_nam->get(req);
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    QTimer::singleShot(10000, &loop, &QEventLoop::quit);
+    loop.exec();
+
+    if (reply->error() != QNetworkReply::NoError) {
+        emit log("Gitea API error for " + config.displayName +
+            ": " + reply->errorString());
+        reply->deleteLater();
+        return result;
+    }
+
+    const QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+    reply->deleteLater();
+
+    if (!doc.isObject()) {
+        emit log("Gitea API: unexpected response for " + config.displayName);
+        return result;
+    }
+
+    // Gitea /releases/latest returns the same shape as GitHub:
+    // { "tag_name": "v0.2.0-rc2", "prerelease": false,
+    //   "assets": [ { "name": "...", "browser_download_url": "..." } ] }
+    const QJsonObject root = doc.object();
+    result.tagName = root.value("tag_name").toString();
+    result.isPreRelease = root.value("prerelease").toBool();
+
+    for (const auto& val : root.value("assets").toArray()) {
+        const auto a = val.toObject();
+        GitHubAsset asset;
+        asset.name = a.value("name").toString();
+        asset.downloadUrl = a.value("browser_download_url").toString();
+        asset.size = a.value("size").toInteger();
+        result.assets.append(asset);
+    }
+
+    result.valid = !result.tagName.isEmpty();
     return result;
 }
 // ─────────────────────────────────────────────────────────────────────────────

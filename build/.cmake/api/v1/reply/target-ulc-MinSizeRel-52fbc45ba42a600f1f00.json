@@ -2,10 +2,10 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "RelWithDebInfo/ulc.exe"
+			"path" : "MinSizeRel/ulc.exe"
 		},
 		{
-			"path" : "RelWithDebInfo/ulc.pdb"
+			"path" : "MinSizeRel/ulc.pdb"
 		}
 	],
 	"backtrace" : 2,
@@ -327,7 +327,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /Zi /O2 /Ob1 /DNDEBUG -std:c++17 -MD"
+					"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /O1 /Ob1 /DNDEBUG -std:c++17 -MD"
 				},
 				{
 					"backtrace" : 47,
@@ -417,7 +417,7 @@
 			[
 				{
 					"backtrace" : 0,
-					"path" : "D:/Build/ULC2/build/ulc_autogen/include_RelWithDebInfo"
+					"path" : "D:/Build/ULC2/build/ulc_autogen/include_MinSizeRel"
 				},
 				{
 					"backtrace" : 49,
@@ -571,7 +571,7 @@
 			[
 				{
 					"backtrace" : 0,
-					"path" : "D:/Build/ULC2/build/ulc_autogen/include_RelWithDebInfo"
+					"path" : "D:/Build/ULC2/build/ulc_autogen/include_MinSizeRel"
 				},
 				{
 					"backtrace" : 49,
@@ -632,11 +632,11 @@
 	"dependencies" : 
 	[
 		{
-			"id" : "ZERO_CHECK::@6890427a1f51a3e7e1df"
-		},
-		{
 			"backtrace" : 3,
 			"id" : "lzma_sdk::@6890427a1f51a3e7e1df"
+		},
+		{
+			"id" : "ZERO_CHECK::@6890427a1f51a3e7e1df"
 		}
 	],
 	"id" : "ulc::@6890427a1f51a3e7e1df",
@@ -645,11 +645,11 @@
 		"commandFragments" : 
 		[
 			{
-				"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /Zi /O2 /Ob1 /DNDEBUG -MD",
+				"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /O1 /Ob1 /DNDEBUG -MD",
 				"role" : "flags"
 			},
 			{
-				"fragment" : "/machine:x64 /debug /INCREMENTAL /subsystem:windows",
+				"fragment" : "/machine:x64 /INCREMENTAL:NO /subsystem:windows",
 				"role" : "flags"
 			},
 			{
@@ -679,7 +679,7 @@
 			},
 			{
 				"backtrace" : 3,
-				"fragment" : "RelWithDebInfo\\lzma_sdk.lib",
+				"fragment" : "MinSizeRel\\lzma_sdk.lib",
 				"role" : "libraries"
 			},
 			{
@@ -796,7 +796,7 @@
 			"backtrace" : 0,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
-			"path" : "build/ulc_autogen/mocs_compilation_RelWithDebInfo.cpp",
+			"path" : "build/ulc_autogen/mocs_compilation_MinSizeRel.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{

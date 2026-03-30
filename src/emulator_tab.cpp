@@ -266,7 +266,10 @@ void EmulatorTab::incProgress()
 void EmulatorTab::onDone(bool updated, const QString& newTag)
 {
     m_running = false;
-    if (updated) m_lastKnownTag = newTag;
+    if (updated) {
+        m_lastKnownTag = newTag;
+        emit versionChanged(); 
+    }
     updateVersionLabel();
     setButtonsEnabled(true);
 }

@@ -19,5 +19,6 @@
 	<file>icons/emulators/xenia_edge.png</file>
 	<file>icons/emulators/mame.png</file>
 	<file>icons/emulators/hypseus_singe.png</file>
+	<file>icons/emulators/eden.png</file>
   </qresource>
 </RCC>
