@@ -41,6 +41,7 @@ AboutDialog::AboutDialog(QWidget *parent) : QDialog(parent)
 
     layout->addWidget(icon);
     layout->addWidget(makeLabel("libretro Updater 2", 14, true));
+    layout->addWidget(makeLabel("v1.1"));
     layout->addWidget(makeLabel("Qt6 Port - CMake + LZMA SDK"));
     layout->addWidget(makeLabel("(c) 2026 John N. Bilbrey + Claude"));
     layout->addStretch();
