@@ -29,7 +29,7 @@ GitHubUpdater::GitHubUpdater(EtagCache* cache, QObject* parent)
 // ─────────────────────────────────────────────────────────────────────────────
 
 GitHubRelease GitHubUpdater::fetchLatestRelease(const EmulatorConfig& config,
-    ReleaseChannel        channel)
+    ReleaseChannel channel)
 {
     switch (config.source) {
     case UpdateSource::GitHub:
@@ -49,7 +49,7 @@ GitHubRelease GitHubUpdater::fetchLatestRelease(const EmulatorConfig& config,
 // ─────────────────────────────────────────────────────────────────────────────
 
 GitHubRelease GitHubUpdater::fetchFromGitHub(const EmulatorConfig& config,
-    ReleaseChannel        channel)
+    ReleaseChannel channel)
 {
     GitHubRelease result;
 
@@ -83,6 +83,7 @@ GitHubRelease GitHubUpdater::fetchFromGitHub(const EmulatorConfig& config,
 
     auto parseRelease = [&](const QJsonObject& obj) {
         result.tagName = obj.value("tag_name").toString();
+        result.publishedAt = obj.value("published_at").toString();
         result.isPreRelease = obj.value("prerelease").toBool();
         for (const auto& val : obj.value("assets").toArray()) {
             const auto a = val.toObject();
@@ -116,20 +117,7 @@ GitHubRelease GitHubUpdater::fetchFromGitHub(const EmulatorConfig& config,
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Dolphin-style buildbot JSON backend
-//
-// The Dolphin API returns an array like:
-// [
-//   {
-//     "url":     "https://dl.dolphin-emu.org/builds/win/x64/dolphin-master-5.0-21264-x64.7z",
-//     "version": "5.0-21264",
-//     "shortrev": "abc1234",
-//     ...
-//   },
-//   ...
-// ]
-// First entry is always the most recent build.
-// We use version as the tag and url as the single asset download.
+// Dolphin buildbot backend
 // ─────────────────────────────────────────────────────────────────────────────
 
 GitHubRelease GitHubUpdater::fetchFromBuildbot(const EmulatorConfig& config)
@@ -158,9 +146,6 @@ GitHubRelease GitHubUpdater::fetchFromBuildbot(const EmulatorConfig& config)
     const QString html = QString::fromUtf8(reply->readAll());
     reply->deleteLater();
 
-    // Find the first Windows x64 .7z build link on the page.
-    // Links look like:
-    // https://dl.dolphin-emu.org/builds/a5/59/dolphin-master-2603-78-x64.7z
     const QRegularExpression urlRx(
         R"((https://dl\.dolphin-emu\.org/builds/\w+/\w+/(dolphin-master-[\d]+-[\d]+-x64\.7z)))",
         QRegularExpression::CaseInsensitiveOption);
@@ -174,7 +159,6 @@ GitHubRelease GitHubUpdater::fetchFromBuildbot(const EmulatorConfig& config)
     const QString downloadUrl = match.captured(1);
     const QString filename = match.captured(2);
 
-    // Extract version from filename: dolphin-master-2603-78-x64.7z -> 2603-78
     const QRegularExpression verRx(R"(dolphin-master-([\d]+-[\d]+)-x64\.7z)");
     const auto verMatch = verRx.match(filename);
 
@@ -189,6 +173,11 @@ GitHubRelease GitHubUpdater::fetchFromBuildbot(const EmulatorConfig& config)
 
     return result;
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RPCS3 backend
+// ─────────────────────────────────────────────────────────────────────────────
+
 GitHubRelease GitHubUpdater::fetchFromRpcs3Net(const EmulatorConfig& config)
 {
     GitHubRelease result;
@@ -222,11 +211,7 @@ GitHubRelease GitHubUpdater::fetchFromRpcs3Net(const EmulatorConfig& config)
     const QJsonObject root = doc.object();
     const int returnCode = root.value("return_code").toInt(-99);
 
-    // return_code:
-    //  0  = update available
-    //  1  = already up to date
-    // -1  = unknown commit (our dummy hash) — still contains valid latest_build
-    // -2+ = real server error
+    // 0=update available, 1=up to date, -1=unknown commit (valid), <-1=error
     if (returnCode < -1) {
         emit log(QString("RPCS3 update API returned server error: %1").arg(returnCode));
         return result;
@@ -254,11 +239,15 @@ GitHubRelease GitHubUpdater::fetchFromRpcs3Net(const EmulatorConfig& config)
 
     return result;
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Gitea backend
+// ─────────────────────────────────────────────────────────────────────────────
+
 GitHubRelease GitHubUpdater::fetchFromGitea(const EmulatorConfig& config)
 {
     GitHubRelease result;
 
-    // config.buildbotApiUrl holds the full Gitea API endpoint
     QNetworkRequest req;
     req.setUrl(QUrl(config.buildbotApiUrl));
     req.setRawHeader("User-Agent", "ulc-emulator-updater/1.0");
@@ -287,11 +276,9 @@ GitHubRelease GitHubUpdater::fetchFromGitea(const EmulatorConfig& config)
         return result;
     }
 
-    // Gitea /releases/latest returns the same shape as GitHub:
-    // { "tag_name": "v0.2.0-rc2", "prerelease": false,
-    //   "assets": [ { "name": "...", "browser_download_url": "..." } ] }
     const QJsonObject root = doc.object();
     result.tagName = root.value("tag_name").toString();
+    result.publishedAt = root.value("published_at").toString();
     result.isPreRelease = root.value("prerelease").toBool();
 
     for (const auto& val : root.value("assets").toArray()) {
@@ -306,6 +293,20 @@ GitHubRelease GitHubUpdater::fetchFromGitea(const EmulatorConfig& config)
     result.valid = !result.tagName.isEmpty();
     return result;
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Helper: is this a floating tag that never changes between builds?
+// ─────────────────────────────────────────────────────────────────────────────
+
+static bool isFloatingTag(const QString& tag)
+{
+    const QStringList floating = {
+        "latest-nightly", "latest", "nightly", "preview",
+        "canary", "dev", "master", "main", "edge"
+    };
+    return floating.contains(tag.toLower());
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Main update entry point
 // ─────────────────────────────────────────────────────────────────────────────
@@ -333,24 +334,6 @@ void GitHubUpdater::update(const EmulatorConfig& config,
     emit log(QString("[%1] Latest %2 release: %3")
         .arg(config.displayName, channelLabel, release.tagName));
 
-    // For repos that use a floating tag (e.g. "latest-nightly"), the tag
-    // never changes so we compare the asset filename instead.
-    const bool floatingTag = !release.assets.isEmpty() &&
-        (release.tagName == "latest-nightly" ||
-            release.tagName == "latest" ||
-            release.tagName == "nightly");
-
-    const QString compareKey = floatingTag
-        ? release.assets.first().name
-        : release.tagName;
-
-    if (!knownTag.isEmpty() && knownTag == compareKey) {
-        emit log(QString("[%1] Already up to date (%2).")
-            .arg(config.displayName, compareKey));
-        emit done(false, knownTag);
-        return;
-    }
-
     // Pick asset pattern for channel
     const QString& pattern =
         (channel == ReleaseChannel::Nightly && !config.nightlyAssetPattern.isEmpty())
@@ -361,6 +344,20 @@ void GitHubUpdater::update(const EmulatorConfig& config,
     GitHubAsset chosen;
     for (const auto& a : release.assets) {
         if (rx.match(a.name).hasMatch()) { chosen = a; break; }
+    }
+
+    // For floating tags (preview, latest-nightly, etc.) the tag string never
+    // changes between builds so compare on published_at date instead.
+    const bool floating = isFloatingTag(release.tagName);
+    const QString storedTag = floating
+        ? (!release.publishedAt.isEmpty() ? release.publishedAt : chosen.name)
+        : release.tagName;
+
+    if (!knownTag.isEmpty() && knownTag == storedTag) {
+        emit log(QString("[%1] Already up to date (%2).")
+            .arg(config.displayName, storedTag));
+        emit done(false, knownTag);
+        return;
     }
 
     if (chosen.downloadUrl.isEmpty()) {
@@ -385,8 +382,19 @@ void GitHubUpdater::update(const EmulatorConfig& config,
 
     const QString archivePath = tmp.filePath(chosen.name);
 
+    // Clear cached ETag for this URL so we always get a fresh download
+    // when an update has been detected rather than hitting the cache.
+    m_cache->save(chosen.downloadUrl, "");
+
     try {
         if (!downloadSync(chosen.downloadUrl, archivePath, cancel)) {
+            emit done(false, knownTag);
+            return;
+        }
+
+        // ETag matched — file unchanged, nothing to extract
+        if (!QFile::exists(archivePath)) {
+            emit log(QString("[%1] Already up to date.").arg(config.displayName));
             emit done(false, knownTag);
             return;
         }
@@ -394,13 +402,8 @@ void GitHubUpdater::update(const EmulatorConfig& config,
         QDir().mkpath(installPath);
         extractAndInstall(config, archivePath, installPath, cancel);
 
-    const QString storedTag = (floatingTag && !chosen.name.isEmpty())
-            ? chosen.name
-            : release.tagName;
-
         emit log(QString("[%1] Updated to %2.").arg(config.displayName, storedTag));
         emit done(true, storedTag);
-
     }
     catch (const std::exception& ex) {
         emit log(QString("[%1] Update error: %2")
@@ -458,11 +461,11 @@ void GitHubUpdater::extractAndInstall(const EmulatorConfig& config,
     std::atomic<bool>& cancel)
 {
     if (config.archiveType == ArchiveType::SingleFile) {
-        const QString dest = installPath + "/" + QFileInfo(archivePath).fileName();
         QDir().mkpath(installPath);
+        const QString dest = installPath + "/" + config.exeName;
         atomicReplace(archivePath, dest);
         emit log(QString("[%1] Installed %2")
-            .arg(config.displayName, QFileInfo(dest).fileName()));
+            .arg(config.displayName, config.exeName));
         return;
     }
 
@@ -489,7 +492,6 @@ void GitHubUpdater::extractAndInstall(const EmulatorConfig& config,
             });
     }
 
-    // Strip common top-level prefix if configured
     QString stripPrefix;
     if (config.stripTopLevelDir && !entries.isEmpty()) {
         const int slash = entries.first().relPath.indexOf('/');

@@ -34,6 +34,58 @@ inline QList<EmulatorConfig> allEmulatorConfigs()
 
     return QList<EmulatorConfig>({
         {
+            "dolphin", "Dolphin  (GC / Wii)",
+            UpdateSource::DolphinBuildbot, {},
+            "https://api.dolphin-emu.org/download/list/master/1/",
+            R"(dolphin-master-.*-x64\.7z)",
+            R"(dolphin-master-.*-x64\.7z)",
+            ArchiveType::SevenZ,
+            base + "Dolphin/",
+            "Dolphin.exe", true, ReleaseChannel::Nightly,
+            ":/icons/emulators/dolphin.png"
+        },
+        {
+            "duckstation", "DuckStation  (PS1)",
+            UpdateSource::GitHub, "stenzek/duckstation", {},
+            R"(duckstation-windows-x64-release\.zip)",
+            R"(duckstation-windows-x64-release\.zip)",
+            ArchiveType::Zip,
+            base + "DuckStation/",
+            "duckstation-qt-x64-ReleaseLTCG.exe", false, ReleaseChannel::Nightly,
+            ":/icons/emulators/duckstation.png"
+        },
+        {
+            "eden", "Eden  (Switch)",
+            UpdateSource::Gitea, {},
+            "https://git.eden-emu.dev/api/v1/repos/eden-emu/eden/releases/latest",
+            R"(Eden-Windows-.*-amd64-msvc-standard\.zip)",
+            R"(Eden-Windows-.*-amd64-msvc-standard\.zip)",
+            ArchiveType::Zip,
+            base + "Eden/",
+            "eden.exe", true, ReleaseChannel::Stable,
+            ":/icons/emulators/eden.png"
+        },
+        {
+            "hypseus_singe", "Hypseus Singe  (Laserdisc)",
+            UpdateSource::GitHub, "DirtBagXon/hypseus-singe", {},
+            R"((?i)hypseus.*win.*\.zip)",
+            R"((?i)hypseus.*win.*\.zip)",
+            ArchiveType::Zip,
+            base + "HypseusSinge/",
+            "hypseus.exe", true, ReleaseChannel::Stable,
+            ":/icons/emulators/hypseus_singe.png"
+        },
+        {
+            "mame", "MAME  (Arcade / Multi-system)",
+            UpdateSource::GitHub, "mamedev/mame", {},
+            R"(mame\d+b_x64\.exe)",
+            R"(mame\d+b_x64\.exe)",
+            ArchiveType::SingleFile,
+            base + "MAME/",
+            "mame.exe", false, ReleaseChannel::Stable,
+            ":/icons/emulators/mame.png"
+        },
+        {
             "pcsx2", "PCSX2  (PS2)",
             UpdateSource::GitHub, "PCSX2/pcsx2", {},
             R"(PCSX2-(?!.*symbols).*windows.*64.*\.7z)",
@@ -55,25 +107,34 @@ inline QList<EmulatorConfig> allEmulatorConfigs()
             ":/icons/emulators/rpcs3.png"
         },
         {
-            "dolphin", "Dolphin  (GC / Wii)",
-            UpdateSource::DolphinBuildbot, {},
-            "https://api.dolphin-emu.org/download/list/master/1/",
-            R"(dolphin-master-.*-x64\.7z)",
-            R"(dolphin-master-.*-x64\.7z)",
-            ArchiveType::SevenZ,
-            base + "Dolphin/",
-            "Dolphin.exe", true, ReleaseChannel::Nightly,
-            ":/icons/emulators/dolphin.png"
+            "ymir", "Ymir  (Sega Saturn)",
+            UpdateSource::GitHub, "StrikerX3/Ymir", {},
+            R"(ymir-windows-x86_64-AVX2-.*\.zip)",
+            R"(ymir-windows-x86_64-AVX2-.*\.zip)",
+            ArchiveType::Zip,
+            base + "Ymir/",
+            "ymir.exe", true, ReleaseChannel::Nightly,
+            ":/icons/emulators/ymir.png"
         },
         {
-            "duckstation", "DuckStation  (PS1)",
-            UpdateSource::GitHub, "stenzek/duckstation", {},
-            R"(duckstation-windows-x64-release\.zip)",
-            R"(duckstation-windows-x64-release\.zip)",
+            "xenia_edge", "Xenia Edge  (Xbox 360)",
+            UpdateSource::GitHub, "has207/xenia-edge", {},
+            R"(xenia_edge_windows\.zip)",
+            R"(xenia_edge_windows\.zip)",
             ArchiveType::Zip,
-            base + "DuckStation/",
-            "duckstation-qt-x64-ReleaseLTCG.exe", false, ReleaseChannel::Nightly,
-            ":/icons/emulators/duckstation.png"
+            base + "XeniaEdge/",
+            "xenia_canary.exe", false, ReleaseChannel::Nightly,
+            ":/icons/emulators/xenia_edge.png"
+        },
+        {
+            "supermodel", "Supermodel  (Sega Model 3)",
+            UpdateSource::GitHub, "trzy/Supermodel", {},
+            R"((?i)supermodel.*windows.*\.zip|(?i).*win.*supermodel.*\.zip)",
+            R"((?i)supermodel.*windows.*\.zip|(?i).*win.*supermodel.*\.zip)",
+            ArchiveType::Zip,
+            base + "Supermodel/",
+            "supermodel.exe", true, ReleaseChannel::Nightly,
+            ":/icons/emulators/supermodel.png"
         },
         {
             "ppsspp", "PPSSPP  (PSP)",
@@ -115,16 +176,7 @@ inline QList<EmulatorConfig> allEmulatorConfigs()
             "Mesen.exe", false, ReleaseChannel::Stable,
             ":/icons/emulators/mesen.png"
         },
-        {
-            "supermodel", "Supermodel  (Sega Model 3)",
-            UpdateSource::GitHub, "trzy/Supermodel", {},
-            R"((?i)supermodel.*windows.*\.zip|(?i).*win.*supermodel.*\.zip)",
-            R"((?i)supermodel.*windows.*\.zip|(?i).*win.*supermodel.*\.zip)",
-            ArchiveType::Zip,
-            base + "Supermodel/",
-            "supermodel.exe", true, ReleaseChannel::Nightly,
-            ":/icons/emulators/supermodel.png"
-        },
+
         {
             "xemu", "xemu  (Xbox)",
             UpdateSource::GitHub, "xemu-project/xemu", {},
@@ -144,57 +196,6 @@ inline QList<EmulatorConfig> allEmulatorConfigs()
             base + "xemu-chihiro/",
             "xemu.exe", false, ReleaseChannel::Nightly,
             ":/icons/emulators/xemu_chihiro.png"
-        },
-        {
-            "ymir", "Ymir  (Sega Saturn)",
-            UpdateSource::GitHub, "StrikerX3/Ymir", {},
-            R"(ymir-windows-x86_64-AVX2-.*\.zip)",
-            R"(ymir-windows-x86_64-AVX2-.*\.zip)",
-            ArchiveType::Zip,
-            base + "Ymir/",
-            "ymir.exe", true, ReleaseChannel::Nightly,
-            ":/icons/emulators/ymir.png"
-        },
-        {
-            "xenia_edge", "Xenia Edge  (Xbox 360)",
-            UpdateSource::GitHub, "has207/xenia-edge", {},
-            R"(xenia_edge_windows\.zip)",
-            R"(xenia_edge_windows\.zip)",
-            ArchiveType::Zip,
-            base + "XeniaEdge/",
-            "xenia_canary.exe", false, ReleaseChannel::Nightly,
-            ":/icons/emulators/xenia_edge.png"
-        },
-        {
-            "mame", "MAME  (Arcade / Multi-system)",
-            UpdateSource::GitHub, "mamedev/mame", {},
-            R"(mame\d+b_x64\.exe)",
-            R"(mame\d+b_x64\.exe)",
-            ArchiveType::SingleFile,
-            base + "MAME/",
-            "mame.exe", false, ReleaseChannel::Stable,
-            ":/icons/emulators/mame.png"
-        },
-        {
-            "eden", "Eden  (Switch)",
-            UpdateSource::Gitea, {},
-            "https://git.eden-emu.dev/api/v1/repos/eden-emu/eden/releases/latest",
-            R"(Eden-Windows-.*-amd64-msvc-standard\.zip)",
-            R"(Eden-Windows-.*-amd64-msvc-standard\.zip)",
-            ArchiveType::Zip,
-            base + "Eden/",
-            "eden.exe", true, ReleaseChannel::Stable,
-            ":/icons/emulators/eden.png"
-        },
-        {
-            "hypseus_singe", "Hypseus Singe  (Laserdisc)",
-            UpdateSource::GitHub, "DirtBagXon/hypseus-singe", {},
-            R"((?i)hypseus.*win.*\.zip)",
-            R"((?i)hypseus.*win.*\.zip)",
-            ArchiveType::Zip,
-            base + "HypseusSinge/",
-            "hypseus.exe", true, ReleaseChannel::Stable,
-            ":/icons/emulators/hypseus_singe.png"
         },
         });
 }

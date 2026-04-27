@@ -16,6 +16,7 @@ struct GitHubAsset {
 
 struct GitHubRelease {
     QString            tagName;
+    QString            publishedAt;
     QList<GitHubAsset> assets;
     bool               valid = false;
     bool               isPreRelease = false;

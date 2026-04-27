@@ -13,6 +13,15 @@
 #include <QTextBlock>
 #include <QStyleOption>
 
+static bool isFloatingTag(const QString& tag)
+{
+    const QStringList floating = {
+        "latest-nightly", "latest", "nightly", "preview",
+        "canary", "dev", "master", "main", "edge"
+    };
+    return floating.contains(tag.toLower());
+}
+
 EmulatorTab::EmulatorTab(const EmulatorConfig& config,
     EtagCache* cache,
     QWidget* parent)
@@ -197,13 +206,13 @@ void EmulatorTab::onCheckForUpdate()
         .arg(channelLabel, m_config.displayName));
     m_btnCheck->setEnabled(false);
 
-    const EmulatorConfig cfg = m_config;   // full config, not just repo string
+    const EmulatorConfig cfg = m_config;
     const ReleaseChannel channel = selectedChannel();
 
     QMetaObject::invokeMethod(m_updater,
         [this, cfg, channel]() {
             const GitHubRelease r = m_updater->fetchLatestRelease(cfg, channel);
-            QMetaObject::invokeMethod(this, [this, r]() {
+            QMetaObject::invokeMethod(this, [this, r, cfg]() {
                 m_btnCheck->setEnabled(true);
 
                 if (!r.valid) {
@@ -211,21 +220,34 @@ void EmulatorTab::onCheckForUpdate()
                     return;
                 }
 
+                // Use the same floating tag logic as update() so the
+                // comparison key matches what was stored after install.
+                const bool floating = isFloatingTag(r.tagName);
+                const QString storedTag = floating
+                    ? (!r.publishedAt.isEmpty() ? r.publishedAt : r.tagName)
+                    : r.tagName;
+
                 const QString preTag = r.isPreRelease ? " [pre-release]" : "";
 
-                if (m_lastKnownTag.isEmpty())
-                    appendLog(QString("Latest available: %1%2")
-                        .arg(r.tagName, preTag));
-                else if (m_lastKnownTag == r.tagName)
-                    appendLog(QString("Up to date (%1%2).").arg(r.tagName, preTag));
-                else
-                    appendLog(QString("Update available: %1 -> %2%3")
-                        .arg(m_lastKnownTag, r.tagName, preTag));
+                // Display label — for floating tags show the tag name,
+                // not the publishedAt timestamp, so it's human-readable.
+                const QString displayTag = r.tagName + preTag;
+
+                if (m_lastKnownTag.isEmpty()) {
+                    appendLog(QString("Latest available: %1").arg(displayTag));
+                }
+                else if (m_lastKnownTag == storedTag) {
+                    appendLog(QString("Up to date (%1).").arg(displayTag));
+                }
+                else {
+                    appendLog(QString("Update available: %1 -> %2")
+                        .arg(m_lastKnownTag, displayTag));
+                }
 
                 m_verLabel->setText(
-                    QString("Installed: %1   |   Latest: %2%3")
+                    QString("Installed: %1   |   Latest: %2")
                     .arg(m_lastKnownTag.isEmpty() ? "unknown" : m_lastKnownTag,
-                        r.tagName, preTag));
+                        displayTag));
 
                 }, Qt::QueuedConnection);
         }, Qt::QueuedConnection);
@@ -268,7 +290,7 @@ void EmulatorTab::onDone(bool updated, const QString& newTag)
     m_running = false;
     if (updated) {
         m_lastKnownTag = newTag;
-        emit versionChanged(); 
+        emit versionChanged();
     }
     updateVersionLabel();
     setButtonsEnabled(true);
