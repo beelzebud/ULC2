@@ -147,7 +147,6 @@ void MainWindow::buildUi()
     root->setSpacing(0);
     root->setContentsMargins(0, 0, 0, 0);
 
-    // ── Sidebar ───────────────────────────────────────────────────────────────
     m_sidebar = new QListWidget;
     m_sidebar->setFixedWidth(120);
     m_sidebar->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -155,7 +154,7 @@ void MainWindow::buildUi()
     m_sidebar->setIconSize(QSize(SidebarDelegate::ThumbSize,
         SidebarDelegate::ThumbSize));
     m_sidebar->setItemDelegate(new SidebarDelegate(m_sidebar));
-    m_sidebar->setMouseTracking(true);  // enables hover state in delegate
+    m_sidebar->setMouseTracking(true);
 
     m_stack = new QStackedWidget;
 
@@ -163,15 +162,12 @@ void MainWindow::buildUi()
     m_raTab = new RetroArchTab(m_cache);
     addPage("RetroArch", "Libretro", ":/icons/emulators/retroarch.png", m_raTab);
 
-    // Generic emulator pages
+    // ── Single loop — create, add to sidebar, and connect ────────────────────
     for (const auto& cfg : allEmulatorConfigs()) {
         auto* tab = new EmulatorTab(cfg, m_cache);
         m_emuTabs.append(tab);
-
-        // Extract subtitle from displayName if it contains parens,
-        // otherwise leave empty — the config no longer includes parens
-        // so we derive the platform from the config id as a fallback
         addPage(cfg.displayName, {}, cfg.iconResource, tab);
+        connect(tab, &EmulatorTab::versionChanged, this, &MainWindow::saveSettings);
     }
 
     m_sidebar->setCurrentRow(0);
@@ -189,10 +185,8 @@ void MainWindow::buildUi()
     splitter->setHandleWidth(2);
     splitter->setChildrenCollapsible(false);
     splitter->setSizes({ 120, 860 });
-
     root->addWidget(splitter, 1);
 
-    // ── Bottom bar ────────────────────────────────────────────────────────────
     auto* bottomWidget = new QWidget;
     bottomWidget->setStyleSheet("border-top: 1px solid #003300;");
     auto* bar = new QHBoxLayout(bottomWidget);
@@ -209,15 +203,6 @@ void MainWindow::buildUi()
     bar->addWidget(btnSave);
     bar->addWidget(btnAbout);
     root->addWidget(bottomWidget);
-
-    for (const auto& cfg : allEmulatorConfigs()) {
-        auto* tab = new EmulatorTab(cfg, m_cache);
-        m_emuTabs.append(tab);
-        addPage(cfg.displayName, {}, cfg.iconResource, tab);
-
-        // Save settings immediately whenever an emulator is updated
-        connect(tab, &EmulatorTab::versionChanged, this, &MainWindow::saveSettings);
-    }
 }
 
 void MainWindow::addPage(const QString& label,

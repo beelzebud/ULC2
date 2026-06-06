@@ -27,23 +27,12 @@ struct EmulatorConfig {
 inline QList<EmulatorConfig> allEmulatorConfigs()
 {
 #ifdef Q_OS_WIN
-    const QString base = R"(C:\Emulators\)";
+    const QString base = R"(D:\Emulators\)";
 #else
     const QString base = QDir::homePath() + "/Emulators/";
 #endif
 
     return QList<EmulatorConfig>({
-        {
-            "dolphin", "Dolphin  (GC / Wii)",
-            UpdateSource::DolphinBuildbot, {},
-            "https://api.dolphin-emu.org/download/list/master/1/",
-            R"(dolphin-master-.*-x64\.7z)",
-            R"(dolphin-master-.*-x64\.7z)",
-            ArchiveType::SevenZ,
-            base + "Dolphin/",
-            "Dolphin.exe", true, ReleaseChannel::Nightly,
-            ":/icons/emulators/dolphin.png"
-        },
         {
             "duckstation", "DuckStation  (PS1)",
             UpdateSource::GitHub, "stenzek/duckstation", {},
@@ -157,18 +146,8 @@ inline QList<EmulatorConfig> allEmulatorConfigs()
             ":/icons/emulators/cemu.png"
         },
         {
-            "flycast", "Flycast  (Dreamcast)",
-            UpdateSource::GitHub, "flyinghead/flycast", {},
-            R"(flycast-win64-.*\.zip)",
-            R"(flycast-win64-.*\.zip)",
-            ArchiveType::Zip,
-            base + "Flycast/",
-            "flycast.exe", false, ReleaseChannel::Stable,
-            ":/icons/emulators/flycast.png"
-        },
-        {
-            "mesen", "Mesen  (NES / SNES / GB)",
-            UpdateSource::GitHub, "SourMesen/Mesen2", {},
+            "mesen", "Mesen CE",
+            UpdateSource::GitHub, "nesdev-org/MesenCE", {},
             R"(Mesen_.*_Windows\.zip)",
             R"(Mesen_.*_Windows\.zip)",
             ArchiveType::Zip,

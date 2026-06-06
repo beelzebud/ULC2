@@ -17,7 +17,7 @@ static bool isFloatingTag(const QString& tag)
 {
     const QStringList floating = {
         "latest-nightly", "latest", "nightly", "preview",
-        "canary", "dev", "master", "main", "edge"
+        "canary", "dev", "master", "main", "edge", "pre-release"
     };
     return floating.contains(tag.toLower());
 }

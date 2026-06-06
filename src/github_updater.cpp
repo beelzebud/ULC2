@@ -16,6 +16,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QRegularExpression>
+#include <QStringList>
 
 GitHubUpdater::GitHubUpdater(EtagCache* cache, QObject* parent)
     : QObject(parent)
@@ -118,48 +119,72 @@ GitHubRelease GitHubUpdater::fetchFromGitHub(const EmulatorConfig& config,
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Dolphin buildbot backend
+// Tries multiple candidate URLs and logs HTTP status so we can diagnose
+// which endpoint is still working after their infrastructure changes.
 // ─────────────────────────────────────────────────────────────────────────────
 
 GitHubRelease GitHubUpdater::fetchFromBuildbot(const EmulatorConfig& config)
 {
     GitHubRelease result;
 
-    QNetworkRequest req;
-    req.setUrl(QUrl(config.buildbotApiUrl));
-    req.setRawHeader("User-Agent", "ulc-emulator-updater/1.0");
-    req.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
-        QVariant::fromValue(QNetworkRequest::NoLessSafeRedirectPolicy));
+    QStringList urlsToTry;
+    urlsToTry << config.buildbotApiUrl
+        << "https://api.dolphin-emu.org/download/list/dev/1/"
+        << "https://dolphin-emu.org/download/";
 
-    QEventLoop loop;
-    QNetworkReply* reply = m_nam->get(req);
-    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
-    QTimer::singleShot(10000, &loop, &QEventLoop::quit);
-    loop.exec();
+    QString html;
+    for (const QString& url : urlsToTry) {
+        QNetworkRequest req;
+        req.setUrl(QUrl(url));
+        req.setRawHeader("User-Agent",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36");
+        req.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
+            QVariant::fromValue(QNetworkRequest::NoLessSafeRedirectPolicy));
 
-    if (reply->error() != QNetworkReply::NoError) {
-        emit log("Buildbot fetch error for " + config.displayName +
-            ": " + reply->errorString());
+        QEventLoop loop;
+        QNetworkReply* reply = m_nam->get(req);
+        connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+        QTimer::singleShot(10000, &loop, &QEventLoop::quit);
+        loop.exec();
+
+        const int httpCode = reply->attribute(
+            QNetworkRequest::HttpStatusCodeAttribute).toInt();
+        emit log(QString("[Dolphin] %1 — HTTP %2").arg(url).arg(httpCode));
+
+        if (reply->error() == QNetworkReply::NoError) {
+            html = QString::fromUtf8(reply->readAll());
+            reply->deleteLater();
+            emit log(QString("[Dolphin] Got %1 chars").arg(html.size()));
+            break;
+        }
         reply->deleteLater();
+    }
+
+    if (html.isEmpty()) {
+        emit log("[Dolphin] All URLs failed — could not fetch build list.");
         return result;
     }
 
-    const QString html = QString::fromUtf8(reply->readAll());
-    reply->deleteLater();
-
+    // Match both old format: dolphin-master-2603-78-x64.7z
+    // and new format:        dolphin-2603-388-x64.7z
     const QRegularExpression urlRx(
-        R"((https://dl\.dolphin-emu\.org/builds/\w+/\w+/(dolphin-master-[\d]+-[\d]+-x64\.7z)))",
+        R"((https://dl\.dolphin-emu\.org/[^\s"'<>]+dolphin-[^\s"'<>]+-x64\.7z))",
         QRegularExpression::CaseInsensitiveOption);
 
     const auto match = urlRx.match(html);
     if (!match.hasMatch()) {
-        emit log("Could not find a download link in Dolphin buildbot page.");
+        emit log("[Dolphin] No .7z download link found. Page preview:");
+        emit log(html.left(500));
         return result;
     }
 
     const QString downloadUrl = match.captured(1);
-    const QString filename = match.captured(2);
+    const QString filename = QFileInfo(QUrl(downloadUrl).path()).fileName();
 
-    const QRegularExpression verRx(R"(dolphin-master-([\d]+-[\d]+)-x64\.7z)");
+    // Extract version: handles both "master-2603-78" and "2603-388" formats
+    const QRegularExpression verRx(
+        R"(dolphin-(?:master-)?([\d]+-[\d]+)-x64\.7z)",
+        QRegularExpression::CaseInsensitiveOption);
     const auto verMatch = verRx.match(filename);
 
     result.tagName = verMatch.hasMatch() ? verMatch.captured(1) : filename;
@@ -209,7 +234,7 @@ GitHubRelease GitHubUpdater::fetchFromRpcs3Net(const EmulatorConfig& config)
     }
 
     const QJsonObject root = doc.object();
-    const int returnCode = root.value("return_code").toInt(-99);
+    const int         returnCode = root.value("return_code").toInt(-99);
 
     // 0=update available, 1=up to date, -1=unknown commit (valid), <-1=error
     if (returnCode < -1) {
@@ -218,21 +243,29 @@ GitHubRelease GitHubUpdater::fetchFromRpcs3Net(const EmulatorConfig& config)
     }
 
     const QJsonObject latest = root.value("latest_build").toObject();
-    const QString version = latest.value("version").toString();
-    const QString datetime = latest.value("datetime").toString();
-    const QString downloadUrl = latest.value("windows").toObject()
+    const QString     datetime = latest.value("datetime").toString();
+    const QString     downloadUrl = latest.value("windows").toObject()
         .value("download").toString();
 
-    if (version.isEmpty() || downloadUrl.isEmpty()) {
-        emit log("RPCS3 update API: missing version or download URL.");
+    if (downloadUrl.isEmpty()) {
+        emit log("RPCS3 update API: missing windows download URL.");
         return result;
     }
+
+    // Extract version from the filename since the API no longer returns it
+    // as a top-level field. e.g. rpcs3-v0.0.41-19444-f8a5a6ad_win64_msvc.7z
+    const QString filename = QFileInfo(QUrl(downloadUrl).path()).fileName();
+    const QRegularExpression verRx(R"(rpcs3-v([\d.]+-[\d]+))");
+    const auto verMatch = verRx.match(filename);
+    const QString version = verMatch.hasMatch()
+        ? verMatch.captured(1)
+        : datetime;
 
     result.tagName = QString("%1 (%2)").arg(version, datetime);
     result.isPreRelease = true;
 
     GitHubAsset asset;
-    asset.name = QFileInfo(QUrl(downloadUrl).path()).fileName();
+    asset.name = filename;
     asset.downloadUrl = downloadUrl;
     result.assets.append(asset);
     result.valid = true;
@@ -302,7 +335,7 @@ static bool isFloatingTag(const QString& tag)
 {
     const QStringList floating = {
         "latest-nightly", "latest", "nightly", "preview",
-        "canary", "dev", "master", "main", "edge"
+        "canary", "dev", "master", "main", "edge", "pre-release"
     };
     return floating.contains(tag.toLower());
 }
@@ -346,8 +379,8 @@ void GitHubUpdater::update(const EmulatorConfig& config,
         if (rx.match(a.name).hasMatch()) { chosen = a; break; }
     }
 
-    // For floating tags (preview, latest-nightly, etc.) the tag string never
-    // changes between builds so compare on published_at date instead.
+    // For floating tags the tag string never changes between builds.
+    // Use published_at date as the comparison key instead.
     const bool floating = isFloatingTag(release.tagName);
     const QString storedTag = floating
         ? (!release.publishedAt.isEmpty() ? release.publishedAt : chosen.name)
@@ -382,8 +415,8 @@ void GitHubUpdater::update(const EmulatorConfig& config,
 
     const QString archivePath = tmp.filePath(chosen.name);
 
-    // Clear cached ETag for this URL so we always get a fresh download
-    // when an update has been detected rather than hitting the cache.
+    // Clear cached ETag so we always get a fresh download when an update
+    // has been detected rather than hitting the cache.
     m_cache->save(chosen.downloadUrl, "");
 
     try {
