@@ -42,51 +42,47 @@ static constexpr auto qt_meta_stringdata_CLASSRetroArchTabENDCLASS = QtMocHelper
     "RetroArchTab",
     "stopOperation",
     "",
-    "onUpdateCores",
-    "onUpdateAssets",
-    "onUpdateCoreInfo",
-    "onUpdateDatabase",
-    "onUpdateRetroarch",
-    "onUpdateAll",
-    "onBrowseCore",
-    "onBrowseAssets",
-    "onBrowseInfo",
-    "onBrowseDatabase",
-    "onBrowseRetroarch",
+    "onCheckRA",
+    "onDownloadRA",
+    "onCheckCores",
+    "onDownloadCores",
+    "onBrowseRA",
+    "onBrowseCores",
     "appendLog",
     "msg",
-    "setCoreProgMax",
+    "setProgMax",
     "max",
-    "incCoreProgress",
-    "setStepProgMax",
-    "incStepProgress",
-    "onOperationDone"
+    "incProgress",
+    "onWorkerDone",
+    "onRACheckResult",
+    "hasUpdate",
+    "onCoresCheckResult",
+    "needsUpdate",
+    "total"
 );
 #else  // !QT_MOC_HAS_STRING_DATA
 struct qt_meta_stringdata_CLASSRetroArchTabENDCLASS_t {
-    uint offsetsAndSizes[44];
+    uint offsetsAndSizes[40];
     char stringdata0[13];
     char stringdata1[14];
     char stringdata2[1];
-    char stringdata3[14];
-    char stringdata4[15];
-    char stringdata5[17];
-    char stringdata6[17];
-    char stringdata7[18];
-    char stringdata8[12];
-    char stringdata9[13];
-    char stringdata10[15];
-    char stringdata11[13];
-    char stringdata12[17];
-    char stringdata13[18];
-    char stringdata14[10];
-    char stringdata15[4];
-    char stringdata16[15];
-    char stringdata17[4];
-    char stringdata18[16];
-    char stringdata19[15];
-    char stringdata20[16];
-    char stringdata21[16];
+    char stringdata3[10];
+    char stringdata4[13];
+    char stringdata5[13];
+    char stringdata6[16];
+    char stringdata7[11];
+    char stringdata8[14];
+    char stringdata9[10];
+    char stringdata10[4];
+    char stringdata11[11];
+    char stringdata12[4];
+    char stringdata13[12];
+    char stringdata14[13];
+    char stringdata15[16];
+    char stringdata16[10];
+    char stringdata17[19];
+    char stringdata18[12];
+    char stringdata19[6];
 };
 #define QT_MOC_LITERAL(ofs, len) \
     uint(sizeof(qt_meta_stringdata_CLASSRetroArchTabENDCLASS_t::offsetsAndSizes) + ofs), len 
@@ -95,48 +91,44 @@ Q_CONSTINIT static const qt_meta_stringdata_CLASSRetroArchTabENDCLASS_t qt_meta_
         QT_MOC_LITERAL(0, 12),  // "RetroArchTab"
         QT_MOC_LITERAL(13, 13),  // "stopOperation"
         QT_MOC_LITERAL(27, 0),  // ""
-        QT_MOC_LITERAL(28, 13),  // "onUpdateCores"
-        QT_MOC_LITERAL(42, 14),  // "onUpdateAssets"
-        QT_MOC_LITERAL(57, 16),  // "onUpdateCoreInfo"
-        QT_MOC_LITERAL(74, 16),  // "onUpdateDatabase"
-        QT_MOC_LITERAL(91, 17),  // "onUpdateRetroarch"
-        QT_MOC_LITERAL(109, 11),  // "onUpdateAll"
-        QT_MOC_LITERAL(121, 12),  // "onBrowseCore"
-        QT_MOC_LITERAL(134, 14),  // "onBrowseAssets"
-        QT_MOC_LITERAL(149, 12),  // "onBrowseInfo"
-        QT_MOC_LITERAL(162, 16),  // "onBrowseDatabase"
-        QT_MOC_LITERAL(179, 17),  // "onBrowseRetroarch"
-        QT_MOC_LITERAL(197, 9),  // "appendLog"
-        QT_MOC_LITERAL(207, 3),  // "msg"
-        QT_MOC_LITERAL(211, 14),  // "setCoreProgMax"
-        QT_MOC_LITERAL(226, 3),  // "max"
-        QT_MOC_LITERAL(230, 15),  // "incCoreProgress"
-        QT_MOC_LITERAL(246, 14),  // "setStepProgMax"
-        QT_MOC_LITERAL(261, 15),  // "incStepProgress"
-        QT_MOC_LITERAL(277, 15)   // "onOperationDone"
+        QT_MOC_LITERAL(28, 9),  // "onCheckRA"
+        QT_MOC_LITERAL(38, 12),  // "onDownloadRA"
+        QT_MOC_LITERAL(51, 12),  // "onCheckCores"
+        QT_MOC_LITERAL(64, 15),  // "onDownloadCores"
+        QT_MOC_LITERAL(80, 10),  // "onBrowseRA"
+        QT_MOC_LITERAL(91, 13),  // "onBrowseCores"
+        QT_MOC_LITERAL(105, 9),  // "appendLog"
+        QT_MOC_LITERAL(115, 3),  // "msg"
+        QT_MOC_LITERAL(119, 10),  // "setProgMax"
+        QT_MOC_LITERAL(130, 3),  // "max"
+        QT_MOC_LITERAL(134, 11),  // "incProgress"
+        QT_MOC_LITERAL(146, 12),  // "onWorkerDone"
+        QT_MOC_LITERAL(159, 15),  // "onRACheckResult"
+        QT_MOC_LITERAL(175, 9),  // "hasUpdate"
+        QT_MOC_LITERAL(185, 18),  // "onCoresCheckResult"
+        QT_MOC_LITERAL(204, 11),  // "needsUpdate"
+        QT_MOC_LITERAL(216, 5)   // "total"
     },
     "RetroArchTab",
     "stopOperation",
     "",
-    "onUpdateCores",
-    "onUpdateAssets",
-    "onUpdateCoreInfo",
-    "onUpdateDatabase",
-    "onUpdateRetroarch",
-    "onUpdateAll",
-    "onBrowseCore",
-    "onBrowseAssets",
-    "onBrowseInfo",
-    "onBrowseDatabase",
-    "onBrowseRetroarch",
+    "onCheckRA",
+    "onDownloadRA",
+    "onCheckCores",
+    "onDownloadCores",
+    "onBrowseRA",
+    "onBrowseCores",
     "appendLog",
     "msg",
-    "setCoreProgMax",
+    "setProgMax",
     "max",
-    "incCoreProgress",
-    "setStepProgMax",
-    "incStepProgress",
-    "onOperationDone"
+    "incProgress",
+    "onWorkerDone",
+    "onRACheckResult",
+    "hasUpdate",
+    "onCoresCheckResult",
+    "needsUpdate",
+    "total"
 };
 #undef QT_MOC_LITERAL
 #endif // !QT_MOC_HAS_STRING_DATA
@@ -148,7 +140,7 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSRetroArchTabENDCLASS[] = {
       11,       // revision
        0,       // classname
        0,    0, // classinfo
-      18,   14, // methods
+      13,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -156,24 +148,19 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSRetroArchTabENDCLASS[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    0,  122,    2, 0x0a,    1 /* Public */,
-       3,    0,  123,    2, 0x08,    2 /* Private */,
-       4,    0,  124,    2, 0x08,    3 /* Private */,
-       5,    0,  125,    2, 0x08,    4 /* Private */,
-       6,    0,  126,    2, 0x08,    5 /* Private */,
-       7,    0,  127,    2, 0x08,    6 /* Private */,
-       8,    0,  128,    2, 0x08,    7 /* Private */,
-       9,    0,  129,    2, 0x08,    8 /* Private */,
-      10,    0,  130,    2, 0x08,    9 /* Private */,
-      11,    0,  131,    2, 0x08,   10 /* Private */,
-      12,    0,  132,    2, 0x08,   11 /* Private */,
-      13,    0,  133,    2, 0x08,   12 /* Private */,
-      14,    1,  134,    2, 0x08,   13 /* Private */,
-      16,    1,  137,    2, 0x08,   15 /* Private */,
-      18,    0,  140,    2, 0x08,   17 /* Private */,
-      19,    1,  141,    2, 0x08,   18 /* Private */,
-      20,    0,  144,    2, 0x08,   20 /* Private */,
-      21,    0,  145,    2, 0x08,   21 /* Private */,
+       1,    0,   92,    2, 0x0a,    1 /* Public */,
+       3,    0,   93,    2, 0x08,    2 /* Private */,
+       4,    0,   94,    2, 0x08,    3 /* Private */,
+       5,    0,   95,    2, 0x08,    4 /* Private */,
+       6,    0,   96,    2, 0x08,    5 /* Private */,
+       7,    0,   97,    2, 0x08,    6 /* Private */,
+       8,    0,   98,    2, 0x08,    7 /* Private */,
+       9,    1,   99,    2, 0x08,    8 /* Private */,
+      11,    1,  102,    2, 0x08,   10 /* Private */,
+      13,    0,  105,    2, 0x08,   12 /* Private */,
+      14,    0,  106,    2, 0x08,   13 /* Private */,
+      15,    1,  107,    2, 0x08,   14 /* Private */,
+      17,    2,  110,    2, 0x08,   16 /* Private */,
 
  // slots: parameters
     QMetaType::Void,
@@ -183,17 +170,12 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSRetroArchTabENDCLASS[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
+    QMetaType::Void, QMetaType::QString,   10,
+    QMetaType::Void, QMetaType::Int,   12,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void,
-    QMetaType::Void, QMetaType::QString,   15,
-    QMetaType::Void, QMetaType::Int,   17,
-    QMetaType::Void,
-    QMetaType::Void, QMetaType::Int,   17,
-    QMetaType::Void,
-    QMetaType::Void,
+    QMetaType::Void, QMetaType::Bool,   16,
+    QMetaType::Void, QMetaType::QStringList, QMetaType::Int,   18,   19,
 
        0        // eod
 };
@@ -209,43 +191,35 @@ Q_CONSTINIT const QMetaObject RetroArchTab::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<RetroArchTab, std::true_type>,
         // method 'stopOperation'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'onUpdateCores'
+        // method 'onCheckRA'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'onUpdateAssets'
+        // method 'onDownloadRA'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'onUpdateCoreInfo'
+        // method 'onCheckCores'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'onUpdateDatabase'
+        // method 'onDownloadCores'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'onUpdateRetroarch'
+        // method 'onBrowseRA'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'onUpdateAll'
-        QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'onBrowseCore'
-        QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'onBrowseAssets'
-        QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'onBrowseInfo'
-        QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'onBrowseDatabase'
-        QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'onBrowseRetroarch'
+        // method 'onBrowseCores'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'appendLog'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
-        // method 'setCoreProgMax'
+        // method 'setProgMax'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<int, std::false_type>,
-        // method 'incCoreProgress'
+        // method 'incProgress'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'setStepProgMax'
+        // method 'onWorkerDone'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        QtPrivate::TypeAndForceComplete<int, std::false_type>,
-        // method 'incStepProgress'
+        // method 'onRACheckResult'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
-        // method 'onOperationDone'
-        QtPrivate::TypeAndForceComplete<void, std::false_type>
+        QtPrivate::TypeAndForceComplete<bool, std::false_type>,
+        // method 'onCoresCheckResult'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<const QStringList &, std::false_type>,
+        QtPrivate::TypeAndForceComplete<int, std::false_type>
     >,
     nullptr
 } };
@@ -257,23 +231,18 @@ void RetroArchTab::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
         (void)_t;
         switch (_id) {
         case 0: _t->stopOperation(); break;
-        case 1: _t->onUpdateCores(); break;
-        case 2: _t->onUpdateAssets(); break;
-        case 3: _t->onUpdateCoreInfo(); break;
-        case 4: _t->onUpdateDatabase(); break;
-        case 5: _t->onUpdateRetroarch(); break;
-        case 6: _t->onUpdateAll(); break;
-        case 7: _t->onBrowseCore(); break;
-        case 8: _t->onBrowseAssets(); break;
-        case 9: _t->onBrowseInfo(); break;
-        case 10: _t->onBrowseDatabase(); break;
-        case 11: _t->onBrowseRetroarch(); break;
-        case 12: _t->appendLog((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
-        case 13: _t->setCoreProgMax((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
-        case 14: _t->incCoreProgress(); break;
-        case 15: _t->setStepProgMax((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
-        case 16: _t->incStepProgress(); break;
-        case 17: _t->onOperationDone(); break;
+        case 1: _t->onCheckRA(); break;
+        case 2: _t->onDownloadRA(); break;
+        case 3: _t->onCheckCores(); break;
+        case 4: _t->onDownloadCores(); break;
+        case 5: _t->onBrowseRA(); break;
+        case 6: _t->onBrowseCores(); break;
+        case 7: _t->appendLog((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
+        case 8: _t->setProgMax((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
+        case 9: _t->incProgress(); break;
+        case 10: _t->onWorkerDone(); break;
+        case 11: _t->onRACheckResult((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
+        case 12: _t->onCoresCheckResult((*reinterpret_cast< std::add_pointer_t<QStringList>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2]))); break;
         default: ;
         }
     }
@@ -298,13 +267,13 @@ int RetroArchTab::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 18)
+        if (_id < 13)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 18;
+        _id -= 13;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 18)
+        if (_id < 13)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 18;
+        _id -= 13;
     }
     return _id;
 }

@@ -1,14 +1,19 @@
 #pragma once
+
 #include <QWidget>
+#include <QThread>
 #include <QLineEdit>
 #include <QPushButton>
-#include <QProgressBar>
+#include <QLabel>
 #include <QTextEdit>
-#include <QThread>
+#include <QProgressBar>
+#include <QStringList>
 #include <atomic>
+
 #include "settings.h"
 #include "etag_cache.h"
-#include "updater.h"
+
+class RetroArchWorker;
 
 class RetroArchTab : public QWidget
 {
@@ -24,43 +29,40 @@ public slots:
     void stopOperation();
 
 private slots:
-    void onUpdateCores();
-    void onUpdateAssets();
-    void onUpdateCoreInfo();
-    void onUpdateDatabase();
-    void onUpdateRetroarch();
-    void onUpdateAll();
-
-    void onBrowseCore();
-    void onBrowseAssets();
-    void onBrowseInfo();
-    void onBrowseDatabase();
-    void onBrowseRetroarch();
-
+    void onCheckRA();
+    void onDownloadRA();
+    void onCheckCores();
+    void onDownloadCores();
+    void onBrowseRA();
+    void onBrowseCores();
     void appendLog(const QString& msg);
-    void setCoreProgMax(int max);
-    void incCoreProgress();
-    void setStepProgMax(int max);
-    void incStepProgress();
-    void onOperationDone();
+    void setProgMax(int max);
+    void incProgress();
+    void onWorkerDone();
+    void onRACheckResult(bool hasUpdate);
+    void onCoresCheckResult(const QStringList& needsUpdate, int total);
 
 private:
     void buildUi();
     void setButtonsEnabled(bool on);
-    void updateTabTitle();
-    void runOperation(std::function<void(std::atomic<bool>&)> fn, int steps);
-    QString browseFolder(const QString& current);
 
-    QLineEdit* m_corePath, * m_assetsPath, * m_infoPath, * m_dbPath, * m_raPath;
-    QPushButton* m_btnCores, * m_btnAssets, * m_btnInfo;
-    QPushButton* m_btnDb, * m_btnRa, * m_btnAll, * m_btnStop;
-    QProgressBar* m_coreBar, * m_stepBar, * m_overallBar;
-    QTextEdit* m_log;
+    QLineEdit* m_raPathEdit = nullptr;
+    QLineEdit* m_corePathEdit = nullptr;
+    QPushButton* m_btnCheckRA = nullptr;
+    QPushButton* m_btnDownloadRA = nullptr;
+    QPushButton* m_btnCheckCores = nullptr;
+    QPushButton* m_btnDlCores = nullptr;
+    QPushButton* m_btnStop = nullptr;
+    QLabel* m_raStatusLabel = nullptr;
+    QLabel* m_coreStatusLabel = nullptr;
+    QProgressBar* m_bar = nullptr;
+    QTextEdit* m_log = nullptr;
 
-    Updater* m_updater;
-    QThread* m_worker;
-    std::atomic<bool>  m_cancel{ false };
-    std::atomic<bool>  m_running{ false };
-    int  m_overallSteps = 0;
-    int  m_overallDone = 0;
+    RetroArchWorker* m_worker = nullptr;
+    QThread* m_thread = nullptr;
+    EtagCache* m_cache = nullptr;
+    std::atomic<bool> m_cancel{ false };
+    std::atomic<bool> m_running{ false };
+    QStringList       m_pendingCoreUpdates;
+    bool              m_raHasUpdate = false;
 };

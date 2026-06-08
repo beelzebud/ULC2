@@ -41,6 +41,8 @@ GitHubRelease GitHubUpdater::fetchLatestRelease(const EmulatorConfig& config,
         return fetchFromRpcs3Net(config);
     case UpdateSource::Gitea:
         return fetchFromGitea(config);
+    case UpdateSource::DirectUrl:
+        return fetchFromDirectUrl(config);
     }
     return {};
 }
@@ -326,6 +328,54 @@ GitHubRelease GitHubUpdater::fetchFromGitea(const EmulatorConfig& config)
     result.valid = !result.tagName.isEmpty();
     return result;
 }
+GitHubRelease GitHubUpdater::fetchFromDirectUrl(const EmulatorConfig& config)
+{
+        GitHubRelease result;
+
+        // HEAD request — use ETag or Last-Modified as the version identifier.
+        // The URL never changes; only the file content does.
+        QNetworkRequest req;
+        req.setUrl(QUrl(config.buildbotApiUrl));
+        req.setRawHeader("User-Agent", "ulc-emulator-updater/1.0");
+        req.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
+        QVariant::fromValue(QNetworkRequest::NoLessSafeRedirectPolicy));
+
+        QEventLoop loop;
+        QNetworkReply* reply = m_nam->head(req);
+        connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+        QTimer::singleShot(10000, &loop, &QEventLoop::quit);
+        loop.exec();
+
+        if (reply->error() != QNetworkReply::NoError) {
+            emit log("DirectUrl fetch error for " + config.displayName +
+                ": " + reply->errorString());
+            reply->deleteLater();
+            return result;
+        }
+
+        // Prefer ETag; fall back to Last-Modified
+        QString version = reply->rawHeader("ETag");
+        if (version.isEmpty())
+            version = reply->rawHeader("Last-Modified");
+
+        reply->deleteLater();
+
+        if (version.isEmpty()) {
+            emit log("Could not determine version for " + config.displayName);
+            return result;
+        }
+
+        result.tagName = version;
+        result.isPreRelease = true;
+        result.valid = true;
+
+        GitHubAsset asset;
+        asset.name = QFileInfo(QUrl(config.buildbotApiUrl).path()).fileName();
+        asset.downloadUrl = config.buildbotApiUrl;
+        result.assets.append(asset);
+
+        return result;
+        }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Helper: is this a floating tag that never changes between builds?

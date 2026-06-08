@@ -2,9 +2,8 @@ D:/Build/ULC2/build/ulc_autogen/include_Release/UVLADIE3JM/moc_retroarch_tab.cpp
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/QDir \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/QList \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/QMap \
-  C:/Qt/6.5.3/msvc2019_64/include/QtCore/QObject \
-  C:/Qt/6.5.3/msvc2019_64/include/QtCore/QSemaphore \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/QString \
+  C:/Qt/6.5.3/msvc2019_64/include/QtCore/QStringList \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/QThread \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/q20memory.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/q20type_traits.h \
@@ -68,7 +67,6 @@ D:/Build/ULC2/build/ulc_autogen/include_Release/UVLADIE3JM/moc_retroarch_tab.cpp
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qmetacontainer.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qmetatype.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qminmax.h \
-  C:/Qt/6.5.3/msvc2019_64/include/QtCore/qmutex.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qnamespace.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qnumeric.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qobject.h \
@@ -83,7 +81,6 @@ D:/Build/ULC2/build/ulc_autogen/include_Release/UVLADIE3JM/moc_retroarch_tab.cpp
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qrefcount.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qscopedpointer.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qscopeguard.h \
-  C:/Qt/6.5.3/msvc2019_64/include/QtCore/qsemaphore.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qset.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qshareddata.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qshareddata_impl.h \
@@ -116,7 +113,6 @@ D:/Build/ULC2/build/ulc_autogen/include_Release/UVLADIE3JM/moc_retroarch_tab.cpp
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qtnoop.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qtpreprocessorsupport.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qtresource.h \
-  C:/Qt/6.5.3/msvc2019_64/include/QtCore/qtsan_impl.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qttranslation.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qttypetraits.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qtversion.h \
@@ -143,6 +139,7 @@ D:/Build/ULC2/build/ulc_autogen/include_Release/UVLADIE3JM/moc_retroarch_tab.cpp
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qpaintdevice.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qpalette.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qpen.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtGui/qpicture.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qpixelformat.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qpixmap.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qpolygon.h \
@@ -159,6 +156,7 @@ D:/Build/ULC2/build/ulc_autogen/include_Release/UVLADIE3JM/moc_retroarch_tab.cpp
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qtransform.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qwindowdefs.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qwindowdefs_win.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QLabel \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QLineEdit \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QProgressBar \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QPushButton \
@@ -167,6 +165,7 @@ D:/Build/ULC2/build/ulc_autogen/include_Release/UVLADIE3JM/moc_retroarch_tab.cpp
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qabstractbutton.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qabstractscrollarea.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qframe.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qlabel.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qlineedit.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qprogressbar.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qpushbutton.h \
@@ -178,5 +177,4 @@ D:/Build/ULC2/build/ulc_autogen/include_Release/UVLADIE3JM/moc_retroarch_tab.cpp
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qwidget.h \
   D:/Build/ULC2/src/emulator_config.h \
   D:/Build/ULC2/src/etag_cache.h \
-  D:/Build/ULC2/src/settings.h \
-  D:/Build/ULC2/src/updater.h
+  D:/Build/ULC2/src/settings.h

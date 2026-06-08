@@ -3,23 +3,18 @@
 #include <QFile>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QDir>
 
 AppSettings AppSettings::defaults()
 {
     AppSettings s;
 #ifdef Q_OS_WIN
-    s.corePath = R"(C:\RetroArch\cores\)";
-    s.assetsPath = R"(C:\RetroArch\assets\)";
-    s.infoPath = R"(C:\RetroArch\info\)";
-    s.databasePath = R"(C:\RetroArch\database\rdb\)";
     s.retroarchPath = R"(C:\RetroArch\)";
+    s.corePath = R"(C:\RetroArch\cores\)";
 #else
     const QString ra = QDir::homePath() + "/.config/retroarch/";
-    s.corePath = ra + "cores/";
-    s.assetsPath = ra + "assets/";
-    s.infoPath = ra + "cores/";
-    s.databasePath = ra + "database/rdb/";
     s.retroarchPath = ra;
+    s.corePath = ra + "cores/";
 #endif
     for (const EmulatorConfig& cfg : allEmulatorConfigs()) {
         EmulatorSettings es;
@@ -45,11 +40,8 @@ AppSettings SettingsManager::load() const
         if (!v.isEmpty()) dst = v;
         };
 
-    get("corePath", s.corePath);
-    get("assetsPath", s.assetsPath);
-    get("infoPath", s.infoPath);
-    get("databasePath", s.databasePath);
     get("retroarchPath", s.retroarchPath);
+    get("corePath", s.corePath);
 
     const QJsonObject emuObj = root.value("emulators").toObject();
     for (auto it = emuObj.begin(); it != emuObj.end(); ++it) {
@@ -69,11 +61,8 @@ AppSettings SettingsManager::load() const
 void SettingsManager::save(const AppSettings& s) const
 {
     QJsonObject root;
-    root["corePath"] = s.corePath;
-    root["assetsPath"] = s.assetsPath;
-    root["infoPath"] = s.infoPath;
-    root["databasePath"] = s.databasePath;
     root["retroarchPath"] = s.retroarchPath;
+    root["corePath"] = s.corePath;
 
     QJsonObject emuObj;
     for (auto it = s.emulators.begin(); it != s.emulators.end(); ++it) {

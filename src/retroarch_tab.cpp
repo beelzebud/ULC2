@@ -1,61 +1,350 @@
-#include "retroarch_tab.h"
+﻿#include "retroarch_tab.h"
+#include "downloader.h"
+#include "archive_zip.h"
+#include "archive_7z.h"
 #include "constants.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QGridLayout>
 #include <QGroupBox>
-#include <QLabel>
-#include <QScrollBar>
 #include <QFileDialog>
-#include <QDateTime>
+#include <QDir>
+#include <QFileInfo>
 #include <QNetworkAccessManager>
-#include <QNetworkReply>
 #include <QNetworkRequest>
-#include <QVariant>
+#include <QNetworkReply>
 #include <QEventLoop>
 #include <QTimer>
-#include <QFile>
-#include <QRegularExpression>
-#include <QStyleOption>
+#include <QTemporaryDir>
+#include <QScrollBar>
 #include <QTextDocument>
 #include <QTextCursor>
+#include <QDateTime>
+#include <QVariant>
 #include <QTextBlock>
 
-#ifdef Q_OS_WIN
-#  include <windows.h>
-#  include <winver.h>
-#  include <vector>
-#endif
+static const QString RA_URL = "https://buildbot.libretro.com/nightly/windows/x86_64/RetroArch.7z";
+static const QString CORE_BASE = "https://buildbot.libretro.com/nightly/windows/x86_64/latest/";
 
-static QLabel* lbl(const QString& t)
-{
-    auto* l = new QLabel(t);
-    l->setAlignment(Qt::AlignVCenter | Qt::AlignLeft);
-    return l;
-}
+// ─────────────────────────────────────────────────────────────────────────────
+// Worker — all network and file I/O runs in background thread
+// ─────────────────────────────────────────────────────────────────────────────
 
-static QPushButton* browseBtn()
+class RetroArchWorker : public QObject
 {
-    auto* b = new QPushButton("Browse");
-    b->setFixedWidth(72);
-    return b;
-}
+    Q_OBJECT
+public:
+    explicit RetroArchWorker(EtagCache* cache, QObject* parent = nullptr)
+        : QObject(parent)
+        , m_cache(cache)
+        , m_nam(new QNetworkAccessManager(this))
+    {
+    }
+
+    // Called via QMetaObject::invokeMethod lambda — not Qt slots
+    void checkRA(std::atomic<bool>* cancel)
+    {
+        emit log("Checking for RetroArch update...");
+
+        const QString cached = m_cache->load(RA_URL);
+        const QString current = fetchETag(RA_URL);
+
+        if (current.isEmpty()) {
+            emit log("Could not reach RetroArch buildbot.");
+            emit raCheckResult(false);
+        }
+        else if (!cached.isEmpty() && current == cached) {
+            emit log("RetroArch is already up to date.");
+            emit raCheckResult(false);
+        }
+        else {
+            emit log("RetroArch update is available.");
+            emit raCheckResult(true);
+        }
+        emit done();
+    }
+
+    void downloadRA(const QString& installPath, std::atomic<bool>* cancel)
+    {
+        emit log("Downloading RetroArch nightly...");
+
+        QTemporaryDir tmp;
+        if (!tmp.isValid()) {
+            emit log("Cannot create temp dir.");
+            emit done();
+            return;
+        }
+
+        const QString archivePath = tmp.filePath("RetroArch.7z");
+        m_cache->save(RA_URL, "");
+
+        if (!downloadFile(RA_URL, archivePath, cancel)) {
+            emit done();
+            return;
+        }
+
+        if (!QFile::exists(archivePath)) {
+            emit log("Download produced no output file.");
+            emit done();
+            return;
+        }
+
+        emit log("Extracting RetroArch...");
+        QDir().mkpath(installPath);
+
+        struct Entry { QString rel; QString src; };
+        QList<Entry> entries;
+
+        SevenZExtractor::extract(archivePath, tmp.path(),
+            [&](const SevenZEntry& se, const QString& tf) -> bool {
+                if (!se.isDirectory && !tf.isEmpty())
+                    entries.append({ se.name, tf });
+                return !cancel->load();
+            });
+
+        // Strip common top-level folder
+        QString stripPrefix;
+        if (!entries.isEmpty()) {
+            const int slash = entries.first().rel.indexOf('/');
+            if (slash > 0) {
+                const QString cand = entries.first().rel.left(slash + 1);
+                bool all = true;
+                for (const auto& e : entries)
+                    if (!e.rel.startsWith(cand)) { all = false; break; }
+                if (all) stripPrefix = cand;
+            }
+        }
+
+        emit progressMax(entries.size());
+
+        for (const auto& e : entries) {
+            if (cancel->load()) break;
+            QString rel = e.rel;
+            if (!stripPrefix.isEmpty() && rel.startsWith(stripPrefix))
+                rel = rel.mid(stripPrefix.length());
+            const QString dest = installPath + "/" + rel;
+            QDir().mkpath(QFileInfo(dest).absolutePath());
+            if (QFile::exists(dest)) QFile::remove(dest);
+            QFile::rename(e.src, dest);
+            emit progressInc();
+        }
+
+        const QString newETag = fetchETag(RA_URL);
+        if (!newETag.isEmpty()) m_cache->save(RA_URL, newETag);
+
+        if (!cancel->load())
+            emit log("RetroArch updated successfully.");
+        else
+            emit log("Cancelled.");
+
+        emit done();
+    }
+
+    void checkCores(const QString& coresPath, std::atomic<bool>* cancel)
+    {
+        QDir dir(coresPath);
+        const QStringList dlls = dir.entryList({ "*.dll" }, QDir::Files);
+
+        if (dlls.isEmpty()) {
+            emit log("No cores found in: " + coresPath);
+            emit coresCheckResult({}, 0);
+            emit done();
+            return;
+        }
+
+        emit log(QString("Checking %1 installed cores for updates...").arg(dlls.size()));
+        emit progressMax(dlls.size());
+
+        QStringList needsUpdate;
+
+        for (const QString& dll : dlls) {
+            if (cancel->load()) break;
+
+            const QString url = CORE_BASE + dll + ".zip";
+            const QString cached = m_cache->load(url);
+            const QString current = fetchETag(url);
+
+            if (!current.isEmpty() && current != cached)
+                needsUpdate.append(dll);
+
+            emit progressInc();
+        }
+
+        if (!cancel->load()) {
+            emit log(QString("Check complete: %1 of %2 core(s) have updates available.")
+                .arg(needsUpdate.size()).arg(dlls.size()));
+        }
+
+        emit coresCheckResult(needsUpdate, dlls.size());
+        emit done();
+    }
+
+    void downloadCores(const QString& coresPath,
+        const QStringList& cores,
+        std::atomic<bool>* cancel)
+    {
+        if (cores.isEmpty()) {
+            emit log("No core updates to download.");
+            emit done();
+            return;
+        }
+
+        emit log(QString("Downloading %1 core update(s)...").arg(cores.size()));
+        emit progressMax(cores.size());
+
+        int updated = 0;
+
+        for (const QString& dll : cores) {
+            if (cancel->load()) break;
+
+            const QString url = CORE_BASE + dll + ".zip";
+
+            QTemporaryDir tmp;
+            if (!tmp.isValid()) { emit progressInc(); continue; }
+
+            const QString archivePath = tmp.filePath(dll + ".zip");
+            m_cache->save(url, "");
+
+            if (!downloadFile(url, archivePath, cancel)) {
+                emit progressInc();
+                continue;
+            }
+
+            if (!QFile::exists(archivePath)) {
+                emit log("No file downloaded for: " + dll);
+                emit progressInc();
+                continue;
+            }
+
+            // Extract the .dll from the zip (may be at root or in a subfolder)
+            bool extracted = false;
+            ZipExtractor::extract(archivePath, tmp.path(),
+                [&](const ZipEntry& ze, const QString& tf) -> bool {
+                    if (!ze.isDirectory && ze.name.endsWith(".dll") && !tf.isEmpty()) {
+                        const QString dest = coresPath + "/" +
+                            QFileInfo(ze.name).fileName();
+                        if (QFile::exists(dest)) QFile::remove(dest);
+                        QFile::rename(tf, dest);
+                        extracted = true;
+                    }
+                    return true;
+                });
+
+            if (extracted) {
+                const QString newETag = fetchETag(url);
+                if (!newETag.isEmpty()) m_cache->save(url, newETag);
+                emit log("Updated: " + dll);
+                ++updated;
+            }
+            else {
+                emit log("Failed to extract: " + dll);
+            }
+
+            emit progressInc();
+        }
+
+        if (!cancel->load())
+            emit log(QString("Done: %1 core(s) updated.").arg(updated));
+        else
+            emit log("Cancelled.");
+
+        emit done();
+    }
+
+signals:
+    void log(const QString& msg);
+    void progressMax(int max);
+    void progressInc();
+    void done();
+    void raCheckResult(bool hasUpdate);
+    void coresCheckResult(const QStringList& needsUpdate, int total);
+
+private:
+    QString fetchETag(const QString& url)
+    {
+        QNetworkRequest req;
+        req.setUrl(QUrl(url));
+        req.setRawHeader("User-Agent", "ulc-emulator-updater/1.0");
+        req.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
+            QVariant::fromValue(QNetworkRequest::NoLessSafeRedirectPolicy));
+
+        QEventLoop loop;
+        QNetworkReply* reply = m_nam->head(req);
+        QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+        QTimer::singleShot(5000, &loop, &QEventLoop::quit);
+        loop.exec();
+
+        QString etag;
+        if (reply->error() == QNetworkReply::NoError) {
+            etag = reply->rawHeader("ETag");
+            if (etag.isEmpty())
+                etag = reply->rawHeader("Last-Modified");
+        }
+        reply->deleteLater();
+        return etag;
+    }
+
+    bool downloadFile(const QString& url,
+        const QString& dest,
+        std::atomic<bool>* cancel)
+    {
+        bool    ok = false;
+        QString err;
+        bool    done_ = false;
+
+        Downloader dl(m_cache);
+        connect(&dl, &Downloader::log, this, &RetroArchWorker::log, Qt::DirectConnection);
+
+        QEventLoop loop;
+        connect(&dl, &Downloader::finished, &loop,
+            [&](const QString&, const QString& e) {
+                if (e.isEmpty() || e == "NOT_MODIFIED") ok = true;
+                else err = e;
+                done_ = true;
+                loop.quit();
+            }, Qt::DirectConnection);
+
+        dl.download(url, dest);
+
+        QTimer ct;
+        ct.setInterval(200);
+        connect(&ct, &QTimer::timeout, [&]() {
+            if (cancel->load() && !done_) dl.cancel();
+            });
+        ct.start();
+        loop.exec();
+
+        if (!err.isEmpty())
+            emit log("Download error: " + err);
+
+        return ok && !cancel->load();
+    }
+
+    EtagCache* m_cache;
+    QNetworkAccessManager* m_nam;
+};
+
+#include "retroarch_tab.moc"
+
+// ─────────────────────────────────────────────────────────────────────────────
+// RetroArchTab
+// ─────────────────────────────────────────────────────────────────────────────
 
 RetroArchTab::RetroArchTab(EtagCache* cache, QWidget* parent)
-    : QWidget(parent)
+    : QWidget(parent), m_cache(cache)
 {
-    m_worker = new QThread(this);
-    m_updater = new Updater(cache);
-    m_updater->moveToThread(m_worker);
-    m_worker->start();
+    m_thread = new QThread(this);
+    m_worker = new RetroArchWorker(cache);
+    m_worker->moveToThread(m_thread);
+    m_thread->start();
 
-    connect(m_updater, &Updater::log, this, &RetroArchTab::appendLog);
-    connect(m_updater, &Updater::coreProgressMax, this, &RetroArchTab::setCoreProgMax);
-    connect(m_updater, &Updater::coreProgressInc, this, &RetroArchTab::incCoreProgress);
-    connect(m_updater, &Updater::stepProgressMax, this, &RetroArchTab::setStepProgMax);
-    connect(m_updater, &Updater::stepProgressInc, this, &RetroArchTab::incStepProgress);
-    connect(m_updater, &Updater::operationDone, this, &RetroArchTab::onOperationDone);
+    connect(m_worker, &RetroArchWorker::log, this, &RetroArchTab::appendLog);
+    connect(m_worker, &RetroArchWorker::progressMax, this, &RetroArchTab::setProgMax);
+    connect(m_worker, &RetroArchWorker::progressInc, this, &RetroArchTab::incProgress);
+    connect(m_worker, &RetroArchWorker::done, this, &RetroArchTab::onWorkerDone);
+    connect(m_worker, &RetroArchWorker::raCheckResult, this, &RetroArchTab::onRACheckResult);
+    connect(m_worker, &RetroArchWorker::coresCheckResult, this, &RetroArchTab::onCoresCheckResult);
 
     buildUi();
 }
@@ -63,27 +352,21 @@ RetroArchTab::RetroArchTab(EtagCache* cache, QWidget* parent)
 RetroArchTab::~RetroArchTab()
 {
     m_cancel = true;
-    m_worker->quit();
-    m_worker->wait(6000);
-    delete m_updater;
+    m_thread->quit();
+    m_thread->wait(6000);
+    delete m_worker;
 }
 
 void RetroArchTab::applySettings(const AppSettings& s)
 {
-    m_corePath->setText(s.corePath);
-    m_assetsPath->setText(s.assetsPath);
-    m_infoPath->setText(s.infoPath);
-    m_dbPath->setText(s.databasePath);
-    m_raPath->setText(s.retroarchPath);
+    if (!s.retroarchPath.isEmpty()) m_raPathEdit->setText(s.retroarchPath);
+    if (!s.corePath.isEmpty())      m_corePathEdit->setText(s.corePath);
 }
 
 void RetroArchTab::collectSettings(AppSettings& s) const
 {
-    s.corePath = m_corePath->text();
-    s.assetsPath = m_assetsPath->text();
-    s.infoPath = m_infoPath->text();
-    s.databasePath = m_dbPath->text();
-    s.retroarchPath = m_raPath->text();
+    s.retroarchPath = m_raPathEdit->text();
+    s.corePath = m_corePathEdit->text();
 }
 
 void RetroArchTab::stopOperation()
@@ -91,7 +374,7 @@ void RetroArchTab::stopOperation()
     if (!m_running.load()) return;
     m_cancel = true;
     m_btnStop->setEnabled(false);
-    appendLog("Cancellation requested.");
+    appendLog("Cancellation requested...");
 }
 
 void RetroArchTab::buildUi()
@@ -100,90 +383,94 @@ void RetroArchTab::buildUi()
     root->setSpacing(6);
     root->setContentsMargins(8, 8, 8, 6);
 
-    // Paths
+    // ── RetroArch binary ─────────────────────────────────────────────────────
     {
-        auto* grp = new QGroupBox("Paths");
+        auto* grp = new QGroupBox("RetroArch");
         auto* grid = new QGridLayout(grp);
         grid->setColumnStretch(1, 1);
         grid->setSpacing(4);
 
-        m_corePath = new QLineEdit;
-        m_assetsPath = new QLineEdit;
-        m_infoPath = new QLineEdit;
-        m_dbPath = new QLineEdit;
-        m_raPath = new QLineEdit;
+        m_raPathEdit = new QLineEdit;
+        auto* btnBrowseRA = new QPushButton("Browse");
+        btnBrowseRA->setFixedWidth(72);
+        connect(btnBrowseRA, &QPushButton::clicked, this, &RetroArchTab::onBrowseRA);
 
-        struct R { const char* label; QLineEdit* field; void (RetroArchTab::* slot)(); };
-        R rows[] = {
-            { "Core Location:",      m_corePath,   &RetroArchTab::onBrowseCore      },
-            { "Assets Location:",    m_assetsPath, &RetroArchTab::onBrowseAssets    },
-            { "Info Location:",      m_infoPath,   &RetroArchTab::onBrowseInfo      },
-            { "Database Location:",  m_dbPath,     &RetroArchTab::onBrowseDatabase  },
-            { "RetroArch Location:", m_raPath,     &RetroArchTab::onBrowseRetroarch },
-        };
-        for (int i = 0; i < 5; ++i) {
-            auto* btn = browseBtn();
-            connect(btn, &QPushButton::clicked, this, rows[i].slot);
-            grid->addWidget(lbl(rows[i].label), i, 0);
-            grid->addWidget(rows[i].field, i, 1);
-            grid->addWidget(btn, i, 2);
-        }
+        m_raStatusLabel = new QLabel("Status: not checked");
+
+        m_btnCheckRA = new QPushButton("Check for Update");
+        m_btnDownloadRA = new QPushButton("Download Update");
+        m_btnDownloadRA->setEnabled(false);
+
+        connect(m_btnCheckRA, &QPushButton::clicked, this, &RetroArchTab::onCheckRA);
+        connect(m_btnDownloadRA, &QPushButton::clicked, this, &RetroArchTab::onDownloadRA);
+
+        auto* btnRow = new QHBoxLayout;
+        btnRow->addWidget(m_btnCheckRA);
+        btnRow->addWidget(m_btnDownloadRA);
+        btnRow->addStretch();
+
+        grid->addWidget(new QLabel("Path:"), 0, 0);
+        grid->addWidget(m_raPathEdit, 0, 1);
+        grid->addWidget(btnBrowseRA, 0, 2);
+        grid->addWidget(m_raStatusLabel, 1, 0, 1, 3);
+        grid->addLayout(btnRow, 2, 0, 1, 3);
+
         root->addWidget(grp);
     }
 
-    // Actions
+    // ── Cores ─────────────────────────────────────────────────────────────────
     {
-        auto* grp = new QGroupBox("Update Actions");
+        auto* grp = new QGroupBox("Cores");
         auto* grid = new QGridLayout(grp);
+        grid->setColumnStretch(1, 1);
         grid->setSpacing(4);
-        for (int c = 0; c < 3; ++c) grid->setColumnStretch(c, 1);
 
-        m_btnCores = new QPushButton("Update Cores");
-        m_btnAssets = new QPushButton("Update Assets");
-        m_btnInfo = new QPushButton("Update Core Info");
-        m_btnDb = new QPushButton("Update Database");
-        m_btnRa = new QPushButton("Update RetroArch");
-        m_btnAll = new QPushButton("Update Everything");
+        m_corePathEdit = new QLineEdit;
+        auto* btnBrowseCores = new QPushButton("Browse");
+        btnBrowseCores->setFixedWidth(72);
+        connect(btnBrowseCores, &QPushButton::clicked, this, &RetroArchTab::onBrowseCores);
+
+        m_coreStatusLabel = new QLabel("Status: not checked");
+
+        m_btnCheckCores = new QPushButton("Check for Core Updates");
+        m_btnDlCores = new QPushButton("Download Core Updates");
+        m_btnDlCores->setEnabled(false);
+
+        connect(m_btnCheckCores, &QPushButton::clicked, this, &RetroArchTab::onCheckCores);
+        connect(m_btnDlCores, &QPushButton::clicked, this, &RetroArchTab::onDownloadCores);
+
+        auto* btnRow = new QHBoxLayout;
+        btnRow->addWidget(m_btnCheckCores);
+        btnRow->addWidget(m_btnDlCores);
+        btnRow->addStretch();
+
+        grid->addWidget(new QLabel("Path:"), 0, 0);
+        grid->addWidget(m_corePathEdit, 0, 1);
+        grid->addWidget(btnBrowseCores, 0, 2);
+        grid->addWidget(m_coreStatusLabel, 1, 0, 1, 3);
+        grid->addLayout(btnRow, 2, 0, 1, 3);
+
+        root->addWidget(grp);
+    }
+
+    // ── Stop + progress ───────────────────────────────────────────────────────
+    {
+        auto* hlay = new QHBoxLayout;
         m_btnStop = new QPushButton("Stop");
         m_btnStop->setObjectName("stopBtn");
-
-        grid->addWidget(m_btnCores, 0, 0);
-        grid->addWidget(m_btnAssets, 0, 1);
-        grid->addWidget(m_btnInfo, 0, 2);
-        grid->addWidget(m_btnDb, 1, 0);
-        grid->addWidget(m_btnRa, 1, 1);
-        grid->addWidget(m_btnAll, 1, 2);
-        grid->addWidget(m_btnStop, 2, 2);
-
-        connect(m_btnCores, &QPushButton::clicked, this, &RetroArchTab::onUpdateCores);
-        connect(m_btnAssets, &QPushButton::clicked, this, &RetroArchTab::onUpdateAssets);
-        connect(m_btnInfo, &QPushButton::clicked, this, &RetroArchTab::onUpdateCoreInfo);
-        connect(m_btnDb, &QPushButton::clicked, this, &RetroArchTab::onUpdateDatabase);
-        connect(m_btnRa, &QPushButton::clicked, this, &RetroArchTab::onUpdateRetroarch);
-        connect(m_btnAll, &QPushButton::clicked, this, &RetroArchTab::onUpdateAll);
+        m_btnStop->setFixedWidth(80);
+        m_btnStop->setEnabled(false);
         connect(m_btnStop, &QPushButton::clicked, this, &RetroArchTab::stopOperation);
 
-        root->addWidget(grp);
+        m_bar = new QProgressBar;
+        m_bar->setValue(0);
+
+        hlay->addWidget(m_btnStop);
+        hlay->addWidget(m_bar, 1);
+        root->addLayout(hlay);
     }
 
-    // Progress
-    {
-        auto* grp = new QGroupBox("Progress");
-        auto* grid = new QGridLayout(grp);
-        grid->setColumnStretch(1, 1);
-        grid->setSpacing(4);
-
-        m_coreBar = new QProgressBar;
-        m_stepBar = new QProgressBar;
-        m_overallBar = new QProgressBar;
-
-        grid->addWidget(lbl("Core progress:"), 0, 0); grid->addWidget(m_coreBar, 0, 1);
-        grid->addWidget(lbl("Step progress:"), 1, 0); grid->addWidget(m_stepBar, 1, 1);
-        grid->addWidget(lbl("Update All steps:"), 2, 0); grid->addWidget(m_overallBar, 2, 1);
-        root->addWidget(grp);
-    }
-
-    // Log
+    // ── Log ───────────────────────────────────────────────────────────────────
     {
         auto* grp = new QGroupBox("Log");
         auto* lay = new QVBoxLayout(grp);
@@ -192,9 +479,130 @@ void RetroArchTab::buildUi()
         lay->addWidget(m_log);
         root->addWidget(grp, 1);
     }
+}
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Slots — button handlers
+// ─────────────────────────────────────────────────────────────────────────────
+
+void RetroArchTab::onCheckRA()
+{
+    if (m_running.exchange(true)) return;
+    m_cancel = false;
+    m_bar->setValue(0);
+    setButtonsEnabled(false);
+    m_raHasUpdate = false;
+    m_raStatusLabel->setText("Status: checking...");
+
+    QMetaObject::invokeMethod(m_worker,
+        [this]() { m_worker->checkRA(&m_cancel); },
+        Qt::QueuedConnection);
+}
+
+void RetroArchTab::onDownloadRA()
+{
+    if (m_running.exchange(true)) return;
+    m_cancel = false;
+    m_bar->setValue(0);
+    setButtonsEnabled(false);
+
+    const QString path = m_raPathEdit->text();
+
+    QMetaObject::invokeMethod(m_worker,
+        [this, path]() { m_worker->downloadRA(path, &m_cancel); },
+        Qt::QueuedConnection);
+}
+
+void RetroArchTab::onCheckCores()
+{
+    if (m_running.exchange(true)) return;
+    m_cancel = false;
+    m_bar->setValue(0);
+    setButtonsEnabled(false);
+    m_pendingCoreUpdates.clear();
+    m_coreStatusLabel->setText("Status: checking...");
+
+    const QString path = m_corePathEdit->text();
+
+    QMetaObject::invokeMethod(m_worker,
+        [this, path]() { m_worker->checkCores(path, &m_cancel); },
+        Qt::QueuedConnection);
+}
+
+void RetroArchTab::onDownloadCores()
+{
+    if (m_pendingCoreUpdates.isEmpty()) {
+        appendLog("No pending core updates — run Check for Core Updates first.");
+        return;
+    }
+    if (m_running.exchange(true)) return;
+    m_cancel = false;
+    m_bar->setValue(0);
+    setButtonsEnabled(false);
+
+    const QString     path = m_corePathEdit->text();
+    const QStringList cores = m_pendingCoreUpdates;
+
+    QMetaObject::invokeMethod(m_worker,
+        [this, path, cores]() { m_worker->downloadCores(path, cores, &m_cancel); },
+        Qt::QueuedConnection);
+}
+
+void RetroArchTab::onBrowseRA()
+{
+    const QString p = QFileDialog::getExistingDirectory(
+        this, "Select RetroArch folder", m_raPathEdit->text());
+    if (!p.isEmpty()) m_raPathEdit->setText(p + "/");
+}
+
+void RetroArchTab::onBrowseCores()
+{
+    const QString p = QFileDialog::getExistingDirectory(
+        this, "Select cores folder", m_corePathEdit->text());
+    if (!p.isEmpty()) m_corePathEdit->setText(p + "/");
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Slots — worker results
+// ─────────────────────────────────────────────────────────────────────────────
+
+void RetroArchTab::onWorkerDone()
+{
+    m_running = false;
     setButtonsEnabled(true);
 }
+
+void RetroArchTab::onRACheckResult(bool hasUpdate)
+{
+    m_raHasUpdate = hasUpdate;
+    m_btnDownloadRA->setEnabled(hasUpdate);
+    m_raStatusLabel->setText(hasUpdate
+        ? "Status: update available"
+        : "Status: up to date");
+}
+
+void RetroArchTab::onCoresCheckResult(const QStringList& needsUpdate, int total)
+{
+    m_pendingCoreUpdates = needsUpdate;
+    m_btnDlCores->setEnabled(!needsUpdate.isEmpty());
+
+    if (total == 0) {
+        m_coreStatusLabel->setText("Status: no cores found");
+    }
+    else if (needsUpdate.isEmpty()) {
+        m_coreStatusLabel->setText(
+            QString("Status: all %1 cores up to date").arg(total));
+    }
+    else {
+        m_coreStatusLabel->setText(
+            QString("Status: %1 of %2 cores have updates")
+            .arg(needsUpdate.size()).arg(total));
+    }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Log / progress / buttons
+// ─────────────────────────────────────────────────────────────────────────────
 
 void RetroArchTab::appendLog(const QString& msg)
 {
@@ -209,99 +617,18 @@ void RetroArchTab::appendLog(const QString& msg)
     m_log->verticalScrollBar()->setValue(m_log->verticalScrollBar()->maximum());
 }
 
-void RetroArchTab::setCoreProgMax(int max) { m_coreBar->setMaximum(max); m_coreBar->setValue(0); }
-void RetroArchTab::incCoreProgress()
+void RetroArchTab::setProgMax(int max) { m_bar->setMaximum(max); m_bar->setValue(0); }
+void RetroArchTab::incProgress()
 {
-    if (m_coreBar->value() < m_coreBar->maximum()) m_coreBar->setValue(m_coreBar->value() + 1);
-}
-void RetroArchTab::setStepProgMax(int max) { m_stepBar->setMaximum(max); m_stepBar->setValue(0); }
-void RetroArchTab::incStepProgress()
-{
-    if (m_stepBar->maximum() > 0 && m_stepBar->value() < m_stepBar->maximum())
-        m_stepBar->setValue(m_stepBar->value() + 1);
-}
-
-void RetroArchTab::onOperationDone()
-{
-    ++m_overallDone;
-    if (m_overallSteps > 0)
-        m_overallBar->setValue(qMin(m_overallDone, m_overallSteps));
-    if (m_overallDone >= m_overallSteps) {
-        m_running = false;
-        setButtonsEnabled(true);
-    }
-}
-
-void RetroArchTab::runOperation(std::function<void(std::atomic<bool>&)> fn, int steps)
-{
-    if (m_running.exchange(true)) { appendLog("Already running."); return; }
-    m_cancel = false; m_overallSteps = steps; m_overallDone = 0;
-    m_overallBar->setMaximum(steps); m_overallBar->setValue(0);
-    setButtonsEnabled(false);
-    QMetaObject::invokeMethod(m_updater,
-        [this, fn = std::move(fn)]() mutable { fn(m_cancel); },
-        Qt::QueuedConnection);
-}
-
-void RetroArchTab::onUpdateCores()
-{
-    const QString dir = m_corePath->text();
-    runOperation([this, dir](std::atomic<bool>& c) { m_updater->updateCores(dir, c); }, 1);
-}
-void RetroArchTab::onUpdateAssets()
-{
-    const QString dir = m_assetsPath->text();
-    runOperation([this, dir](std::atomic<bool>& c) {
-        m_updater->updateZip(Constants::AssetsUrl, dir, "Assets", c); }, 1);
-}
-void RetroArchTab::onUpdateCoreInfo()
-{
-    const QString dir = m_infoPath->text();
-    runOperation([this, dir](std::atomic<bool>& c) {
-        m_updater->updateZip(Constants::InfoUrl, dir, "Core info", c); }, 1);
-}
-void RetroArchTab::onUpdateDatabase()
-{
-    const QString dir = m_dbPath->text();
-    runOperation([this, dir](std::atomic<bool>& c) {
-        m_updater->updateZip(Constants::DatabaseUrl, dir, "Database", c); }, 1);
-}
-void RetroArchTab::onUpdateRetroarch()
-{
-    const QString dir = m_raPath->text();
-    runOperation([this, dir](std::atomic<bool>& c) {
-        m_updater->update7z(Constants::RetroarchUrl, dir, c); }, 1);
-}
-void RetroArchTab::onUpdateAll()
-{
-    const QString cd = m_corePath->text(), ad = m_assetsPath->text(),
-        id = m_infoPath->text(), dd = m_dbPath->text(), rd = m_raPath->text();
-    runOperation([this, cd, ad, id, dd, rd](std::atomic<bool>& c) {
-        emit m_updater->log("Starting full update...");
-        m_updater->updateCores(cd, c); if (c.load()) return;
-        m_updater->updateZip(Constants::AssetsUrl, ad, "Assets", c); if (c.load()) return;
-        m_updater->updateZip(Constants::InfoUrl, id, "Core info", c); if (c.load()) return;
-        m_updater->updateZip(Constants::DatabaseUrl, dd, "Database", c); if (c.load()) return;
-        m_updater->update7z(Constants::RetroarchUrl, rd, c);
-        QMetaObject::invokeMethod(this, [this]() {
-            appendLog("Full update completed."); }, Qt::QueuedConnection);
-        }, 5);
+    if (m_bar->value() < m_bar->maximum())
+        m_bar->setValue(m_bar->value() + 1);
 }
 
 void RetroArchTab::setButtonsEnabled(bool on)
 {
-    for (auto* b : { m_btnCores,m_btnAssets,m_btnInfo,m_btnDb,m_btnRa,m_btnAll })
-        b->setEnabled(on);
+    m_btnCheckRA->setEnabled(on);
+    m_btnCheckCores->setEnabled(on);
+    m_btnDownloadRA->setEnabled(on && m_raHasUpdate);
+    m_btnDlCores->setEnabled(on && !m_pendingCoreUpdates.isEmpty());
     m_btnStop->setEnabled(!on);
 }
-
-QString RetroArchTab::browseFolder(const QString& current)
-{
-    return QFileDialog::getExistingDirectory(this, "Select folder", current);
-}
-
-void RetroArchTab::onBrowseCore() { auto p = browseFolder(m_corePath->text());   if (!p.isEmpty()) m_corePath->setText(p + "/"); }
-void RetroArchTab::onBrowseAssets() { auto p = browseFolder(m_assetsPath->text()); if (!p.isEmpty()) m_assetsPath->setText(p + "/"); }
-void RetroArchTab::onBrowseInfo() { auto p = browseFolder(m_infoPath->text());   if (!p.isEmpty()) m_infoPath->setText(p + "/"); }
-void RetroArchTab::onBrowseDatabase() { auto p = browseFolder(m_dbPath->text());     if (!p.isEmpty()) m_dbPath->setText(p + "/"); }
-void RetroArchTab::onBrowseRetroarch() { auto p = browseFolder(m_raPath->text());     if (!p.isEmpty()) m_raPath->setText(p + "/"); }

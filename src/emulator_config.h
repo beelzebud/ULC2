@@ -5,7 +5,7 @@
 #include <QDir>
 
 enum class ArchiveType { Zip, SevenZ, SingleFile };
-enum class UpdateSource { GitHub, DolphinBuildbot, Rpcs3Net, Gitea };
+enum class UpdateSource { GitHub, DolphinBuildbot, Rpcs3Net, Gitea, DirectUrl };
 enum class ReleaseChannel { Stable, Nightly };
 
 struct EmulatorConfig {
@@ -126,6 +126,17 @@ inline QList<EmulatorConfig> allEmulatorConfigs()
             ":/icons/emulators/supermodel.png"
         },
         {
+            "mgba", "mGBA  (GBA / GB)",
+            UpdateSource::DirectUrl, {},
+            "https://s3.amazonaws.com/mgba/mGBA-build-latest-win64.7z",
+            R"(mGBA-build-latest-win64\.7z)",
+            R"(mGBA-build-latest-win64\.7z)",
+            ArchiveType::SevenZ,
+            base + "mGBA/",
+            "mGBA.exe", true, ReleaseChannel::Nightly,
+            ":/icons/emulators/mgba.png"
+        },
+        {
             "ppsspp", "PPSSPP  (PSP)",
             UpdateSource::GitHub, "hrydgard/ppsspp", {},
             R"(PPSSPP-.*-Windows-x64\.zip)",
@@ -155,7 +166,16 @@ inline QList<EmulatorConfig> allEmulatorConfigs()
             "Mesen.exe", false, ReleaseChannel::Stable,
             ":/icons/emulators/mesen.png"
         },
-
+        {
+            "vita3k", "Vita3K  (PS Vita)",
+            UpdateSource::GitHub, "Vita3K/Vita3K-builds", {},
+            R"(vita3k-.*-windows-x86_64\.7z)",
+            R"(vita3k-.*-windows-x86_64\.7z)",
+            ArchiveType::SevenZ,
+            base + "Vita3K/",
+            "Vita3K.exe", true, ReleaseChannel::Nightly,
+            ":/icons/emulators/vita3k.png"
+        },
         {
             "xemu", "xemu  (Xbox)",
             UpdateSource::GitHub, "xemu-project/xemu", {},

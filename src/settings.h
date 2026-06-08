@@ -2,7 +2,6 @@
 
 #include <QString>
 #include <QMap>
-#include <QDir>
 #include "emulator_config.h"
 
 struct EmulatorSettings {
@@ -12,13 +11,9 @@ struct EmulatorSettings {
 };
 
 struct AppSettings {
-    QString corePath;
-    QString assetsPath;
-    QString infoPath;
-    QString databasePath;
     QString retroarchPath;
+    QString corePath;
     QMap<QString, EmulatorSettings> emulators;
-
     static AppSettings defaults();
 };
 
