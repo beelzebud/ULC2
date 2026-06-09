@@ -14,7 +14,7 @@
 #include <QListWidgetItem>
 
 static const char* kStyle = R"(
-* { font-family: Consolas, "Courier New", monospace; font-size: 9pt; }
+* { font-family: "Aldrich", Consolas, "Courier New", monospace; font-size: 9pt; }
 
 QMainWindow, QDialog, QWidget {
     background-color: #000000;
@@ -126,7 +126,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
 
     resize(980, 780);
     setWindowTitle("Emulator Updater");
-    setWindowIcon(QIcon(":/icons/ulc.png"));
+    setWindowIcon(QIcon(":/icons/emu_updater.png"));
 }
 
 void MainWindow::closeEvent(QCloseEvent* e)
@@ -147,6 +147,7 @@ void MainWindow::buildUi()
     root->setSpacing(0);
     root->setContentsMargins(0, 0, 0, 0);
 
+    // ── Sidebar ───────────────────────────────────────────────────────────────
     m_sidebar = new QListWidget;
     m_sidebar->setFixedWidth(120);
     m_sidebar->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -162,7 +163,7 @@ void MainWindow::buildUi()
     m_raTab = new RetroArchTab(m_cache);
     addPage("RetroArch", "Libretro", ":/icons/emulators/retroarch.png", m_raTab);
 
-    // ── Single loop — create, add to sidebar, and connect ────────────────────
+    // Emulator pages
     for (const auto& cfg : allEmulatorConfigs()) {
         auto* tab = new EmulatorTab(cfg, m_cache);
         m_emuTabs.append(tab);
@@ -170,12 +171,33 @@ void MainWindow::buildUi()
         connect(tab, &EmulatorTab::versionChanged, this, &MainWindow::saveSettings);
     }
 
+    // ── About entry pinned to bottom ──────────────────────────────────────────
+    {
+        auto* aboutItem = new QListWidgetItem(m_sidebar);
+        aboutItem->setData(Qt::DisplayRole, "About");
+        aboutItem->setData(Qt::UserRole, "Emulator Updater");
+        aboutItem->setSizeHint(QSize(120, SidebarDelegate::ItemHeight));
+        QPixmap pm(":/icons/emu_updater.png");
+        if (!pm.isNull())
+            aboutItem->setData(Qt::DecorationRole, pm);
+        m_aboutRow = m_sidebar->count() - 1;
+    }
+
     m_sidebar->setCurrentRow(0);
 
-    connect(m_sidebar, &QListWidget::itemClicked,
-        this, &MainWindow::onSidebarClicked);
-    connect(m_sidebar, &QListWidget::currentRowChanged,
-        m_stack, &QStackedWidget::setCurrentIndex);
+    // Handle sidebar navigation — intercept About row to open dialog
+    connect(m_sidebar, &QListWidget::currentRowChanged, this, [this](int row) {
+        if (row == m_aboutRow) {
+            // Snap selection back to current page, then open dialog
+            m_sidebar->blockSignals(true);
+            m_sidebar->setCurrentRow(m_stack->currentIndex());
+            m_sidebar->blockSignals(false);
+            AboutDialog(this).exec();
+        }
+        else {
+            m_stack->setCurrentIndex(row);
+        }
+        });
 
     auto* splitter = new QSplitter(Qt::Horizontal);
     splitter->addWidget(m_sidebar);
@@ -187,6 +209,7 @@ void MainWindow::buildUi()
     splitter->setSizes({ 120, 860 });
     root->addWidget(splitter, 1);
 
+    // ── Bottom bar ────────────────────────────────────────────────────────────
     auto* bottomWidget = new QWidget;
     bottomWidget->setStyleSheet("border-top: 1px solid #003300;");
     auto* bar = new QHBoxLayout(bottomWidget);
@@ -215,7 +238,6 @@ void MainWindow::addPage(const QString& label,
     item->setData(Qt::UserRole, subtitle);
     item->setSizeHint(QSize(120, SidebarDelegate::ItemHeight));
 
-    // Load thumbnail — fall back to a null pixmap if the resource is missing
     if (!iconResource.isEmpty()) {
         QPixmap pm(iconResource);
         if (!pm.isNull())
@@ -228,11 +250,6 @@ void MainWindow::addPage(const QString& label,
 // ─────────────────────────────────────────────────────────────────────────────
 // Slots
 // ─────────────────────────────────────────────────────────────────────────────
-
-void MainWindow::onSidebarClicked(QListWidgetItem* item)
-{
-    m_stack->setCurrentIndex(m_sidebar->row(item));
-}
 
 void MainWindow::onSavePaths() { saveSettings(); }
 void MainWindow::onAbout() { AboutDialog(this).exec(); }

@@ -18,7 +18,6 @@ protected:
     void closeEvent(QCloseEvent*) override;
 
 private slots:
-    void onSidebarClicked(QListWidgetItem* item);
     void onSavePaths();
     void onAbout();
 
@@ -35,6 +34,7 @@ private:
     QStackedWidget* m_stack = nullptr;
     RetroArchTab* m_raTab = nullptr;
     QList<EmulatorTab*> m_emuTabs;
+    int                 m_aboutRow = -1;
 
     SettingsManager* m_settings = nullptr;
     EtagCache* m_cache = nullptr;

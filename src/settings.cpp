@@ -9,8 +9,8 @@ AppSettings AppSettings::defaults()
 {
     AppSettings s;
 #ifdef Q_OS_WIN
-    s.retroarchPath = R"(C:\RetroArch\)";
-    s.corePath = R"(C:\RetroArch\cores\)";
+    s.retroarchPath = R"(D:\Emulators\RetroArch\)";
+    s.corePath = R"(D:\Emulators\RetroArch\cores\)";
 #else
     const QString ra = QDir::homePath() + "/.config/retroarch/";
     s.retroarchPath = ra;

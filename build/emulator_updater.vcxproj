@@ -3,9 +3,6 @@
   <PropertyGroup>
     <PreferredToolArchitecture>x64</PreferredToolArchitecture>
   </PropertyGroup>
-  <PropertyGroup>
-    <ResolveNugetPackages>false</ResolveNugetPackages>
-  </PropertyGroup>
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
@@ -25,88 +22,464 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{269E3EA9-B438-3E6D-8771-9142C458D9D8}</ProjectGuid>
+    <ProjectGuid>{B6121891-40AB-3371-9FAE-562BC00CAD98}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
+    <VcpkgEnabled>false</VcpkgEnabled>
     <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
     <Platform>x64</Platform>
-    <ProjectName>ALL_BUILD</ProjectName>
+    <ProjectName>emulator_updater</ProjectName>
     <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Utility</ConfigurationType>
-    <CharacterSet>MultiByte</CharacterSet>
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Utility</ConfigurationType>
-    <CharacterSet>MultiByte</CharacterSet>
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'" Label="Configuration">
-    <ConfigurationType>Utility</ConfigurationType>
-    <CharacterSet>MultiByte</CharacterSet>
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'" Label="Configuration">
-    <ConfigurationType>Utility</ConfigurationType>
-    <CharacterSet>MultiByte</CharacterSet>
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
   <ImportGroup Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="do_not_import_user.props" Condition="exists('do_not_import_user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
-    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\Build\ULC2\build\Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">emulator_updater.dir\Debug\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">emulator_updater</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\Build\ULC2\build\Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">emulator_updater.dir\Release\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">emulator_updater</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='Release|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\Build\ULC2\build\MinSizeRel\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">emulator_updater.dir\MinSizeRel\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">emulator_updater</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</GenerateManifest>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\Build\ULC2\build\RelWithDebInfo\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">emulator_updater.dir\RelWithDebInfo\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">emulator_updater</TargetName>
+    <TargetExt Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">.exe</TargetExt>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</LinkIncremental>
+    <GenerateManifest Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</GenerateManifest>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Build\ULC2\build\emulator_updater_autogen\include_Debug;D:\Build\ULC2\src;D:\Build\ULC2\third_party\lzma;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Qt/6.5.3/msvc2019_64/include/QtCore" /external:I "C:/Qt/6.5.3/msvc2019_64/include" /external:I "C:/Qt/6.5.3/msvc2019_64/mkspecs/win32-msvc" /external:I "C:/Qt/6.5.3/msvc2019_64/include/QtWidgets" /external:I "C:/Qt/6.5.3/msvc2019_64/include/QtGui" /external:I "C:/Qt/6.5.3/msvc2019_64/include/QtNetwork" /external:I "C:/Qt/6.5.3/msvc2019_64/include/QtConcurrent" /external:I "C:/Users/Beelz/vcpkg/installed/x64-windows/include" /utf-8 -Zc:__cplusplus -utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <ConformanceMode>true</ConformanceMode>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>Disabled</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SupportJustMyCode></SupportJustMyCode>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NOMINMAX;WIN32_LEAN_AND_MEAN;QT_CORE_LIB;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;_WIN64;UNICODE;_UNICODE;QT_WIDGETS_LIB;QT_GUI_LIB;QT_NETWORK_LIB;QT_CONCURRENT_LIB;_7ZIP_ST;CMAKE_INTDIR="Debug"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_DEBUG;_WINDOWS;NOMINMAX;WIN32_LEAN_AND_MEAN;QT_CORE_LIB;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;_WIN64;UNICODE;_UNICODE;QT_WIDGETS_LIB;QT_GUI_LIB;QT_NETWORK_LIB;QT_CONCURRENT_LIB;_7ZIP_ST;CMAKE_INTDIR=\"Debug\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Build\ULC2\build\emulator_updater_autogen\include_Debug;D:\Build\ULC2\src;D:\Build\ULC2\third_party\lzma;C:\Qt\6.5.3\msvc2019_64\include\QtCore;C:\Qt\6.5.3\msvc2019_64\include;C:\Qt\6.5.3\msvc2019_64\mkspecs\win32-msvc;C:\Qt\6.5.3\msvc2019_64\include\QtWidgets;C:\Qt\6.5.3\msvc2019_64\include\QtGui;C:\Qt\6.5.3\msvc2019_64\include\QtNetwork;C:\Qt\6.5.3\msvc2019_64\include\QtConcurrent;C:\Users\Beelz\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Build\ULC2\build\emulator_updater_autogen\include_Debug;D:\Build\ULC2\src;D:\Build\ULC2\third_party\lzma;C:\Qt\6.5.3\msvc2019_64\include\QtCore;C:\Qt\6.5.3\msvc2019_64\include;C:\Qt\6.5.3\msvc2019_64\mkspecs\win32-msvc;C:\Qt\6.5.3\msvc2019_64\include\QtWidgets;C:\Qt\6.5.3\msvc2019_64\include\QtGui;C:\Qt\6.5.3\msvc2019_64\include\QtNetwork;C:\Qt\6.5.3\msvc2019_64\include\QtConcurrent;C:\Users\Beelz\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
       <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
+    <PreBuildEvent>
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message>Automatic MOC for target emulator_updater</Message>
+      <Command>setlocal
+cd D:\Build\ULC2\build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E cmake_autogen D:/Build/ULC2/build/CMakeFiles/emulator_updater_autogen.dir/AutogenInfo.json Debug
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Message></Message>
+      <Command>setlocal
+"C:\Program Files\PowerShell\7\pwsh.exe" -noprofile -executionpolicy Bypass -file C:/Users/Beelz/vcpkg/scripts/buildsystems/msbuild/applocal.ps1 -targetBinary D:/Build/ULC2/build/Debug/emulator_updater.exe -installedDir C:/Users/Beelz/vcpkg/installed/x64-windows/debug/bin -OutVariable out
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>C:\Qt\6.5.3\msvc2019_64\lib\Qt6Widgetsd.lib;C:\Qt\6.5.3\msvc2019_64\lib\Qt6Networkd.lib;C:\Qt\6.5.3\msvc2019_64\lib\Qt6Concurrentd.lib;C:\Users\Beelz\vcpkg\installed\x64-windows\debug\lib\libcrypto.lib;C:\Users\Beelz\vcpkg\installed\x64-windows\debug\lib\zlibd.lib;Debug\lzma_sdk.lib;version.lib;C:\Qt\6.5.3\msvc2019_64\lib\Qt6Guid.lib;d3d11.lib;dxgi.lib;dxguid.lib;ws2_32.lib;C:\Qt\6.5.3\msvc2019_64\lib\Qt6Cored.lib;mpr.lib;userenv.lib;C:\Qt\6.5.3\msvc2019_64\lib\Qt6EntryPointd.lib;shell32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/Build/ULC2/build/Debug/emulator_updater.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/Build/ULC2/build/Debug/emulator_updater.pdb</ProgramDataBaseFile>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Build\ULC2\build\emulator_updater_autogen\include_Release;D:\Build\ULC2\src;D:\Build\ULC2\third_party\lzma;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Qt/6.5.3/msvc2019_64/include/QtCore" /external:I "C:/Qt/6.5.3/msvc2019_64/include" /external:I "C:/Qt/6.5.3/msvc2019_64/mkspecs/win32-msvc" /external:I "C:/Qt/6.5.3/msvc2019_64/include/QtWidgets" /external:I "C:/Qt/6.5.3/msvc2019_64/include/QtGui" /external:I "C:/Qt/6.5.3/msvc2019_64/include/QtNetwork" /external:I "C:/Qt/6.5.3/msvc2019_64/include/QtConcurrent" /external:I "C:/Users/Beelz/vcpkg/installed/x64-windows/include" /utf-8 -Zc:__cplusplus -utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <ConformanceMode>true</ConformanceMode>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SupportJustMyCode></SupportJustMyCode>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;NOMINMAX;WIN32_LEAN_AND_MEAN;QT_CORE_LIB;QT_NO_DEBUG;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;_WIN64;UNICODE;_UNICODE;QT_WIDGETS_LIB;QT_GUI_LIB;QT_NETWORK_LIB;QT_CONCURRENT_LIB;_7ZIP_ST;CMAKE_INTDIR="Release"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;NOMINMAX;WIN32_LEAN_AND_MEAN;QT_CORE_LIB;QT_NO_DEBUG;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;_WIN64;UNICODE;_UNICODE;QT_WIDGETS_LIB;QT_GUI_LIB;QT_NETWORK_LIB;QT_CONCURRENT_LIB;_7ZIP_ST;CMAKE_INTDIR=\"Release\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Build\ULC2\build\emulator_updater_autogen\include_Release;D:\Build\ULC2\src;D:\Build\ULC2\third_party\lzma;C:\Qt\6.5.3\msvc2019_64\include\QtCore;C:\Qt\6.5.3\msvc2019_64\include;C:\Qt\6.5.3\msvc2019_64\mkspecs\win32-msvc;C:\Qt\6.5.3\msvc2019_64\include\QtWidgets;C:\Qt\6.5.3\msvc2019_64\include\QtGui;C:\Qt\6.5.3\msvc2019_64\include\QtNetwork;C:\Qt\6.5.3\msvc2019_64\include\QtConcurrent;C:\Users\Beelz\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Build\ULC2\build\emulator_updater_autogen\include_Release;D:\Build\ULC2\src;D:\Build\ULC2\third_party\lzma;C:\Qt\6.5.3\msvc2019_64\include\QtCore;C:\Qt\6.5.3\msvc2019_64\include;C:\Qt\6.5.3\msvc2019_64\mkspecs\win32-msvc;C:\Qt\6.5.3\msvc2019_64\include\QtWidgets;C:\Qt\6.5.3\msvc2019_64\include\QtGui;C:\Qt\6.5.3\msvc2019_64\include\QtNetwork;C:\Qt\6.5.3\msvc2019_64\include\QtConcurrent;C:\Users\Beelz\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
       <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
+    <PreBuildEvent>
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message>Automatic MOC for target emulator_updater</Message>
+      <Command>setlocal
+cd D:\Build\ULC2\build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E cmake_autogen D:/Build/ULC2/build/CMakeFiles/emulator_updater_autogen.dir/AutogenInfo.json Release
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Message></Message>
+      <Command>setlocal
+"C:\Program Files\PowerShell\7\pwsh.exe" -noprofile -executionpolicy Bypass -file C:/Users/Beelz/vcpkg/scripts/buildsystems/msbuild/applocal.ps1 -targetBinary D:/Build/ULC2/build/Release/emulator_updater.exe -installedDir C:/Users/Beelz/vcpkg/installed/x64-windows/bin -OutVariable out
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>C:\Qt\6.5.3\msvc2019_64\lib\Qt6Widgets.lib;C:\Qt\6.5.3\msvc2019_64\lib\Qt6Network.lib;C:\Qt\6.5.3\msvc2019_64\lib\Qt6Concurrent.lib;C:\Users\Beelz\vcpkg\installed\x64-windows\lib\libcrypto.lib;C:\Users\Beelz\vcpkg\installed\x64-windows\lib\zlib.lib;Release\lzma_sdk.lib;version.lib;C:\Qt\6.5.3\msvc2019_64\lib\Qt6Gui.lib;d3d11.lib;dxgi.lib;dxguid.lib;ws2_32.lib;C:\Qt\6.5.3\msvc2019_64\lib\Qt6Core.lib;mpr.lib;userenv.lib;C:\Qt\6.5.3\msvc2019_64\lib\Qt6EntryPoint.lib;shell32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/Build/ULC2/build/Release/emulator_updater.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/Build/ULC2/build/Release/emulator_updater.pdb</ProgramDataBaseFile>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Build\ULC2\build\emulator_updater_autogen\include_MinSizeRel;D:\Build\ULC2\src;D:\Build\ULC2\third_party\lzma;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Qt/6.5.3/msvc2019_64/include/QtCore" /external:I "C:/Qt/6.5.3/msvc2019_64/include" /external:I "C:/Qt/6.5.3/msvc2019_64/mkspecs/win32-msvc" /external:I "C:/Qt/6.5.3/msvc2019_64/include/QtWidgets" /external:I "C:/Qt/6.5.3/msvc2019_64/include/QtGui" /external:I "C:/Qt/6.5.3/msvc2019_64/include/QtNetwork" /external:I "C:/Qt/6.5.3/msvc2019_64/include/QtConcurrent" /external:I "C:/Users/Beelz/vcpkg/installed/x64-windows/include" /utf-8 -Zc:__cplusplus -utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <ConformanceMode>true</ConformanceMode>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MinSpace</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SupportJustMyCode></SupportJustMyCode>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;NOMINMAX;WIN32_LEAN_AND_MEAN;QT_CORE_LIB;QT_NO_DEBUG;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;_WIN64;UNICODE;_UNICODE;QT_WIDGETS_LIB;QT_GUI_LIB;QT_NETWORK_LIB;QT_CONCURRENT_LIB;_7ZIP_ST;CMAKE_INTDIR="MinSizeRel"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <DebugInformationFormat>
+      </DebugInformationFormat>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;NOMINMAX;WIN32_LEAN_AND_MEAN;QT_CORE_LIB;QT_NO_DEBUG;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;_WIN64;UNICODE;_UNICODE;QT_WIDGETS_LIB;QT_GUI_LIB;QT_NETWORK_LIB;QT_CONCURRENT_LIB;_7ZIP_ST;CMAKE_INTDIR=\"MinSizeRel\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Build\ULC2\build\emulator_updater_autogen\include_MinSizeRel;D:\Build\ULC2\src;D:\Build\ULC2\third_party\lzma;C:\Qt\6.5.3\msvc2019_64\include\QtCore;C:\Qt\6.5.3\msvc2019_64\include;C:\Qt\6.5.3\msvc2019_64\mkspecs\win32-msvc;C:\Qt\6.5.3\msvc2019_64\include\QtWidgets;C:\Qt\6.5.3\msvc2019_64\include\QtGui;C:\Qt\6.5.3\msvc2019_64\include\QtNetwork;C:\Qt\6.5.3\msvc2019_64\include\QtConcurrent;C:\Users\Beelz\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Build\ULC2\build\emulator_updater_autogen\include_MinSizeRel;D:\Build\ULC2\src;D:\Build\ULC2\third_party\lzma;C:\Qt\6.5.3\msvc2019_64\include\QtCore;C:\Qt\6.5.3\msvc2019_64\include;C:\Qt\6.5.3\msvc2019_64\mkspecs\win32-msvc;C:\Qt\6.5.3\msvc2019_64\include\QtWidgets;C:\Qt\6.5.3\msvc2019_64\include\QtGui;C:\Qt\6.5.3\msvc2019_64\include\QtNetwork;C:\Qt\6.5.3\msvc2019_64\include\QtConcurrent;C:\Users\Beelz\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
       <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
+    <PreBuildEvent>
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message>Automatic MOC for target emulator_updater</Message>
+      <Command>setlocal
+cd D:\Build\ULC2\build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E cmake_autogen D:/Build/ULC2/build/CMakeFiles/emulator_updater_autogen.dir/AutogenInfo.json MinSizeRel
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Message></Message>
+      <Command>setlocal
+"C:\Program Files\PowerShell\7\pwsh.exe" -noprofile -executionpolicy Bypass -file C:/Users/Beelz/vcpkg/scripts/buildsystems/msbuild/applocal.ps1 -targetBinary D:/Build/ULC2/build/MinSizeRel/emulator_updater.exe -installedDir C:/Users/Beelz/vcpkg/installed/x64-windows/bin -OutVariable out
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>C:\Qt\6.5.3\msvc2019_64\lib\Qt6Widgets.lib;C:\Qt\6.5.3\msvc2019_64\lib\Qt6Network.lib;C:\Qt\6.5.3\msvc2019_64\lib\Qt6Concurrent.lib;C:\Users\Beelz\vcpkg\installed\x64-windows\lib\libcrypto.lib;C:\Users\Beelz\vcpkg\installed\x64-windows\lib\zlib.lib;MinSizeRel\lzma_sdk.lib;version.lib;C:\Qt\6.5.3\msvc2019_64\lib\Qt6Gui.lib;d3d11.lib;dxgi.lib;dxguid.lib;ws2_32.lib;C:\Qt\6.5.3\msvc2019_64\lib\Qt6Core.lib;mpr.lib;userenv.lib;C:\Qt\6.5.3\msvc2019_64\lib\Qt6EntryPoint.lib;shell32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/Build/ULC2/build/MinSizeRel/emulator_updater.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/Build/ULC2/build/MinSizeRel/emulator_updater.pdb</ProgramDataBaseFile>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>D:\Build\ULC2\build\emulator_updater_autogen\include_RelWithDebInfo;D:\Build\ULC2\src;D:\Build\ULC2\third_party\lzma;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /external:I "C:/Qt/6.5.3/msvc2019_64/include/QtCore" /external:I "C:/Qt/6.5.3/msvc2019_64/include" /external:I "C:/Qt/6.5.3/msvc2019_64/mkspecs/win32-msvc" /external:I "C:/Qt/6.5.3/msvc2019_64/include/QtWidgets" /external:I "C:/Qt/6.5.3/msvc2019_64/include/QtGui" /external:I "C:/Qt/6.5.3/msvc2019_64/include/QtNetwork" /external:I "C:/Qt/6.5.3/msvc2019_64/include/QtConcurrent" /external:I "C:/Users/Beelz/vcpkg/installed/x64-windows/include" /utf-8 -Zc:__cplusplus -utf-8</AdditionalOptions>
+      <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <ConformanceMode>true</ConformanceMode>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ExternalWarningLevel>TurnOffAllWarnings</ExternalWarningLevel>
+      <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <MinimalRebuild></MinimalRebuild>
+      <Optimization>MaxSpeed</Optimization>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SupportJustMyCode></SupportJustMyCode>
+      <UseFullPaths>false</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;NOMINMAX;WIN32_LEAN_AND_MEAN;QT_CORE_LIB;QT_NO_DEBUG;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;_WIN64;UNICODE;_UNICODE;QT_WIDGETS_LIB;QT_GUI_LIB;QT_NETWORK_LIB;QT_CONCURRENT_LIB;_7ZIP_ST;CMAKE_INTDIR="RelWithDebInfo"</PreprocessorDefinitions>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions);WIN32;_WINDOWS;NDEBUG;NOMINMAX;WIN32_LEAN_AND_MEAN;QT_CORE_LIB;QT_NO_DEBUG;_ENABLE_EXTENDED_ALIGNED_STORAGE;WIN64;_WIN64;UNICODE;_UNICODE;QT_WIDGETS_LIB;QT_GUI_LIB;QT_NETWORK_LIB;QT_CONCURRENT_LIB;_7ZIP_ST;CMAKE_INTDIR=\"RelWithDebInfo\"</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>D:\Build\ULC2\build\emulator_updater_autogen\include_RelWithDebInfo;D:\Build\ULC2\src;D:\Build\ULC2\third_party\lzma;C:\Qt\6.5.3\msvc2019_64\include\QtCore;C:\Qt\6.5.3\msvc2019_64\include;C:\Qt\6.5.3\msvc2019_64\mkspecs\win32-msvc;C:\Qt\6.5.3\msvc2019_64\include\QtWidgets;C:\Qt\6.5.3\msvc2019_64\include\QtGui;C:\Qt\6.5.3\msvc2019_64\include\QtNetwork;C:\Qt\6.5.3\msvc2019_64\include\QtConcurrent;C:\Users\Beelz\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
     <Midl>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Build\ULC2\build\emulator_updater_autogen\include_RelWithDebInfo;D:\Build\ULC2\src;D:\Build\ULC2\third_party\lzma;C:\Qt\6.5.3\msvc2019_64\include\QtCore;C:\Qt\6.5.3\msvc2019_64\include;C:\Qt\6.5.3\msvc2019_64\mkspecs\win32-msvc;C:\Qt\6.5.3\msvc2019_64\include\QtWidgets;C:\Qt\6.5.3\msvc2019_64\include\QtGui;C:\Qt\6.5.3\msvc2019_64\include\QtNetwork;C:\Qt\6.5.3\msvc2019_64\include\QtConcurrent;C:\Users\Beelz\vcpkg\installed\x64-windows\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
       <HeaderFileName>%(Filename).h</HeaderFileName>
       <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
       <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
       <ProxyFileName>%(Filename)_p.c</ProxyFileName>
     </Midl>
+    <PreBuildEvent>
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <Message>Automatic MOC for target emulator_updater</Message>
+      <Command>setlocal
+cd D:\Build\ULC2\build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E cmake_autogen D:/Build/ULC2/build/CMakeFiles/emulator_updater_autogen.dir/AutogenInfo.json RelWithDebInfo
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PreBuildEvent>
+    <PostBuildEvent>
+      <Message></Message>
+      <Command>setlocal
+"C:\Program Files\PowerShell\7\pwsh.exe" -noprofile -executionpolicy Bypass -file C:/Users/Beelz/vcpkg/scripts/buildsystems/msbuild/applocal.ps1 -targetBinary D:/Build/ULC2/build/RelWithDebInfo/emulator_updater.exe -installedDir C:/Users/Beelz/vcpkg/installed/x64-windows/bin -OutVariable out
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+    </PostBuildEvent>
+    <Link>
+      <AdditionalDependencies>C:\Qt\6.5.3\msvc2019_64\lib\Qt6Widgets.lib;C:\Qt\6.5.3\msvc2019_64\lib\Qt6Network.lib;C:\Qt\6.5.3\msvc2019_64\lib\Qt6Concurrent.lib;C:\Users\Beelz\vcpkg\installed\x64-windows\lib\libcrypto.lib;C:\Users\Beelz\vcpkg\installed\x64-windows\lib\zlib.lib;RelWithDebInfo\lzma_sdk.lib;version.lib;C:\Qt\6.5.3\msvc2019_64\lib\Qt6Gui.lib;d3d11.lib;dxgi.lib;dxguid.lib;ws2_32.lib;C:\Qt\6.5.3\msvc2019_64\lib\Qt6Core.lib;mpr.lib;userenv.lib;C:\Qt\6.5.3\msvc2019_64\lib\Qt6EntryPoint.lib;shell32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;comdlg32.lib;advapi32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalOptions>%(AdditionalOptions) /machine:x64</AdditionalOptions>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
+      <ImportLibrary>D:/Build/ULC2/build/RelWithDebInfo/emulator_updater.lib</ImportLibrary>
+      <ProgramDataBaseFile>D:/Build/ULC2/build/RelWithDebInfo/emulator_updater.pdb</ProgramDataBaseFile>
+      <SubSystem>Windows</SubSystem>
+    </Link>
+    <ProjectReference>
+      <LinkLibraryDependencies>false</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="D:\Build\ULC2\build\CMakeFiles\2762374e84ff801e49585c82b13c5fad\qrc_resources.cpp.rule">
+      <UseUtf8Encoding>Always</UseUtf8Encoding>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Automatic RCC for resources/resources.qrc</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">setlocal
+cd D:\Build\ULC2\build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E cmake_autorcc D:/Build/ULC2/build/CMakeFiles/emulator_updater_autogen.dir/AutoRcc_resources_3YJK5W5UP7_Info.json Debug
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\Build\ULC2\resources\resources.qrc;D:\Build\ULC2\build\CMakeFiles\emulator_updater_autogen.dir\AutoRcc_resources_3YJK5W5UP7_Info.json;D:\Build\ULC2\resources\fonts\Aldrich-Regular.ttf;D:\Build\ULC2\resources\icons\emu_updater.png;D:\Build\ULC2\resources\icons\emulators\duckstation.png;D:\Build\ULC2\resources\icons\emulators\pcsx2.png;D:\Build\ULC2\resources\icons\emulators\eden.png;D:\Build\ULC2\resources\icons\emulators\ymir.png;D:\Build\ULC2\resources\icons\emulators\flycast.png;D:\Build\ULC2\resources\icons\emulators\mesen.png;D:\Build\ULC2\resources\icons\emulators\rpcs3.png;D:\Build\ULC2\resources\icons\emulators\mame.png;D:\Build\ULC2\resources\icons\emulators\hypseus_singe.png;D:\Build\ULC2\resources\icons\emulators\xemu.png;D:\Build\ULC2\resources\icons\emulators\vita3k.png;D:\Build\ULC2\resources\icons\emulators\xemu_chihiro.png;D:\Build\ULC2\resources\icons\emulators\dolphin.png;D:\Build\ULC2\resources\icons\emulators\cemu.png;D:\Build\ULC2\resources\icons\emulators\ppsspp.png;D:\Build\ULC2\resources\icons\emulators\retroarch.png;D:\Build\ULC2\resources\icons\emulators\supermodel.png;D:\Build\ULC2\resources\icons\emulators\xenia_edge.png;D:\Build\ULC2\resources\icons\emulators\mgba.png;C:\Qt\6.5.3\msvc2019_64\.\bin\rcc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">D:\Build\ULC2\build\emulator_updater_autogen\3YJK5W5UP7\qrc_resources.cpp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</LinkObjects>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Automatic RCC for resources/resources.qrc</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|x64'">setlocal
+cd D:\Build\ULC2\build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E cmake_autorcc D:/Build/ULC2/build/CMakeFiles/emulator_updater_autogen.dir/AutoRcc_resources_3YJK5W5UP7_Info.json Release
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\Build\ULC2\resources\resources.qrc;D:\Build\ULC2\build\CMakeFiles\emulator_updater_autogen.dir\AutoRcc_resources_3YJK5W5UP7_Info.json;D:\Build\ULC2\resources\fonts\Aldrich-Regular.ttf;D:\Build\ULC2\resources\icons\emu_updater.png;D:\Build\ULC2\resources\icons\emulators\duckstation.png;D:\Build\ULC2\resources\icons\emulators\pcsx2.png;D:\Build\ULC2\resources\icons\emulators\eden.png;D:\Build\ULC2\resources\icons\emulators\ymir.png;D:\Build\ULC2\resources\icons\emulators\flycast.png;D:\Build\ULC2\resources\icons\emulators\mesen.png;D:\Build\ULC2\resources\icons\emulators\rpcs3.png;D:\Build\ULC2\resources\icons\emulators\mame.png;D:\Build\ULC2\resources\icons\emulators\hypseus_singe.png;D:\Build\ULC2\resources\icons\emulators\xemu.png;D:\Build\ULC2\resources\icons\emulators\vita3k.png;D:\Build\ULC2\resources\icons\emulators\xemu_chihiro.png;D:\Build\ULC2\resources\icons\emulators\dolphin.png;D:\Build\ULC2\resources\icons\emulators\cemu.png;D:\Build\ULC2\resources\icons\emulators\ppsspp.png;D:\Build\ULC2\resources\icons\emulators\retroarch.png;D:\Build\ULC2\resources\icons\emulators\supermodel.png;D:\Build\ULC2\resources\icons\emulators\xenia_edge.png;D:\Build\ULC2\resources\icons\emulators\mgba.png;C:\Qt\6.5.3\msvc2019_64\.\bin\rcc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|x64'">D:\Build\ULC2\build\emulator_updater_autogen\3YJK5W5UP7\qrc_resources.cpp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkObjects>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">Automatic RCC for resources/resources.qrc</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">setlocal
+cd D:\Build\ULC2\build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E cmake_autorcc D:/Build/ULC2/build/CMakeFiles/emulator_updater_autogen.dir/AutoRcc_resources_3YJK5W5UP7_Info.json MinSizeRel
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\Build\ULC2\resources\resources.qrc;D:\Build\ULC2\build\CMakeFiles\emulator_updater_autogen.dir\AutoRcc_resources_3YJK5W5UP7_Info.json;D:\Build\ULC2\resources\fonts\Aldrich-Regular.ttf;D:\Build\ULC2\resources\icons\emu_updater.png;D:\Build\ULC2\resources\icons\emulators\duckstation.png;D:\Build\ULC2\resources\icons\emulators\pcsx2.png;D:\Build\ULC2\resources\icons\emulators\eden.png;D:\Build\ULC2\resources\icons\emulators\ymir.png;D:\Build\ULC2\resources\icons\emulators\flycast.png;D:\Build\ULC2\resources\icons\emulators\mesen.png;D:\Build\ULC2\resources\icons\emulators\rpcs3.png;D:\Build\ULC2\resources\icons\emulators\mame.png;D:\Build\ULC2\resources\icons\emulators\hypseus_singe.png;D:\Build\ULC2\resources\icons\emulators\xemu.png;D:\Build\ULC2\resources\icons\emulators\vita3k.png;D:\Build\ULC2\resources\icons\emulators\xemu_chihiro.png;D:\Build\ULC2\resources\icons\emulators\dolphin.png;D:\Build\ULC2\resources\icons\emulators\cemu.png;D:\Build\ULC2\resources\icons\emulators\ppsspp.png;D:\Build\ULC2\resources\icons\emulators\retroarch.png;D:\Build\ULC2\resources\icons\emulators\supermodel.png;D:\Build\ULC2\resources\icons\emulators\xenia_edge.png;D:\Build\ULC2\resources\icons\emulators\mgba.png;C:\Qt\6.5.3\msvc2019_64\.\bin\rcc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">D:\Build\ULC2\build\emulator_updater_autogen\3YJK5W5UP7\qrc_resources.cpp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">false</LinkObjects>
+      <BuildInParallel Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</BuildInParallel>
+      <Message Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">Automatic RCC for resources/resources.qrc</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">setlocal
+cd D:\Build\ULC2\build
+if %errorlevel% neq 0 goto :cmEnd
+D:
+if %errorlevel% neq 0 goto :cmEnd
+"C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe" -E cmake_autorcc D:/Build/ULC2/build/CMakeFiles/emulator_updater_autogen.dir/AutoRcc_resources_3YJK5W5UP7_Info.json RelWithDebInfo
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\Build\ULC2\resources\resources.qrc;D:\Build\ULC2\build\CMakeFiles\emulator_updater_autogen.dir\AutoRcc_resources_3YJK5W5UP7_Info.json;D:\Build\ULC2\resources\fonts\Aldrich-Regular.ttf;D:\Build\ULC2\resources\icons\emu_updater.png;D:\Build\ULC2\resources\icons\emulators\duckstation.png;D:\Build\ULC2\resources\icons\emulators\pcsx2.png;D:\Build\ULC2\resources\icons\emulators\eden.png;D:\Build\ULC2\resources\icons\emulators\ymir.png;D:\Build\ULC2\resources\icons\emulators\flycast.png;D:\Build\ULC2\resources\icons\emulators\mesen.png;D:\Build\ULC2\resources\icons\emulators\rpcs3.png;D:\Build\ULC2\resources\icons\emulators\mame.png;D:\Build\ULC2\resources\icons\emulators\hypseus_singe.png;D:\Build\ULC2\resources\icons\emulators\xemu.png;D:\Build\ULC2\resources\icons\emulators\vita3k.png;D:\Build\ULC2\resources\icons\emulators\xemu_chihiro.png;D:\Build\ULC2\resources\icons\emulators\dolphin.png;D:\Build\ULC2\resources\icons\emulators\cemu.png;D:\Build\ULC2\resources\icons\emulators\ppsspp.png;D:\Build\ULC2\resources\icons\emulators\retroarch.png;D:\Build\ULC2\resources\icons\emulators\supermodel.png;D:\Build\ULC2\resources\icons\emulators\xenia_edge.png;D:\Build\ULC2\resources\icons\emulators\mgba.png;C:\Qt\6.5.3\msvc2019_64\.\bin\rcc.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">D:\Build\ULC2\build\emulator_updater_autogen\3YJK5W5UP7\qrc_resources.cpp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="D:\Build\ULC2\CMakeLists.txt">
       <UseUtf8Encoding>Always</UseUtf8Encoding>
@@ -165,6 +538,43 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="D:\Build\ULC2\build\emulator_updater_autogen\mocs_compilation_Debug.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="D:\Build\ULC2\src\main.cpp" />
+    <ClCompile Include="D:\Build\ULC2\src\mainwindow.cpp" />
+    <ClCompile Include="D:\Build\ULC2\src\sidebar_delegate.cpp" />
+    <ClCompile Include="D:\Build\ULC2\src\retroarch_tab.cpp" />
+    <ClCompile Include="D:\Build\ULC2\src\emulator_tab.cpp" />
+    <ClCompile Include="D:\Build\ULC2\src\github_updater.cpp" />
+    <ClCompile Include="D:\Build\ULC2\src\aboutdialog.cpp" />
+    <ClCompile Include="D:\Build\ULC2\src\downloader.cpp" />
+    <ClCompile Include="D:\Build\ULC2\src\archive_zip.cpp" />
+    <ClCompile Include="D:\Build\ULC2\src\archive_7z.cpp" />
+    <ClCompile Include="D:\Build\ULC2\src\updater.cpp" />
+    <ClCompile Include="D:\Build\ULC2\src\settings.cpp" />
+    <ClCompile Include="D:\Build\ULC2\src\etag_cache.cpp" />
+    <None Include="D:\Build\ULC2\resources\resources.qrc">
+    </None>
+    <ResourceCompile Include="D:\Build\ULC2\resources\app.rc" />
+    <ClCompile Include="D:\Build\ULC2\build\emulator_updater_autogen\3YJK5W5UP7\qrc_resources.cpp" />
+    <ClCompile Include="D:\Build\ULC2\build\emulator_updater_autogen\mocs_compilation_Release.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="D:\Build\ULC2\build\emulator_updater_autogen\mocs_compilation_MinSizeRel.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='RelWithDebInfo|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="D:\Build\ULC2\build\emulator_updater_autogen\mocs_compilation_RelWithDebInfo.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='MinSizeRel|x64'">true</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
@@ -173,10 +583,6 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <Name>ZERO_CHECK</Name>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </ProjectReference>
-    <ProjectReference Include="D:\Build\ULC2\build\emulator_updater.vcxproj">
-      <Project>{B6121891-40AB-3371-9FAE-562BC00CAD98}</Project>
-      <Name>emulator_updater</Name>
     </ProjectReference>
     <ProjectReference Include="D:\Build\ULC2\build\lzma_sdk.vcxproj">
       <Project>{72F7BBB6-73DA-3388-A8D1-4913203DAE01}</Project>

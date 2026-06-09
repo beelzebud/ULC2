@@ -121,8 +121,6 @@ GitHubRelease GitHubUpdater::fetchFromGitHub(const EmulatorConfig& config,
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Dolphin buildbot backend
-// Tries multiple candidate URLs and logs HTTP status so we can diagnose
-// which endpoint is still working after their infrastructure changes.
 // ─────────────────────────────────────────────────────────────────────────────
 
 GitHubRelease GitHubUpdater::fetchFromBuildbot(const EmulatorConfig& config)
@@ -167,8 +165,6 @@ GitHubRelease GitHubUpdater::fetchFromBuildbot(const EmulatorConfig& config)
         return result;
     }
 
-    // Match both old format: dolphin-master-2603-78-x64.7z
-    // and new format:        dolphin-2603-388-x64.7z
     const QRegularExpression urlRx(
         R"((https://dl\.dolphin-emu\.org/[^\s"'<>]+dolphin-[^\s"'<>]+-x64\.7z))",
         QRegularExpression::CaseInsensitiveOption);
@@ -183,7 +179,6 @@ GitHubRelease GitHubUpdater::fetchFromBuildbot(const EmulatorConfig& config)
     const QString downloadUrl = match.captured(1);
     const QString filename = QFileInfo(QUrl(downloadUrl).path()).fileName();
 
-    // Extract version: handles both "master-2603-78" and "2603-388" formats
     const QRegularExpression verRx(
         R"(dolphin-(?:master-)?([\d]+-[\d]+)-x64\.7z)",
         QRegularExpression::CaseInsensitiveOption);
@@ -238,7 +233,6 @@ GitHubRelease GitHubUpdater::fetchFromRpcs3Net(const EmulatorConfig& config)
     const QJsonObject root = doc.object();
     const int         returnCode = root.value("return_code").toInt(-99);
 
-    // 0=update available, 1=up to date, -1=unknown commit (valid), <-1=error
     if (returnCode < -1) {
         emit log(QString("RPCS3 update API returned server error: %1").arg(returnCode));
         return result;
@@ -254,8 +248,6 @@ GitHubRelease GitHubUpdater::fetchFromRpcs3Net(const EmulatorConfig& config)
         return result;
     }
 
-    // Extract version from the filename since the API no longer returns it
-    // as a top-level field. e.g. rpcs3-v0.0.41-19444-f8a5a6ad_win64_msvc.7z
     const QString filename = QFileInfo(QUrl(downloadUrl).path()).fileName();
     const QRegularExpression verRx(R"(rpcs3-v([\d.]+-[\d]+))");
     const auto verMatch = verRx.match(filename);
@@ -328,54 +320,56 @@ GitHubRelease GitHubUpdater::fetchFromGitea(const EmulatorConfig& config)
     result.valid = !result.tagName.isEmpty();
     return result;
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// DirectUrl backend — HEAD request, ETag/Last-Modified as version identifier
+// ─────────────────────────────────────────────────────────────────────────────
+
 GitHubRelease GitHubUpdater::fetchFromDirectUrl(const EmulatorConfig& config)
 {
-        GitHubRelease result;
+    GitHubRelease result;
 
-        // HEAD request — use ETag or Last-Modified as the version identifier.
-        // The URL never changes; only the file content does.
-        QNetworkRequest req;
-        req.setUrl(QUrl(config.buildbotApiUrl));
-        req.setRawHeader("User-Agent", "ulc-emulator-updater/1.0");
-        req.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
+    QNetworkRequest req;
+    req.setUrl(QUrl(config.buildbotApiUrl));
+    req.setRawHeader("User-Agent", "ulc-emulator-updater/1.0");
+    req.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
         QVariant::fromValue(QNetworkRequest::NoLessSafeRedirectPolicy));
 
-        QEventLoop loop;
-        QNetworkReply* reply = m_nam->head(req);
-        connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
-        QTimer::singleShot(10000, &loop, &QEventLoop::quit);
-        loop.exec();
+    QEventLoop loop;
+    QNetworkReply* reply = m_nam->head(req);
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    QTimer::singleShot(10000, &loop, &QEventLoop::quit);
+    loop.exec();
 
-        if (reply->error() != QNetworkReply::NoError) {
-            emit log("DirectUrl fetch error for " + config.displayName +
-                ": " + reply->errorString());
-            reply->deleteLater();
-            return result;
-        }
-
-        // Prefer ETag; fall back to Last-Modified
-        QString version = reply->rawHeader("ETag");
-        if (version.isEmpty())
-            version = reply->rawHeader("Last-Modified");
-
+    if (reply->error() != QNetworkReply::NoError) {
+        emit log("DirectUrl fetch error for " + config.displayName +
+            ": " + reply->errorString());
         reply->deleteLater();
-
-        if (version.isEmpty()) {
-            emit log("Could not determine version for " + config.displayName);
-            return result;
-        }
-
-        result.tagName = version;
-        result.isPreRelease = true;
-        result.valid = true;
-
-        GitHubAsset asset;
-        asset.name = QFileInfo(QUrl(config.buildbotApiUrl).path()).fileName();
-        asset.downloadUrl = config.buildbotApiUrl;
-        result.assets.append(asset);
-
         return result;
-        }
+    }
+
+    QString version = reply->rawHeader("ETag");
+    if (version.isEmpty())
+        version = reply->rawHeader("Last-Modified");
+
+    reply->deleteLater();
+
+    if (version.isEmpty()) {
+        emit log("Could not determine version for " + config.displayName);
+        return result;
+    }
+
+    result.tagName = version;
+    result.isPreRelease = true;
+    result.valid = true;
+
+    GitHubAsset asset;
+    asset.name = QFileInfo(QUrl(config.buildbotApiUrl).path()).fileName();
+    asset.downloadUrl = config.buildbotApiUrl;
+    result.assets.append(asset);
+
+    return result;
+}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Helper: is this a floating tag that never changes between builds?
@@ -417,7 +411,6 @@ void GitHubUpdater::update(const EmulatorConfig& config,
     emit log(QString("[%1] Latest %2 release: %3")
         .arg(config.displayName, channelLabel, release.tagName));
 
-    // Pick asset pattern for channel
     const QString& pattern =
         (channel == ReleaseChannel::Nightly && !config.nightlyAssetPattern.isEmpty())
         ? config.nightlyAssetPattern
@@ -429,8 +422,6 @@ void GitHubUpdater::update(const EmulatorConfig& config,
         if (rx.match(a.name).hasMatch()) { chosen = a; break; }
     }
 
-    // For floating tags the tag string never changes between builds.
-    // Use published_at date as the comparison key instead.
     const bool floating = isFloatingTag(release.tagName);
     const QString storedTag = floating
         ? (!release.publishedAt.isEmpty() ? release.publishedAt : chosen.name)
@@ -465,8 +456,6 @@ void GitHubUpdater::update(const EmulatorConfig& config,
 
     const QString archivePath = tmp.filePath(chosen.name);
 
-    // Clear cached ETag so we always get a fresh download when an update
-    // has been detected rather than hitting the cache.
     m_cache->save(chosen.downloadUrl, "");
 
     try {
@@ -475,7 +464,6 @@ void GitHubUpdater::update(const EmulatorConfig& config,
             return;
         }
 
-        // ETag matched — file unchanged, nothing to extract
         if (!QFile::exists(archivePath)) {
             emit log(QString("[%1] Already up to date.").arg(config.displayName));
             emit done(false, knownTag);

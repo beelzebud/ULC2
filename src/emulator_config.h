@@ -27,12 +27,22 @@ struct EmulatorConfig {
 inline QList<EmulatorConfig> allEmulatorConfigs()
 {
 #ifdef Q_OS_WIN
-    const QString base = R"(D:\Emulators\)";
+    const QString base = R"(C:\Emulators\)";
 #else
     const QString base = QDir::homePath() + "/Emulators/";
 #endif
 
     return QList<EmulatorConfig>({
+        {
+            "cemu", "Cemu  (Wii U)",
+            UpdateSource::GitHub, "cemu-project/Cemu", {},
+            R"(cemu-.*-windows-x64\.zip)",
+            R"(cemu-.*-windows-x64\.zip)",
+            ArchiveType::Zip,
+            base + "Cemu/",
+            "Cemu.exe", true, ReleaseChannel::Stable,
+            ":/icons/emulators/cemu.png"
+        },
         {
             "duckstation", "DuckStation  (PS1)",
             UpdateSource::GitHub, "stenzek/duckstation", {},
@@ -75,55 +85,14 @@ inline QList<EmulatorConfig> allEmulatorConfigs()
             ":/icons/emulators/mame.png"
         },
         {
-            "pcsx2", "PCSX2  (PS2)",
-            UpdateSource::GitHub, "PCSX2/pcsx2", {},
-            R"(PCSX2-(?!.*symbols).*windows.*64.*\.7z)",
-            R"(PCSX2-(?!.*symbols).*windows.*64.*\.7z)",
-            ArchiveType::SevenZ,
-            base + "PCSX2/",
-            "pcsx2-qt.exe", true, ReleaseChannel::Stable,
-            ":/icons/emulators/pcsx2.png"
-        },
-        {
-            "rpcs3", "RPCS3  (PS3)",
-            UpdateSource::Rpcs3Net, {},
-            "https://update.rpcs3.net/?api=v2&c=0000000",
-            R"(rpcs3-.*_win64.*\.7z)",
-            R"(rpcs3-.*_win64.*\.7z)",
-            ArchiveType::SevenZ,
-            base + "RPCS3/",
-            "rpcs3.exe", true, ReleaseChannel::Nightly,
-            ":/icons/emulators/rpcs3.png"
-        },
-        {
-            "ymir", "Ymir  (Sega Saturn)",
-            UpdateSource::GitHub, "StrikerX3/Ymir", {},
-            R"(ymir-windows-x86_64-AVX2-.*\.zip)",
-            R"(ymir-windows-x86_64-AVX2-.*\.zip)",
+            "mesen", "Mesen  (NES / SNES / GB)",
+            UpdateSource::GitHub, "nesdev-org/MesenCE", {},
+            R"(Mesen_.*_Windows\.zip)",
+            R"(Mesen_.*_Windows\.zip)",
             ArchiveType::Zip,
-            base + "Ymir/",
-            "ymir.exe", true, ReleaseChannel::Nightly,
-            ":/icons/emulators/ymir.png"
-        },
-        {
-            "xenia_edge", "Xenia Edge  (Xbox 360)",
-            UpdateSource::GitHub, "has207/xenia-edge", {},
-            R"(xenia_edge_windows\.zip)",
-            R"(xenia_edge_windows\.zip)",
-            ArchiveType::Zip,
-            base + "XeniaEdge/",
-            "xenia_canary.exe", false, ReleaseChannel::Nightly,
-            ":/icons/emulators/xenia_edge.png"
-        },
-        {
-            "supermodel", "Supermodel  (Sega Model 3)",
-            UpdateSource::GitHub, "trzy/Supermodel", {},
-            R"((?i)supermodel.*windows.*\.zip|(?i).*win.*supermodel.*\.zip)",
-            R"((?i)supermodel.*windows.*\.zip|(?i).*win.*supermodel.*\.zip)",
-            ArchiveType::Zip,
-            base + "Supermodel/",
-            "supermodel.exe", true, ReleaseChannel::Nightly,
-            ":/icons/emulators/supermodel.png"
+            base + "Mesen/",
+            "Mesen.exe", false, ReleaseChannel::Stable,
+            ":/icons/emulators/mesen.png"
         },
         {
             "mgba", "mGBA  (GBA / GB)",
@@ -137,6 +106,16 @@ inline QList<EmulatorConfig> allEmulatorConfigs()
             ":/icons/emulators/mgba.png"
         },
         {
+            "pcsx2", "PCSX2  (PS2)",
+            UpdateSource::GitHub, "PCSX2/pcsx2", {},
+            R"(PCSX2-(?!.*symbols).*windows.*64.*\.7z)",
+            R"(PCSX2-(?!.*symbols).*windows.*64.*\.7z)",
+            ArchiveType::SevenZ,
+            base + "PCSX2/",
+            "pcsx2-qt.exe", true, ReleaseChannel::Stable,
+            ":/icons/emulators/pcsx2.png"
+        },
+        {
             "ppsspp", "PPSSPP  (PSP)",
             UpdateSource::GitHub, "hrydgard/ppsspp", {},
             R"(PPSSPP-.*-Windows-x64\.zip)",
@@ -147,24 +126,25 @@ inline QList<EmulatorConfig> allEmulatorConfigs()
             ":/icons/emulators/ppsspp.png"
         },
         {
-            "cemu", "Cemu  (Wii U)",
-            UpdateSource::GitHub, "cemu-project/Cemu", {},
-            R"(cemu-.*-windows-x64\.zip)",
-            R"(cemu-.*-windows-x64\.zip)",
-            ArchiveType::Zip,
-            base + "Cemu/",
-            "Cemu.exe", true, ReleaseChannel::Stable,
-            ":/icons/emulators/cemu.png"
+            "rpcs3", "RPCS3  (PS3)",
+            UpdateSource::Rpcs3Net, {},
+            "https://update.rpcs3.net/?api=v2&c=0000000",
+            R"(rpcs3-.*_win64.*\.7z)",
+            R"(rpcs3-.*_win64.*\.7z)",
+            ArchiveType::SevenZ,
+            base + "RPCS3/",
+            "rpcs3.exe", true, ReleaseChannel::Nightly,
+            ":/icons/emulators/rpcs3.png"
         },
         {
-            "mesen", "Mesen CE",
-            UpdateSource::GitHub, "nesdev-org/MesenCE", {},
-            R"(Mesen_.*_Windows\.zip)",
-            R"(Mesen_.*_Windows\.zip)",
+            "supermodel", "Supermodel  (Sega Model 3)",
+            UpdateSource::GitHub, "trzy/Supermodel", {},
+            R"((?i)supermodel.*windows.*\.zip|(?i).*win.*supermodel.*\.zip)",
+            R"((?i)supermodel.*windows.*\.zip|(?i).*win.*supermodel.*\.zip)",
             ArchiveType::Zip,
-            base + "Mesen/",
-            "Mesen.exe", false, ReleaseChannel::Stable,
-            ":/icons/emulators/mesen.png"
+            base + "Supermodel/",
+            "supermodel.exe", true, ReleaseChannel::Nightly,
+            ":/icons/emulators/supermodel.png"
         },
         {
             "vita3k", "Vita3K  (PS Vita)",
@@ -195,6 +175,26 @@ inline QList<EmulatorConfig> allEmulatorConfigs()
             base + "xemu-chihiro/",
             "xemu.exe", false, ReleaseChannel::Nightly,
             ":/icons/emulators/xemu_chihiro.png"
+        },
+        {
+            "xenia_edge", "Xenia Edge  (Xbox 360)",
+            UpdateSource::GitHub, "has207/xenia-edge", {},
+            R"(xenia_edge_windows\.zip)",
+            R"(xenia_edge_windows\.zip)",
+            ArchiveType::Zip,
+            base + "XeniaEdge/",
+            "xenia_canary.exe", false, ReleaseChannel::Nightly,
+            ":/icons/emulators/xenia_edge.png"
+        },
+        {
+            "ymir", "Ymir  (Sega Saturn)",
+            UpdateSource::GitHub, "StrikerX3/Ymir", {},
+            R"(ymir-windows-x86_64-AVX2-.*\.zip)",
+            R"(ymir-windows-x86_64-AVX2-.*\.zip)",
+            ArchiveType::Zip,
+            base + "Ymir/",
+            "ymir.exe", true, ReleaseChannel::Nightly,
+            ":/icons/emulators/ymir.png"
         },
         });
 }

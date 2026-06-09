@@ -39,23 +39,23 @@ set(SOURCES
 
 if(WIN32)
     set(SOURCES ${SOURCES} resources/app.rc)
-    add_executable(ulc WIN32 ${SOURCES})
+    add_executable(emulator_updater WIN32 ${SOURCES})
 else()
-    add_executable(ulc ${SOURCES})
+    add_executable(emulator_updater ${SOURCES})
 endif()
 
-target_link_libraries(ulc PRIVATE
+target_link_libraries(emulator_updater PRIVATE
     Qt6::Core Qt6::Widgets Qt6::Network Qt6::Concurrent
     OpenSSL::Crypto ZLIB::ZLIB lzma_sdk
 )
-target_include_directories(ulc PRIVATE src third_party/lzma)
+target_include_directories(emulator_updater PRIVATE src third_party/lzma)
 
 if(WIN32)
-    target_compile_definitions(ulc PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
-    target_link_libraries(ulc PRIVATE version)
+    target_compile_definitions(emulator_updater PRIVATE NOMINMAX WIN32_LEAN_AND_MEAN)
+    target_link_libraries(emulator_updater PRIVATE version)
 endif()
 if(MSVC)
-    target_compile_options(ulc PRIVATE /W3 /utf-8)
+    target_compile_options(emulator_updater PRIVATE /W3 /utf-8)
 else()
     target_compile_options(ulc PRIVATE -Wall -Wextra)
 endif()

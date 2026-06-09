@@ -2,10 +2,10 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "RelWithDebInfo/ulc.exe"
+			"path" : "RelWithDebInfo/emulator_updater.exe"
 		},
 		{
-			"path" : "RelWithDebInfo/ulc.pdb"
+			"path" : "RelWithDebInfo/emulator_updater.pdb"
 		}
 	],
 	"backtrace" : 2,
@@ -417,7 +417,7 @@
 			[
 				{
 					"backtrace" : 0,
-					"path" : "D:/Build/ULC2/build/ulc_autogen/include_RelWithDebInfo"
+					"path" : "D:/Build/ULC2/build/emulator_updater_autogen/include_RelWithDebInfo"
 				},
 				{
 					"backtrace" : 49,
@@ -571,7 +571,7 @@
 			[
 				{
 					"backtrace" : 0,
-					"path" : "D:/Build/ULC2/build/ulc_autogen/include_RelWithDebInfo"
+					"path" : "D:/Build/ULC2/build/emulator_updater_autogen/include_RelWithDebInfo"
 				},
 				{
 					"backtrace" : 49,
@@ -639,7 +639,7 @@
 			"id" : "lzma_sdk::@6890427a1f51a3e7e1df"
 		}
 	],
-	"id" : "ulc::@6890427a1f51a3e7e1df",
+	"id" : "emulator_updater::@6890427a1f51a3e7e1df",
 	"link" : 
 	{
 		"commandFragments" : 
@@ -744,8 +744,8 @@
 		],
 		"language" : "CXX"
 	},
-	"name" : "ulc",
-	"nameOnDisk" : "ulc.exe",
+	"name" : "emulator_updater",
+	"nameOnDisk" : "emulator_updater.exe",
 	"paths" : 
 	{
 		"build" : ".",
@@ -796,7 +796,7 @@
 			"backtrace" : 0,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
-			"path" : "build/ulc_autogen/mocs_compilation_RelWithDebInfo.cpp",
+			"path" : "build/emulator_updater_autogen/mocs_compilation_RelWithDebInfo.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
@@ -892,13 +892,13 @@
 			"backtrace" : 0,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
-			"path" : "build/ulc_autogen/3YJK5W5UP7/qrc_resources.cpp",
+			"path" : "build/emulator_updater_autogen/3YJK5W5UP7/qrc_resources.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 0,
 			"isGenerated" : true,
-			"path" : "build/CMakeFiles/0b568f211c26c8580d1977bc47c295e5/qrc_resources.cpp.rule",
+			"path" : "build/CMakeFiles/2762374e84ff801e49585c82b13c5fad/qrc_resources.cpp.rule",
 			"sourceGroupIndex" : 2
 		}
 	],

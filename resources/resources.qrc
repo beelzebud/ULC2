@@ -1,7 +1,8 @@
 <!DOCTYPE RCC>
 <RCC version="1.0">
   <qresource prefix="/">
-    <file>icons/ulc.png</file>
+	<file>fonts/Aldrich-Regular.ttf</file>
+    <file>icons/emu_updater.png</file>
 	<file>icons/emulators/retroarch.png</file>
 	<file>icons/emulators/cemu.png</file> 
 	<file>icons/emulators/pcsx2.png</file>

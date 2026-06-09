@@ -44,16 +44,13 @@ signals:
     void done(bool updated, const QString& newTag);
 
 private:
-    GitHubRelease fetchFromGitHub(const EmulatorConfig& config,
-        ReleaseChannel        channel);
+    GitHubRelease fetchFromGitHub(const EmulatorConfig& config, ReleaseChannel channel);
     GitHubRelease fetchFromBuildbot(const EmulatorConfig& config);
     GitHubRelease fetchFromRpcs3Net(const EmulatorConfig& config);
     GitHubRelease fetchFromGitea(const EmulatorConfig& config);
     GitHubRelease fetchFromDirectUrl(const EmulatorConfig& config);
 
-    bool downloadSync(const QString& url,
-        const QString& dest,
-        std::atomic<bool>& cancel);
+    bool downloadSync(const QString& url, const QString& dest, std::atomic<bool>& cancel);
 
     void extractAndInstall(const EmulatorConfig& config,
         const QString& archivePath,

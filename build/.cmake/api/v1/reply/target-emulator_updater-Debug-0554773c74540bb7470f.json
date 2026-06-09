@@ -2,10 +2,10 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "Release/ulc.exe"
+			"path" : "Debug/emulator_updater.exe"
 		},
 		{
-			"path" : "Release/ulc.pdb"
+			"path" : "Debug/emulator_updater.pdb"
 		}
 	],
 	"backtrace" : 2,
@@ -327,7 +327,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /O2 /Ob2 /DNDEBUG -std:c++17 -MD"
+					"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd"
 				},
 				{
 					"backtrace" : 47,
@@ -374,10 +374,6 @@
 				},
 				{
 					"backtrace" : 3,
-					"define" : "QT_NO_DEBUG"
-				},
-				{
-					"backtrace" : 3,
 					"define" : "QT_WIDGETS_LIB"
 				},
 				{
@@ -417,7 +413,7 @@
 			[
 				{
 					"backtrace" : 0,
-					"path" : "D:/Build/ULC2/build/ulc_autogen/include_Release"
+					"path" : "D:/Build/ULC2/build/emulator_updater_autogen/include_Debug"
 				},
 				{
 					"backtrace" : 49,
@@ -501,7 +497,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-DWIN32"
+					"fragment" : "-DWIN32 -D_DEBUG"
 				}
 			],
 			"defines" : 
@@ -525,10 +521,6 @@
 				{
 					"backtrace" : 3,
 					"define" : "QT_NETWORK_LIB"
-				},
-				{
-					"backtrace" : 3,
-					"define" : "QT_NO_DEBUG"
 				},
 				{
 					"backtrace" : 3,
@@ -571,7 +563,7 @@
 			[
 				{
 					"backtrace" : 0,
-					"path" : "D:/Build/ULC2/build/ulc_autogen/include_Release"
+					"path" : "D:/Build/ULC2/build/emulator_updater_autogen/include_Debug"
 				},
 				{
 					"backtrace" : 49,
@@ -639,47 +631,47 @@
 			"id" : "lzma_sdk::@6890427a1f51a3e7e1df"
 		}
 	],
-	"id" : "ulc::@6890427a1f51a3e7e1df",
+	"id" : "emulator_updater::@6890427a1f51a3e7e1df",
 	"link" : 
 	{
 		"commandFragments" : 
 		[
 			{
-				"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /O2 /Ob2 /DNDEBUG -MD",
+				"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /Zi /Ob0 /Od /RTC1 -MDd",
 				"role" : "flags"
 			},
 			{
-				"fragment" : "/machine:x64 /INCREMENTAL:NO /subsystem:windows",
+				"fragment" : "/machine:x64 /debug /INCREMENTAL /subsystem:windows",
 				"role" : "flags"
 			},
 			{
 				"backtrace" : 3,
-				"fragment" : "C:\\Qt\\6.5.3\\msvc2019_64\\lib\\Qt6Widgets.lib",
+				"fragment" : "C:\\Qt\\6.5.3\\msvc2019_64\\lib\\Qt6Widgetsd.lib",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 3,
-				"fragment" : "C:\\Qt\\6.5.3\\msvc2019_64\\lib\\Qt6Network.lib",
+				"fragment" : "C:\\Qt\\6.5.3\\msvc2019_64\\lib\\Qt6Networkd.lib",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 3,
-				"fragment" : "C:\\Qt\\6.5.3\\msvc2019_64\\lib\\Qt6Concurrent.lib",
+				"fragment" : "C:\\Qt\\6.5.3\\msvc2019_64\\lib\\Qt6Concurrentd.lib",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 3,
-				"fragment" : "C:\\Users\\Beelz\\vcpkg\\installed\\x64-windows\\lib\\libcrypto.lib",
+				"fragment" : "C:\\Users\\Beelz\\vcpkg\\installed\\x64-windows\\debug\\lib\\libcrypto.lib",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 3,
-				"fragment" : "C:\\Users\\Beelz\\vcpkg\\installed\\x64-windows\\lib\\zlib.lib",
+				"fragment" : "C:\\Users\\Beelz\\vcpkg\\installed\\x64-windows\\debug\\lib\\zlibd.lib",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 3,
-				"fragment" : "Release\\lzma_sdk.lib",
+				"fragment" : "Debug\\lzma_sdk.lib",
 				"role" : "libraries"
 			},
 			{
@@ -689,7 +681,7 @@
 			},
 			{
 				"backtrace" : 13,
-				"fragment" : "C:\\Qt\\6.5.3\\msvc2019_64\\lib\\Qt6Gui.lib",
+				"fragment" : "C:\\Qt\\6.5.3\\msvc2019_64\\lib\\Qt6Guid.lib",
 				"role" : "libraries"
 			},
 			{
@@ -714,7 +706,7 @@
 			},
 			{
 				"backtrace" : 3,
-				"fragment" : "C:\\Qt\\6.5.3\\msvc2019_64\\lib\\Qt6Core.lib",
+				"fragment" : "C:\\Qt\\6.5.3\\msvc2019_64\\lib\\Qt6Cored.lib",
 				"role" : "libraries"
 			},
 			{
@@ -729,7 +721,7 @@
 			},
 			{
 				"backtrace" : 45,
-				"fragment" : "C:\\Qt\\6.5.3\\msvc2019_64\\lib\\Qt6EntryPoint.lib",
+				"fragment" : "C:\\Qt\\6.5.3\\msvc2019_64\\lib\\Qt6EntryPointd.lib",
 				"role" : "libraries"
 			},
 			{
@@ -744,8 +736,8 @@
 		],
 		"language" : "CXX"
 	},
-	"name" : "ulc",
-	"nameOnDisk" : "ulc.exe",
+	"name" : "emulator_updater",
+	"nameOnDisk" : "emulator_updater.exe",
 	"paths" : 
 	{
 		"build" : ".",
@@ -796,7 +788,7 @@
 			"backtrace" : 0,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
-			"path" : "build/ulc_autogen/mocs_compilation_Release.cpp",
+			"path" : "build/emulator_updater_autogen/mocs_compilation_Debug.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
@@ -892,13 +884,13 @@
 			"backtrace" : 0,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
-			"path" : "build/ulc_autogen/3YJK5W5UP7/qrc_resources.cpp",
+			"path" : "build/emulator_updater_autogen/3YJK5W5UP7/qrc_resources.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{
 			"backtrace" : 0,
 			"isGenerated" : true,
-			"path" : "build/CMakeFiles/0b568f211c26c8580d1977bc47c295e5/qrc_resources.cpp.rule",
+			"path" : "build/CMakeFiles/2762374e84ff801e49585c82b13c5fad/qrc_resources.cpp.rule",
 			"sourceGroupIndex" : 2
 		}
 	],
