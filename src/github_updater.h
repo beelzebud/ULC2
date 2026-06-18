@@ -11,6 +11,7 @@
 struct GitHubAsset {
     QString name;
     QString downloadUrl;
+    QString updatedAt;
     qint64  size = 0;
 };
 

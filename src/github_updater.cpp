@@ -93,6 +93,7 @@ GitHubRelease GitHubUpdater::fetchFromGitHub(const EmulatorConfig& config,
             GitHubAsset asset;
             asset.name = a.value("name").toString();
             asset.downloadUrl = a.value("browser_download_url").toString();
+            asset.updatedAt = a.value("updated_at").toString();
             asset.size = a.value("size").toInteger();
             result.assets.append(asset);
         }
@@ -313,6 +314,7 @@ GitHubRelease GitHubUpdater::fetchFromGitea(const EmulatorConfig& config)
         GitHubAsset asset;
         asset.name = a.value("name").toString();
         asset.downloadUrl = a.value("browser_download_url").toString();
+        asset.updatedAt = a.value("updated_at").toString();
         asset.size = a.value("size").toInteger();
         result.assets.append(asset);
     }
@@ -424,7 +426,9 @@ void GitHubUpdater::update(const EmulatorConfig& config,
 
     const bool floating = isFloatingTag(release.tagName);
     const QString storedTag = floating
-        ? (!release.publishedAt.isEmpty() ? release.publishedAt : chosen.name)
+        ? (!chosen.updatedAt.isEmpty() ? chosen.updatedAt
+            : !release.publishedAt.isEmpty() ? release.publishedAt
+            : chosen.name)
         : release.tagName;
 
     if (!knownTag.isEmpty() && knownTag == storedTag) {

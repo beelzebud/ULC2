@@ -12,6 +12,7 @@
 #include <QTextCursor>
 #include <QTextBlock>
 #include <QStyleOption>
+#include <QRegularExpression>
 
 static bool isFloatingTag(const QString& tag)
 {
@@ -212,7 +213,7 @@ void EmulatorTab::onCheckForUpdate()
     QMetaObject::invokeMethod(m_updater,
         [this, cfg, channel]() {
             const GitHubRelease r = m_updater->fetchLatestRelease(cfg, channel);
-            QMetaObject::invokeMethod(this, [this, r, cfg]() {
+            QMetaObject::invokeMethod(this, [this, r, cfg, channel]() {
                 m_btnCheck->setEnabled(true);
 
                 if (!r.valid) {
@@ -220,17 +221,25 @@ void EmulatorTab::onCheckForUpdate()
                     return;
                 }
 
-                // Use the same floating tag logic as update() so the
-                // comparison key matches what was stored after install.
+                // Match the asset the same way update() does, so updatedAt is correct
+                const QString& pattern =
+                    (channel == ReleaseChannel::Nightly && !cfg.nightlyAssetPattern.isEmpty())
+                    ? cfg.nightlyAssetPattern
+                    : cfg.stableAssetPattern;
+                const QRegularExpression rx(pattern, QRegularExpression::CaseInsensitiveOption);
+                GitHubAsset chosen;
+                for (const auto& a : r.assets) {
+                    if (rx.match(a.name).hasMatch()) { chosen = a; break; }
+                }
+
                 const bool floating = isFloatingTag(r.tagName);
                 const QString storedTag = floating
-                    ? (!r.publishedAt.isEmpty() ? r.publishedAt : r.tagName)
+                    ? (!chosen.updatedAt.isEmpty() ? chosen.updatedAt
+                        : !r.publishedAt.isEmpty() ? r.publishedAt
+                        : chosen.name)
                     : r.tagName;
 
                 const QString preTag = r.isPreRelease ? " [pre-release]" : "";
-
-                // Display label — for floating tags show the tag name,
-                // not the publishedAt timestamp, so it's human-readable.
                 const QString displayTag = r.tagName + preTag;
 
                 if (m_lastKnownTag.isEmpty()) {
