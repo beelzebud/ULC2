@@ -104,6 +104,10 @@ QComboBox QAbstractItemView {
     color: #00FF00;
     selection-background-color: #003300;
 }
+QTreeWidget {
+    background-color: #000000;
+    color: #00FF00;
+}
 QScrollBar:vertical           { background: #0a0a0a; width: 12px; }
 QScrollBar::handle:vertical   { background: #005500; min-height: 24px; border-radius: 3px; }
 QScrollBar::add-line:vertical,
@@ -159,23 +163,31 @@ void MainWindow::buildUi()
 
     m_stack = new QStackedWidget;
 
-    // RetroArch page
+    // ── Construct tab objects first (without adding to sidebar yet) ─────────
     m_raTab = new RetroArchTab(m_cache);
-    addPage("RetroArch", "Libretro", ":/icons/emulators/retroarch.png", m_raTab);
 
-    // Emulator pages
-    for (const auto& cfg : allEmulatorConfigs()) {
+    const QList<EmulatorConfig> configs = allEmulatorConfigs();
+    for (const auto& cfg : configs) {
         auto* tab = new EmulatorTab(cfg, m_cache);
         m_emuTabs.append(tab);
-        addPage(cfg.displayName, {}, cfg.iconResource, tab);
         connect(tab, &EmulatorTab::versionChanged, this, &MainWindow::saveSettings);
     }
+
+    // Dashboard needs the full emulator tab list to build its status view
+    m_dashboard = new DashboardTab(m_emuTabs, m_raTab);
+
+    // ── Register pages in display order: Dashboard, RetroArch, emulators ────
+    addPage("Dashboard", "Overview", ":/icons/emu_updater.png", m_dashboard);
+    addPage("RetroArch", "Libretro", ":/icons/emulators/retroarch.png", m_raTab);
+
+    for (int i = 0; i < configs.size(); ++i)
+        addPage(configs[i].displayName, {}, configs[i].iconResource, m_emuTabs[i]);
 
     // ── About entry pinned to bottom ──────────────────────────────────────────
     {
         auto* aboutItem = new QListWidgetItem(m_sidebar);
         aboutItem->setData(Qt::DisplayRole, "About");
-        aboutItem->setData(Qt::UserRole, "Emulator Updater");
+        aboutItem->setData(Qt::UserRole, "emulator updater");
         aboutItem->setSizeHint(QSize(120, SidebarDelegate::ItemHeight));
         QPixmap pm(":/icons/emu_updater.png");
         if (!pm.isNull())
@@ -183,12 +195,10 @@ void MainWindow::buildUi()
         m_aboutRow = m_sidebar->count() - 1;
     }
 
-    m_sidebar->setCurrentRow(0);
+    m_sidebar->setCurrentRow(0);   // Dashboard is shown on launch
 
-    // Handle sidebar navigation — intercept About row to open dialog
     connect(m_sidebar, &QListWidget::currentRowChanged, this, [this](int row) {
         if (row == m_aboutRow) {
-            // Snap selection back to current page, then open dialog
             m_sidebar->blockSignals(true);
             m_sidebar->setCurrentRow(m_stack->currentIndex());
             m_sidebar->blockSignals(false);

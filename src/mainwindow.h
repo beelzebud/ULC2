@@ -7,6 +7,7 @@
 #include "etag_cache.h"
 #include "retroarch_tab.h"
 #include "emulator_tab.h"
+#include "dashboard_tab.h"
 
 class MainWindow : public QMainWindow
 {
@@ -32,6 +33,7 @@ private:
 
     QListWidget* m_sidebar = nullptr;
     QStackedWidget* m_stack = nullptr;
+    DashboardTab* m_dashboard = nullptr;
     RetroArchTab* m_raTab = nullptr;
     QList<EmulatorTab*> m_emuTabs;
     int                 m_aboutRow = -1;

@@ -3,6 +3,7 @@
   <qresource prefix="/">
 	<file>fonts/Aldrich-Regular.ttf</file>
     <file>icons/emu_updater.png</file>
+	<file>icons/emulators/dashboard.png</file>
 	<file>icons/emulators/retroarch.png</file>
 	<file>icons/emulators/cemu.png</file> 
 	<file>icons/emulators/pcsx2.png</file>

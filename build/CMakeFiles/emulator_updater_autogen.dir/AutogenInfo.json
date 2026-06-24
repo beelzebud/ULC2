@@ -330,6 +330,12 @@
 			null
 		],
 		[
+			"D:/Build/ULC2/src/dashboard_tab.h",
+			"Mu",
+			"UVLADIE3JM/moc_dashboard_tab.cpp",
+			null
+		],
+		[
 			"D:/Build/ULC2/src/downloader.h",
 			"Mu",
 			"UVLADIE3JM/moc_downloader.cpp",
@@ -568,6 +574,7 @@
 		[ "D:/Build/ULC2/src/aboutdialog.cpp", "Mu", null ],
 		[ "D:/Build/ULC2/src/archive_7z.cpp", "Mu", null ],
 		[ "D:/Build/ULC2/src/archive_zip.cpp", "Mu", null ],
+		[ "D:/Build/ULC2/src/dashboard_tab.cpp", "Mu", null ],
 		[ "D:/Build/ULC2/src/downloader.cpp", "Mu", null ],
 		[ "D:/Build/ULC2/src/emulator_tab.cpp", "Mu", null ],
 		[ "D:/Build/ULC2/src/etag_cache.cpp", "Mu", null ],

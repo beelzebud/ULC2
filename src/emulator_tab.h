@@ -27,13 +27,19 @@ public:
     void applySettings(const EmulatorSettings& s);
     void collectSettings(EmulatorSettings& s) const;
     const EmulatorConfig& config() const { return m_config; }
+    QString currentVersion() const { return m_lastKnownTag.isEmpty() ? "unknown" : m_lastKnownTag; }
 
 public slots:
     void stopOperation();
-
-private slots:
     void onUpdate();
     void onCheckForUpdate();
+
+signals:
+    void versionChanged();
+    void checkComplete(bool hasUpdate);
+    void updateComplete();
+
+private slots:
     void onBrowse();
     void appendLog(const QString& msg);
     void setProgMax(int max);
@@ -63,6 +69,4 @@ private:
     QThread* m_worker = nullptr;
     std::atomic<bool>  m_cancel{ false };
     std::atomic<bool>  m_running{ false };
-signals:
-    void versionChanged();   // emitted after a successful update so MainWindow can save immediately
 };

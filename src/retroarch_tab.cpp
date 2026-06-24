@@ -20,11 +20,13 @@
 #include <QScrollBar>
 #include <QTextDocument>
 #include <QTextCursor>
+#include <QTextBlock>
 #include <QDateTime>
 #include <QVariant>
-#include <QTextBlock>
 
-static const QString RA_URL = "https://buildbot.libretro.com/nightly/windows/x86_64/RetroArch.7z";
+const QString RetroArchTab::RaDownloadUrl =
+"https://buildbot.libretro.com/nightly/windows/x86_64/RetroArch.7z";
+
 static const QString CORE_BASE = "https://buildbot.libretro.com/nightly/windows/x86_64/latest/";
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -42,25 +44,24 @@ public:
     {
     }
 
-    // Called via QMetaObject::invokeMethod lambda — not Qt slots
     void checkRA(std::atomic<bool>* cancel)
     {
         emit log("Checking for RetroArch update...");
 
-        const QString cached = m_cache->load(RA_URL);
-        const QString current = fetchETag(RA_URL);
+        const QString cached = m_cache->load(RetroArchTab::RaDownloadUrl);
+        const QString current = fetchETag(RetroArchTab::RaDownloadUrl);
 
         if (current.isEmpty()) {
             emit log("Could not reach RetroArch buildbot.");
-            emit raCheckResult(false);
+            emit raCheckResult(false, cached);
         }
         else if (!cached.isEmpty() && current == cached) {
             emit log("RetroArch is already up to date.");
-            emit raCheckResult(false);
+            emit raCheckResult(false, current);
         }
         else {
             emit log("RetroArch update is available.");
-            emit raCheckResult(true);
+            emit raCheckResult(true, current);
         }
         emit done();
     }
@@ -77,9 +78,9 @@ public:
         }
 
         const QString archivePath = tmp.filePath("RetroArch.7z");
-        m_cache->save(RA_URL, "");
+        m_cache->save(RetroArchTab::RaDownloadUrl, "");
 
-        if (!downloadFile(RA_URL, archivePath, cancel)) {
+        if (!downloadFile(RetroArchTab::RaDownloadUrl, archivePath, cancel)) {
             emit done();
             return;
         }
@@ -103,7 +104,6 @@ public:
                 return !cancel->load();
             });
 
-        // Strip common top-level folder
         QString stripPrefix;
         if (!entries.isEmpty()) {
             const int slash = entries.first().rel.indexOf('/');
@@ -130,8 +130,8 @@ public:
             emit progressInc();
         }
 
-        const QString newETag = fetchETag(RA_URL);
-        if (!newETag.isEmpty()) m_cache->save(RA_URL, newETag);
+        const QString newETag = fetchETag(RetroArchTab::RaDownloadUrl);
+        if (!newETag.isEmpty()) m_cache->save(RetroArchTab::RaDownloadUrl, newETag);
 
         if (!cancel->load())
             emit log("RetroArch updated successfully.");
@@ -217,7 +217,6 @@ public:
                 continue;
             }
 
-            // Extract the .dll from the zip (may be at root or in a subfolder)
             bool extracted = false;
             ZipExtractor::extract(archivePath, tmp.path(),
                 [&](const ZipEntry& ze, const QString& tf) -> bool {
@@ -257,7 +256,7 @@ signals:
     void progressMax(int max);
     void progressInc();
     void done();
-    void raCheckResult(bool hasUpdate);
+    void raCheckResult(bool hasUpdate, const QString& latestTag);
     void coresCheckResult(const QStringList& needsUpdate, int total);
 
 private:
@@ -367,6 +366,14 @@ void RetroArchTab::collectSettings(AppSettings& s) const
 {
     s.retroarchPath = m_raPathEdit->text();
     s.corePath = m_corePathEdit->text();
+}
+
+QString RetroArchTab::currentVersion() const
+{
+    QString tag = m_cache->load(RaDownloadUrl);
+    if (tag.isEmpty()) return "unknown";
+    tag.remove('"');
+    return tag.length() > 20 ? tag.left(20) + QString::fromUtf8("\xE2\x80\xA6") : tag;
 }
 
 void RetroArchTab::stopOperation()
@@ -482,7 +489,7 @@ void RetroArchTab::buildUi()
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Slots — button handlers
+// Slots — button / dashboard handlers
 // ─────────────────────────────────────────────────────────────────────────────
 
 void RetroArchTab::onCheckRA()
@@ -492,6 +499,7 @@ void RetroArchTab::onCheckRA()
     m_bar->setValue(0);
     setButtonsEnabled(false);
     m_raHasUpdate = false;
+    m_currentOp = RAOp::CheckBinary;
     m_raStatusLabel->setText("Status: checking...");
 
     QMetaObject::invokeMethod(m_worker,
@@ -505,6 +513,7 @@ void RetroArchTab::onDownloadRA()
     m_cancel = false;
     m_bar->setValue(0);
     setButtonsEnabled(false);
+    m_currentOp = RAOp::DownloadBinary;
 
     const QString path = m_raPathEdit->text();
 
@@ -520,6 +529,7 @@ void RetroArchTab::onCheckCores()
     m_bar->setValue(0);
     setButtonsEnabled(false);
     m_pendingCoreUpdates.clear();
+    m_currentOp = RAOp::CheckCores;
     m_coreStatusLabel->setText("Status: checking...");
 
     const QString path = m_corePathEdit->text();
@@ -533,12 +543,14 @@ void RetroArchTab::onDownloadCores()
 {
     if (m_pendingCoreUpdates.isEmpty()) {
         appendLog("No pending core updates — run Check for Core Updates first.");
+        emit coresUpdateFinished();
         return;
     }
     if (m_running.exchange(true)) return;
     m_cancel = false;
     m_bar->setValue(0);
     setButtonsEnabled(false);
+    m_currentOp = RAOp::DownloadCores;
 
     const QString     path = m_corePathEdit->text();
     const QStringList cores = m_pendingCoreUpdates;
@@ -570,9 +582,27 @@ void RetroArchTab::onWorkerDone()
 {
     m_running = false;
     setButtonsEnabled(true);
+
+    switch (m_currentOp) {
+    case RAOp::CheckBinary:
+        emit binaryCheckFinished(m_raHasUpdate);
+        break;
+    case RAOp::DownloadBinary:
+        emit binaryUpdateFinished();
+        break;
+    case RAOp::CheckCores:
+        emit coresCheckFinished(m_pendingCoreUpdates.size(), m_lastCoreTotal);
+        break;
+    case RAOp::DownloadCores:
+        emit coresUpdateFinished();
+        break;
+    case RAOp::None:
+        break;
+    }
+    m_currentOp = RAOp::None;
 }
 
-void RetroArchTab::onRACheckResult(bool hasUpdate)
+void RetroArchTab::onRACheckResult(bool hasUpdate, const QString& /*latestTag*/)
 {
     m_raHasUpdate = hasUpdate;
     m_btnDownloadRA->setEnabled(hasUpdate);
@@ -584,6 +614,7 @@ void RetroArchTab::onRACheckResult(bool hasUpdate)
 void RetroArchTab::onCoresCheckResult(const QStringList& needsUpdate, int total)
 {
     m_pendingCoreUpdates = needsUpdate;
+    m_lastCoreTotal = total;
     m_btnDlCores->setEnabled(!needsUpdate.isEmpty());
 
     if (total == 0) {

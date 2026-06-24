@@ -43,6 +43,9 @@ static constexpr auto qt_meta_stringdata_CLASSEmulatorTabENDCLASS = QtMocHelpers
     "EmulatorTab",
     "versionChanged",
     "",
+    "checkComplete",
+    "hasUpdate",
+    "updateComplete",
     "stopOperation",
     "onUpdate",
     "onCheckForUpdate",
@@ -58,22 +61,25 @@ static constexpr auto qt_meta_stringdata_CLASSEmulatorTabENDCLASS = QtMocHelpers
 );
 #else  // !QT_MOC_HAS_STRING_DATA
 struct qt_meta_stringdata_CLASSEmulatorTabENDCLASS_t {
-    uint offsetsAndSizes[30];
+    uint offsetsAndSizes[36];
     char stringdata0[12];
     char stringdata1[15];
     char stringdata2[1];
     char stringdata3[14];
-    char stringdata4[9];
-    char stringdata5[17];
-    char stringdata6[9];
-    char stringdata7[10];
-    char stringdata8[4];
-    char stringdata9[11];
-    char stringdata10[4];
-    char stringdata11[12];
-    char stringdata12[7];
-    char stringdata13[8];
-    char stringdata14[7];
+    char stringdata4[10];
+    char stringdata5[15];
+    char stringdata6[14];
+    char stringdata7[9];
+    char stringdata8[17];
+    char stringdata9[9];
+    char stringdata10[10];
+    char stringdata11[4];
+    char stringdata12[11];
+    char stringdata13[4];
+    char stringdata14[12];
+    char stringdata15[7];
+    char stringdata16[8];
+    char stringdata17[7];
 };
 #define QT_MOC_LITERAL(ofs, len) \
     uint(sizeof(qt_meta_stringdata_CLASSEmulatorTabENDCLASS_t::offsetsAndSizes) + ofs), len 
@@ -82,22 +88,28 @@ Q_CONSTINIT static const qt_meta_stringdata_CLASSEmulatorTabENDCLASS_t qt_meta_s
         QT_MOC_LITERAL(0, 11),  // "EmulatorTab"
         QT_MOC_LITERAL(12, 14),  // "versionChanged"
         QT_MOC_LITERAL(27, 0),  // ""
-        QT_MOC_LITERAL(28, 13),  // "stopOperation"
-        QT_MOC_LITERAL(42, 8),  // "onUpdate"
-        QT_MOC_LITERAL(51, 16),  // "onCheckForUpdate"
-        QT_MOC_LITERAL(68, 8),  // "onBrowse"
-        QT_MOC_LITERAL(77, 9),  // "appendLog"
-        QT_MOC_LITERAL(87, 3),  // "msg"
-        QT_MOC_LITERAL(91, 10),  // "setProgMax"
-        QT_MOC_LITERAL(102, 3),  // "max"
-        QT_MOC_LITERAL(106, 11),  // "incProgress"
-        QT_MOC_LITERAL(118, 6),  // "onDone"
-        QT_MOC_LITERAL(125, 7),  // "updated"
-        QT_MOC_LITERAL(133, 6)   // "newTag"
+        QT_MOC_LITERAL(28, 13),  // "checkComplete"
+        QT_MOC_LITERAL(42, 9),  // "hasUpdate"
+        QT_MOC_LITERAL(52, 14),  // "updateComplete"
+        QT_MOC_LITERAL(67, 13),  // "stopOperation"
+        QT_MOC_LITERAL(81, 8),  // "onUpdate"
+        QT_MOC_LITERAL(90, 16),  // "onCheckForUpdate"
+        QT_MOC_LITERAL(107, 8),  // "onBrowse"
+        QT_MOC_LITERAL(116, 9),  // "appendLog"
+        QT_MOC_LITERAL(126, 3),  // "msg"
+        QT_MOC_LITERAL(130, 10),  // "setProgMax"
+        QT_MOC_LITERAL(141, 3),  // "max"
+        QT_MOC_LITERAL(145, 11),  // "incProgress"
+        QT_MOC_LITERAL(157, 6),  // "onDone"
+        QT_MOC_LITERAL(164, 7),  // "updated"
+        QT_MOC_LITERAL(172, 6)   // "newTag"
     },
     "EmulatorTab",
     "versionChanged",
     "",
+    "checkComplete",
+    "hasUpdate",
+    "updateComplete",
     "stopOperation",
     "onUpdate",
     "onCheckForUpdate",
@@ -121,27 +133,31 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSEmulatorTabENDCLASS[] = {
       11,       // revision
        0,       // classname
        0,    0, // classinfo
-       9,   14, // methods
+      11,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-       1,       // signalCount
+       3,       // signalCount
 
  // signals: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    0,   68,    2, 0x06,    1 /* Public */,
+       1,    0,   80,    2, 0x06,    1 /* Public */,
+       3,    1,   81,    2, 0x06,    2 /* Public */,
+       5,    0,   84,    2, 0x06,    4 /* Public */,
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       3,    0,   69,    2, 0x0a,    2 /* Public */,
-       4,    0,   70,    2, 0x08,    3 /* Private */,
-       5,    0,   71,    2, 0x08,    4 /* Private */,
-       6,    0,   72,    2, 0x08,    5 /* Private */,
-       7,    1,   73,    2, 0x08,    6 /* Private */,
-       9,    1,   76,    2, 0x08,    8 /* Private */,
-      11,    0,   79,    2, 0x08,   10 /* Private */,
-      12,    2,   80,    2, 0x08,   11 /* Private */,
+       6,    0,   85,    2, 0x0a,    5 /* Public */,
+       7,    0,   86,    2, 0x0a,    6 /* Public */,
+       8,    0,   87,    2, 0x0a,    7 /* Public */,
+       9,    0,   88,    2, 0x08,    8 /* Private */,
+      10,    1,   89,    2, 0x08,    9 /* Private */,
+      12,    1,   92,    2, 0x08,   11 /* Private */,
+      14,    0,   95,    2, 0x08,   13 /* Private */,
+      15,    2,   96,    2, 0x08,   14 /* Private */,
 
  // signals: parameters
+    QMetaType::Void,
+    QMetaType::Void, QMetaType::Bool,    4,
     QMetaType::Void,
 
  // slots: parameters
@@ -149,10 +165,10 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSEmulatorTabENDCLASS[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QString,    8,
-    QMetaType::Void, QMetaType::Int,   10,
+    QMetaType::Void, QMetaType::QString,   11,
+    QMetaType::Void, QMetaType::Int,   13,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Bool, QMetaType::QString,   13,   14,
+    QMetaType::Void, QMetaType::Bool, QMetaType::QString,   16,   17,
 
        0        // eod
 };
@@ -167,6 +183,11 @@ Q_CONSTINIT const QMetaObject EmulatorTab::staticMetaObject = { {
         // Q_OBJECT / Q_GADGET
         QtPrivate::TypeAndForceComplete<EmulatorTab, std::true_type>,
         // method 'versionChanged'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'checkComplete'
+        QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        QtPrivate::TypeAndForceComplete<bool, std::false_type>,
+        // method 'updateComplete'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'stopOperation'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
@@ -199,14 +220,16 @@ void EmulatorTab::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
         (void)_t;
         switch (_id) {
         case 0: _t->versionChanged(); break;
-        case 1: _t->stopOperation(); break;
-        case 2: _t->onUpdate(); break;
-        case 3: _t->onCheckForUpdate(); break;
-        case 4: _t->onBrowse(); break;
-        case 5: _t->appendLog((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
-        case 6: _t->setProgMax((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
-        case 7: _t->incProgress(); break;
-        case 8: _t->onDone((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2]))); break;
+        case 1: _t->checkComplete((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
+        case 2: _t->updateComplete(); break;
+        case 3: _t->stopOperation(); break;
+        case 4: _t->onUpdate(); break;
+        case 5: _t->onCheckForUpdate(); break;
+        case 6: _t->onBrowse(); break;
+        case 7: _t->appendLog((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
+        case 8: _t->setProgMax((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
+        case 9: _t->incProgress(); break;
+        case 10: _t->onDone((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -215,6 +238,20 @@ void EmulatorTab::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id,
             using _t = void (EmulatorTab::*)();
             if (_t _q_method = &EmulatorTab::versionChanged; *reinterpret_cast<_t *>(_a[1]) == _q_method) {
                 *result = 0;
+                return;
+            }
+        }
+        {
+            using _t = void (EmulatorTab::*)(bool );
+            if (_t _q_method = &EmulatorTab::checkComplete; *reinterpret_cast<_t *>(_a[1]) == _q_method) {
+                *result = 1;
+                return;
+            }
+        }
+        {
+            using _t = void (EmulatorTab::*)();
+            if (_t _q_method = &EmulatorTab::updateComplete; *reinterpret_cast<_t *>(_a[1]) == _q_method) {
+                *result = 2;
                 return;
             }
         }
@@ -240,13 +277,13 @@ int EmulatorTab::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 9)
+        if (_id < 11)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 9;
+        _id -= 11;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 9)
+        if (_id < 11)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 9;
+        _id -= 11;
     }
     return _id;
 }
@@ -255,5 +292,18 @@ int EmulatorTab::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 void EmulatorTab::versionChanged()
 {
     QMetaObject::activate(this, &staticMetaObject, 0, nullptr);
+}
+
+// SIGNAL 1
+void EmulatorTab::checkComplete(bool _t1)
+{
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
+    QMetaObject::activate(this, &staticMetaObject, 1, _a);
+}
+
+// SIGNAL 2
+void EmulatorTab::updateComplete()
+{
+    QMetaObject::activate(this, &staticMetaObject, 2, nullptr);
 }
 QT_WARNING_POP

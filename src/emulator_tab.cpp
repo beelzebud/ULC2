@@ -218,10 +218,12 @@ void EmulatorTab::onCheckForUpdate()
 
                 if (!r.valid) {
                     appendLog("Could not fetch release info.");
+                    emit checkComplete(false);
                     return;
                 }
 
-                // Match the asset the same way update() does, so updatedAt is correct
+                // Match the asset the same way update() does, so the asset-level
+                // updatedAt timestamp is available for floating-tag comparison.
                 const QString& pattern =
                     (channel == ReleaseChannel::Nightly && !cfg.nightlyAssetPattern.isEmpty())
                     ? cfg.nightlyAssetPattern
@@ -242,21 +244,27 @@ void EmulatorTab::onCheckForUpdate()
                 const QString preTag = r.isPreRelease ? " [pre-release]" : "";
                 const QString displayTag = r.tagName + preTag;
 
+                bool hasUpdate;
                 if (m_lastKnownTag.isEmpty()) {
                     appendLog(QString("Latest available: %1").arg(displayTag));
+                    hasUpdate = true;
                 }
                 else if (m_lastKnownTag == storedTag) {
                     appendLog(QString("Up to date (%1).").arg(displayTag));
+                    hasUpdate = false;
                 }
                 else {
                     appendLog(QString("Update available: %1 -> %2")
                         .arg(m_lastKnownTag, displayTag));
+                    hasUpdate = true;
                 }
 
                 m_verLabel->setText(
                     QString("Installed: %1   |   Latest: %2")
                     .arg(m_lastKnownTag.isEmpty() ? "unknown" : m_lastKnownTag,
                         displayTag));
+
+                emit checkComplete(hasUpdate);
 
                 }, Qt::QueuedConnection);
         }, Qt::QueuedConnection);
@@ -303,6 +311,7 @@ void EmulatorTab::onDone(bool updated, const QString& newTag)
     }
     updateVersionLabel();
     setButtonsEnabled(true);
+    emit updateComplete();
 }
 
 void EmulatorTab::updateVersionLabel()

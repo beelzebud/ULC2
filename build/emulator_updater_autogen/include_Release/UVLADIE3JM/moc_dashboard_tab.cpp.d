@@ -1,4 +1,4 @@
-D:/Build/ULC2/build/emulator_updater_autogen/include_Release/UVLADIE3JM/moc_mainwindow.cpp: D:/Build/ULC2/src/mainwindow.h \
+D:/Build/ULC2/build/emulator_updater_autogen/include_Release/UVLADIE3JM/moc_dashboard_tab.cpp: D:/Build/ULC2/src/dashboard_tab.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/QDir \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/QFlags \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/QList \
@@ -187,11 +187,8 @@ D:/Build/ULC2/build/emulator_updater_autogen/include_Release/UVLADIE3JM/moc_main
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QComboBox \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QLabel \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QLineEdit \
-  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QListWidget \
-  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QMainWindow \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QProgressBar \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QPushButton \
-  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QStackedWidget \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QTextEdit \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QTreeWidget \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QWidget \
@@ -205,15 +202,11 @@ D:/Build/ULC2/build/emulator_updater_autogen/include_Release/UVLADIE3JM/moc_main
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qframe.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qlabel.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qlineedit.h \
-  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qlistview.h \
-  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qlistwidget.h \
-  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qmainwindow.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qprogressbar.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qpushbutton.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qrubberband.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qsizepolicy.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qslider.h \
-  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qstackedwidget.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qstyle.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qstyleoption.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qtabbar.h \
@@ -226,7 +219,6 @@ D:/Build/ULC2/build/emulator_updater_autogen/include_Release/UVLADIE3JM/moc_main
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qtwidgetsexports.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qtwidgetsglobal.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qwidget.h \
-  D:/Build/ULC2/src/dashboard_tab.h \
   D:/Build/ULC2/src/emulator_config.h \
   D:/Build/ULC2/src/emulator_tab.h \
   D:/Build/ULC2/src/etag_cache.h \

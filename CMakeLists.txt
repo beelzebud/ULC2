@@ -23,6 +23,7 @@ endif()
 set(SOURCES
     src/main.cpp
     src/mainwindow.cpp
+    src/dashboard_tab.cpp
     src/sidebar_delegate.cpp
     src/retroarch_tab.cpp
     src/emulator_tab.cpp

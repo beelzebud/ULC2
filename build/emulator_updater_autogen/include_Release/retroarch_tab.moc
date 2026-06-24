@@ -47,13 +47,14 @@ static constexpr auto qt_meta_stringdata_CLASSRetroArchWorkerENDCLASS = QtMocHel
     "done",
     "raCheckResult",
     "hasUpdate",
+    "latestTag",
     "coresCheckResult",
     "needsUpdate",
     "total"
 );
 #else  // !QT_MOC_HAS_STRING_DATA
 struct qt_meta_stringdata_CLASSRetroArchWorkerENDCLASS_t {
-    uint offsetsAndSizes[26];
+    uint offsetsAndSizes[28];
     char stringdata0[16];
     char stringdata1[4];
     char stringdata2[1];
@@ -64,9 +65,10 @@ struct qt_meta_stringdata_CLASSRetroArchWorkerENDCLASS_t {
     char stringdata7[5];
     char stringdata8[14];
     char stringdata9[10];
-    char stringdata10[17];
-    char stringdata11[12];
-    char stringdata12[6];
+    char stringdata10[10];
+    char stringdata11[17];
+    char stringdata12[12];
+    char stringdata13[6];
 };
 #define QT_MOC_LITERAL(ofs, len) \
     uint(sizeof(qt_meta_stringdata_CLASSRetroArchWorkerENDCLASS_t::offsetsAndSizes) + ofs), len 
@@ -82,9 +84,10 @@ Q_CONSTINIT static const qt_meta_stringdata_CLASSRetroArchWorkerENDCLASS_t qt_me
         QT_MOC_LITERAL(53, 4),  // "done"
         QT_MOC_LITERAL(58, 13),  // "raCheckResult"
         QT_MOC_LITERAL(72, 9),  // "hasUpdate"
-        QT_MOC_LITERAL(82, 16),  // "coresCheckResult"
-        QT_MOC_LITERAL(99, 11),  // "needsUpdate"
-        QT_MOC_LITERAL(111, 5)   // "total"
+        QT_MOC_LITERAL(82, 9),  // "latestTag"
+        QT_MOC_LITERAL(92, 16),  // "coresCheckResult"
+        QT_MOC_LITERAL(109, 11),  // "needsUpdate"
+        QT_MOC_LITERAL(121, 5)   // "total"
     },
     "RetroArchWorker",
     "log",
@@ -96,6 +99,7 @@ Q_CONSTINIT static const qt_meta_stringdata_CLASSRetroArchWorkerENDCLASS_t qt_me
     "done",
     "raCheckResult",
     "hasUpdate",
+    "latestTag",
     "coresCheckResult",
     "needsUpdate",
     "total"
@@ -122,16 +126,16 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSRetroArchWorkerENDCLASS[] = {
        4,    1,   53,    2, 0x06,    3 /* Public */,
        6,    0,   56,    2, 0x06,    5 /* Public */,
        7,    0,   57,    2, 0x06,    6 /* Public */,
-       8,    1,   58,    2, 0x06,    7 /* Public */,
-      10,    2,   61,    2, 0x06,    9 /* Public */,
+       8,    2,   58,    2, 0x06,    7 /* Public */,
+      11,    2,   63,    2, 0x06,   10 /* Public */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::QString,    3,
     QMetaType::Void, QMetaType::Int,    5,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Bool,    9,
-    QMetaType::Void, QMetaType::QStringList, QMetaType::Int,   11,   12,
+    QMetaType::Void, QMetaType::Bool, QMetaType::QString,    9,   10,
+    QMetaType::Void, QMetaType::QStringList, QMetaType::Int,   12,   13,
 
        0        // eod
 };
@@ -158,6 +162,7 @@ Q_CONSTINIT const QMetaObject RetroArchWorker::staticMetaObject = { {
         // method 'raCheckResult'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<bool, std::false_type>,
+        QtPrivate::TypeAndForceComplete<const QString &, std::false_type>,
         // method 'coresCheckResult'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         QtPrivate::TypeAndForceComplete<const QStringList &, std::false_type>,
@@ -176,7 +181,7 @@ void RetroArchWorker::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int 
         case 1: _t->progressMax((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
         case 2: _t->progressInc(); break;
         case 3: _t->done(); break;
-        case 4: _t->raCheckResult((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1]))); break;
+        case 4: _t->raCheckResult((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2]))); break;
         case 5: _t->coresCheckResult((*reinterpret_cast< std::add_pointer_t<QStringList>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2]))); break;
         default: ;
         }
@@ -211,7 +216,7 @@ void RetroArchWorker::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int 
             }
         }
         {
-            using _t = void (RetroArchWorker::*)(bool );
+            using _t = void (RetroArchWorker::*)(bool , const QString & );
             if (_t _q_method = &RetroArchWorker::raCheckResult; *reinterpret_cast<_t *>(_a[1]) == _q_method) {
                 *result = 4;
                 return;
@@ -284,9 +289,9 @@ void RetroArchWorker::done()
 }
 
 // SIGNAL 4
-void RetroArchWorker::raCheckResult(bool _t1)
+void RetroArchWorker::raCheckResult(bool _t1, const QString & _t2)
 {
-    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))), const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t2))) };
     QMetaObject::activate(this, &staticMetaObject, 4, _a);
 }
 

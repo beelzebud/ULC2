@@ -25,26 +25,39 @@ public:
     void applySettings(const AppSettings& s);
     void collectSettings(AppSettings& s) const;
 
+    // Installed RetroArch binary version, derived from the cached ETag.
+    QString currentVersion() const;
+
+    static const QString RaDownloadUrl;
+
 public slots:
     void stopOperation();
-
-private slots:
     void onCheckRA();
     void onDownloadRA();
     void onCheckCores();
     void onDownloadCores();
+
+signals:
+    void binaryCheckFinished(bool hasUpdate);
+    void binaryUpdateFinished();
+    void coresCheckFinished(int needCount, int total);
+    void coresUpdateFinished();
+
+private slots:
     void onBrowseRA();
     void onBrowseCores();
     void appendLog(const QString& msg);
     void setProgMax(int max);
     void incProgress();
     void onWorkerDone();
-    void onRACheckResult(bool hasUpdate);
+    void onRACheckResult(bool hasUpdate, const QString& latestTag);
     void onCoresCheckResult(const QStringList& needsUpdate, int total);
 
 private:
     void buildUi();
     void setButtonsEnabled(bool on);
+
+    enum class RAOp { None, CheckBinary, DownloadBinary, CheckCores, DownloadCores };
 
     QLineEdit* m_raPathEdit = nullptr;
     QLineEdit* m_corePathEdit = nullptr;
@@ -64,5 +77,7 @@ private:
     std::atomic<bool> m_cancel{ false };
     std::atomic<bool> m_running{ false };
     QStringList       m_pendingCoreUpdates;
+    int               m_lastCoreTotal = 0;
     bool              m_raHasUpdate = false;
+    RAOp              m_currentOp = RAOp::None;
 };
