@@ -6,6 +6,7 @@
 #include <QTreeWidget>
 #include <QProgressBar>
 #include <QList>
+#include <QMap>
 #include <functional>
 
 #include "emulator_tab.h"
@@ -36,7 +37,7 @@ private slots:
 
 private:
     void buildUi();
-    void setStatus(const QString& id, const QString& status);
+    void setStatus(const QString& id, const QString& text);
     void setVersion(const QString& id, const QString& version);
     void setButtonsEnabled(bool on);
     void startQueue(bool isUpdate);
