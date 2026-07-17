@@ -1,11 +1,6 @@
 #pragma once
 #include <QStyledItemDelegate>
 
-// Renders each sidebar item as a centred thumbnail with name text below.
-// Expects each item to carry:
-//   Qt::DecorationRole  -> QPixmap  (the thumbnail)
-//   Qt::DisplayRole     -> QString  (primary name)
-//   Qt::UserRole        -> QString  (subtitle / platform hint, optional)
 class SidebarDelegate : public QStyledItemDelegate
 {
     Q_OBJECT

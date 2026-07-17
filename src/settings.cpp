@@ -1,6 +1,7 @@
-#include "settings.h"
+﻿#include "settings.h"
 
 #include <QFile>
+#include <QObject>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QDir>

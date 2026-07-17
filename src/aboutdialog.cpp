@@ -1,5 +1,6 @@
 ﻿#include "aboutdialog.h"
 #include <QVBoxLayout>
+#include <QObject>
 #include <QLabel>
 #include <QPushButton>
 #include <QFont>
@@ -16,14 +17,12 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent)
     layout->setContentsMargins(16, 20, 16, 16);
     layout->setAlignment(Qt::AlignHCenter);
 
-    // ── Icon ─────────────────────────────────────────────────────────────────
     auto* icon = new QLabel;
     icon->setPixmap(
-        QPixmap(":/icons/emu_updater.png").scaled(80, 80,
+        QPixmap(":/icons/ulc.png").scaled(80, 80,
             Qt::KeepAspectRatio, Qt::SmoothTransformation));
     icon->setAlignment(Qt::AlignCenter);
 
-    // ── Text labels ───────────────────────────────────────────────────────────
     auto makeLabel = [](const QString& text, int ptSize = 9, bool bold = false) {
         auto* l = new QLabel(text);
         l->setAlignment(Qt::AlignCenter);
@@ -36,7 +35,6 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent)
         return l;
         };
 
-    // ── OK button ─────────────────────────────────────────────────────────────
     auto* ok = new QPushButton("OK");
     ok->setFixedWidth(80);
     ok->setStyleSheet(

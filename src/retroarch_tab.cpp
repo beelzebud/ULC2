@@ -14,6 +14,7 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QObject>
 #include <QEventLoop>
 #include <QTimer>
 #include <QTemporaryDir>

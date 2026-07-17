@@ -2,6 +2,7 @@
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+#include <QObject>
 #include <QGroupBox>
 #include <QHeaderView>
 #include <QFont>
@@ -13,7 +14,6 @@ DashboardTab::DashboardTab(const QList<EmulatorTab*>& tabs,
 {
     buildUi();
 
-    // ── Per-emulator completion signals ───────────────────────────────────────
     for (auto* tab : m_tabs) {
         connect(tab, &EmulatorTab::checkComplete, this, [this, tab](bool hasUpdate) {
             if (tab->config().id != m_currentId) return;
@@ -33,7 +33,6 @@ DashboardTab::DashboardTab(const QList<EmulatorTab*>& tabs,
             });
     }
 
-    // ── RetroArch binary completion signals ───────────────────────────────────
     if (m_raTab) {
         connect(m_raTab, &RetroArchTab::binaryCheckFinished, this, [this](bool hasUpdate) {
             if (m_currentId != "retroarch") return;
@@ -52,7 +51,6 @@ DashboardTab::DashboardTab(const QList<EmulatorTab*>& tabs,
             advanceQueue();
             });
 
-        // ── Cores — standalone action, not part of the main queue ──────────────
         connect(m_raTab, &RetroArchTab::coresCheckFinished, this, [this](int needCount, int total) {
             m_coresRunning = false;
             setButtonsEnabled(true);
@@ -82,9 +80,9 @@ void DashboardTab::buildUi()
     title->setFont(tf);
     root->addWidget(title);
 
-    // ── Bulk actions — RetroArch binary + all emulators ───────────────────────
+    // Bulk actions — RetroArch + emulators
     {
-        auto* grp = new QGroupBox("Bulk Actions  —  RetroArch + Emulators");
+        auto* grp = new QGroupBox("RetroArch + Emulators");
         auto* hl = new QHBoxLayout(grp);
 
         m_btnCheckAll = new QPushButton("Check All for Updates");
@@ -100,7 +98,7 @@ void DashboardTab::buildUi()
         root->addWidget(grp);
     }
 
-    // ── RetroArch cores — separate action ─────────────────────────────────────
+    // RetroArch cores — separate
     {
         auto* grp = new QGroupBox("RetroArch Cores");
         auto* hl = new QHBoxLayout(grp);
@@ -118,9 +116,10 @@ void DashboardTab::buildUi()
         root->addWidget(grp);
     }
 
-    // ── Stop + progress ────────────────────────────────────────────────────────
+    // Stop + progress
     {
         auto* hl = new QHBoxLayout;
+
         m_btnStopAll = new QPushButton("Stop");
         m_btnStopAll->setObjectName("stopBtn");
         m_btnStopAll->setFixedWidth(80);
@@ -135,10 +134,11 @@ void DashboardTab::buildUi()
         root->addLayout(hl);
     }
 
-    m_summaryLabel = new QLabel(QString("%1 emulators + RetroArch tracked.").arg(m_tabs.size()));
+    m_summaryLabel = new QLabel(
+        QString("%1 emulator(s) + RetroArch tracked.").arg(m_tabs.size()));
     root->addWidget(m_summaryLabel);
 
-    // ── Status list ───────────────────────────────────────────────────────────
+    // Status list
     {
         auto* grp = new QGroupBox("Status");
         auto* lay = new QVBoxLayout(grp);
@@ -148,14 +148,17 @@ void DashboardTab::buildUi()
         m_tree->setHeaderLabels({ "Emulator", "Current Version", "Status" });
         m_tree->setRootIsDecorated(false);
         m_tree->setUniformRowHeights(true);
-        m_tree->header()->setStretchLastSection(true);
+        m_tree->header()->setStretchLastSection(false);
+        m_tree->header()->setSectionResizeMode(0, QHeaderView::Stretch);
+        m_tree->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+        m_tree->header()->setSectionResizeMode(2, QHeaderView::Fixed);
+        m_tree->header()->resizeSection(2, 160);
         m_tree->setStyleSheet(
             "QTreeWidget { background:#000; color:#00FF00; border:1px solid #005500; }"
             "QHeaderView::section { background:#001a00; color:#00FF00; "
             "border:1px solid #003300; padding:4px; }"
             "QTreeWidget::item { padding:3px; }");
 
-        // RetroArch pinned as the first row
         if (m_raTab) {
             auto* raItem = new QTreeWidgetItem(m_tree);
             raItem->setText(0, "RetroArch");
@@ -171,20 +174,18 @@ void DashboardTab::buildUi()
             item->setText(2, "Not checked");
             item->setData(0, Qt::UserRole, tab->config().id);
         }
-        m_tree->resizeColumnToContents(0);
-        m_tree->resizeColumnToContents(1);
 
         lay->addWidget(m_tree);
         root->addWidget(grp, 1);
     }
 }
 
-void DashboardTab::setStatus(const QString& id, const QString& status)
+void DashboardTab::setStatus(const QString& id, const QString& text)
 {
     for (int i = 0; i < m_tree->topLevelItemCount(); ++i) {
         auto* item = m_tree->topLevelItem(i);
         if (item->data(0, Qt::UserRole).toString() == id) {
-            item->setText(2, status);
+            item->setText(2, text);
             return;
         }
     }
@@ -210,10 +211,6 @@ void DashboardTab::setButtonsEnabled(bool on)
     m_btnStopAll->setEnabled(!on);
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Main queue — RetroArch binary + all emulators
-// ─────────────────────────────────────────────────────────────────────────────
-
 void DashboardTab::onCheckAll() { startQueue(false); }
 void DashboardTab::onUpdateAll() { startQueue(true); }
 
@@ -224,15 +221,13 @@ void DashboardTab::startQueue(bool isUpdate)
     m_isUpdateRun = isUpdate;
     m_queue.clear();
 
-    // RetroArch binary goes first
     if (m_raTab) {
         DashboardJob job;
         job.id = "retroarch";
         job.displayName = "RetroArch";
-        if (isUpdate)
-            job.start = [this]() { m_raTab->onDownloadRA(); };
-        else
-            job.start = [this]() { m_raTab->onCheckRA(); };
+        job.start = isUpdate
+            ? std::function<void()>([this]() { m_raTab->onDownloadRA(); })
+            : std::function<void()>([this]() { m_raTab->onCheckRA(); });
         job.stop = [this]() { m_raTab->stopOperation(); };
         m_queue.append(job);
     }
@@ -241,10 +236,9 @@ void DashboardTab::startQueue(bool isUpdate)
         DashboardJob job;
         job.id = tab->config().id;
         job.displayName = tab->config().displayName;
-        if (isUpdate)
-            job.start = [tab]() { tab->onUpdate(); };
-        else
-            job.start = [tab]() { tab->onCheckForUpdate(); };
+        job.start = isUpdate
+            ? std::function<void()>([tab]() { tab->onUpdate(); })
+            : std::function<void()>([tab]() { tab->onCheckForUpdate(); });
         job.stop = [tab]() { tab->stopOperation(); };
         m_queue.append(job);
     }
@@ -294,10 +288,6 @@ void DashboardTab::onStopAll()
     m_queue.clear();
     m_summaryLabel->setText("Stopping...");
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// RetroArch cores — separate, standalone action
-// ─────────────────────────────────────────────────────────────────────────────
 
 void DashboardTab::onCheckCores()
 {

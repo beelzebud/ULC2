@@ -116,6 +116,16 @@ inline QList<EmulatorConfig> allEmulatorConfigs()
             ":/icons/emulators/pcsx2.png"
         },
         {
+            "pcsx2x6", "PCSX2X6 (Namco 246/256)",
+            UpdateSource::GitHub, "PS2Homebrew-arcade/pcsx2x6", {},
+            R"(PCSX2X6-(?!.*symbols).*windows.*64.*\.7z)",
+            R"(PCSX2X6-(?!.*symbols).*windows.*64.*\.7z)",
+            ArchiveType::SevenZ,
+            base + "PCSX2X6/",
+            "pcsx2-qt.exe", true, ReleaseChannel::Stable,
+            ":/icons/emulators/pcsx2x6.png"
+        },
+        {
             "ppsspp", "PPSSPP  (PSP)",
             UpdateSource::GitHub, "hrydgard/ppsspp", {},
             R"(PPSSPP-.*-Windows-x64\.zip)",

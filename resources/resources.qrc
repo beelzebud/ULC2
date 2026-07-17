@@ -1,4 +1,4 @@
-<!DOCTYPE RCC>
+﻿<!DOCTYPE RCC>
 <RCC version="1.0">
   <qresource prefix="/">
 	<file>fonts/Aldrich-Regular.ttf</file>
@@ -7,6 +7,7 @@
 	<file>icons/emulators/retroarch.png</file>
 	<file>icons/emulators/cemu.png</file> 
 	<file>icons/emulators/pcsx2.png</file>
+	<file>icons/emulators/pcsx2x6.png</file>
 	<file>icons/emulators/rpcs3.png</file>
 	<file>icons/emulators/dolphin.png</file>
 	<file>icons/emulators/duckstation.png</file>

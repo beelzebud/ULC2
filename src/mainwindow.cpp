@@ -7,6 +7,7 @@
 #include <QApplication>
 #include <QCoreApplication>
 #include <QVBoxLayout>
+#include <QObject>
 #include <QHBoxLayout>
 #include <QPushButton>
 #include <QCloseEvent>
@@ -130,7 +131,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
 
     resize(980, 780);
     setWindowTitle("Emulator Updater");
-    setWindowIcon(QIcon(":/icons/emu_updater.png"));
+    setWindowIcon(QIcon(":/icons/emu_udpater.png"));
 }
 
 void MainWindow::closeEvent(QCloseEvent* e)
@@ -138,10 +139,6 @@ void MainWindow::closeEvent(QCloseEvent* e)
     saveSettings();
     e->accept();
 }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// UI Construction
-// ─────────────────────────────────────────────────────────────────────────────
 
 void MainWindow::buildUi()
 {
@@ -151,7 +148,6 @@ void MainWindow::buildUi()
     root->setSpacing(0);
     root->setContentsMargins(0, 0, 0, 0);
 
-    // ── Sidebar ───────────────────────────────────────────────────────────────
     m_sidebar = new QListWidget;
     m_sidebar->setFixedWidth(120);
     m_sidebar->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -163,7 +159,7 @@ void MainWindow::buildUi()
 
     m_stack = new QStackedWidget;
 
-    // ── Construct tab objects first (without adding to sidebar yet) ─────────
+    // Construct tab objects first
     m_raTab = new RetroArchTab(m_cache);
 
     const QList<EmulatorConfig> configs = allEmulatorConfigs();
@@ -173,17 +169,17 @@ void MainWindow::buildUi()
         connect(tab, &EmulatorTab::versionChanged, this, &MainWindow::saveSettings);
     }
 
-    // Dashboard needs the full emulator tab list to build its status view
+    // Dashboard needs the full emulator tab list
     m_dashboard = new DashboardTab(m_emuTabs, m_raTab);
 
-    // ── Register pages in display order: Dashboard, RetroArch, emulators ────
+    // Register pages: Dashboard, RetroArch, emulators
     addPage("Dashboard", "Overview", ":/icons/emu_updater.png", m_dashboard);
     addPage("RetroArch", "Libretro", ":/icons/emulators/retroarch.png", m_raTab);
 
     for (int i = 0; i < configs.size(); ++i)
         addPage(configs[i].displayName, {}, configs[i].iconResource, m_emuTabs[i]);
 
-    // ── About entry pinned to bottom ──────────────────────────────────────────
+    // About entry pinned to bottom
     {
         auto* aboutItem = new QListWidgetItem(m_sidebar);
         aboutItem->setData(Qt::DisplayRole, "About");
@@ -195,7 +191,7 @@ void MainWindow::buildUi()
         m_aboutRow = m_sidebar->count() - 1;
     }
 
-    m_sidebar->setCurrentRow(0);   // Dashboard is shown on launch
+    m_sidebar->setCurrentRow(0);
 
     connect(m_sidebar, &QListWidget::currentRowChanged, this, [this](int row) {
         if (row == m_aboutRow) {
@@ -219,7 +215,6 @@ void MainWindow::buildUi()
     splitter->setSizes({ 120, 860 });
     root->addWidget(splitter, 1);
 
-    // ── Bottom bar ────────────────────────────────────────────────────────────
     auto* bottomWidget = new QWidget;
     bottomWidget->setStyleSheet("border-top: 1px solid #003300;");
     auto* bar = new QHBoxLayout(bottomWidget);
@@ -257,16 +252,8 @@ void MainWindow::addPage(const QString& label,
     m_stack->addWidget(widget);
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Slots
-// ─────────────────────────────────────────────────────────────────────────────
-
 void MainWindow::onSavePaths() { saveSettings(); }
 void MainWindow::onAbout() { AboutDialog(this).exec(); }
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Settings
-// ─────────────────────────────────────────────────────────────────────────────
 
 void MainWindow::loadSettings()
 {

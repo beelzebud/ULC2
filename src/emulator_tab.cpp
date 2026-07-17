@@ -4,6 +4,7 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QGridLayout>
+#include <QObject>
 #include <QGroupBox>
 #include <QFileDialog>
 #include <QDateTime>
@@ -90,7 +91,6 @@ void EmulatorTab::buildUi()
     root->setSpacing(6);
     root->setContentsMargins(8, 8, 8, 6);
 
-    // Install path + channel selection
     {
         auto* grp = new QGroupBox("Install Location");
         auto* grid = new QGridLayout(grp);
@@ -124,7 +124,6 @@ void EmulatorTab::buildUi()
         root->addWidget(grp);
     }
 
-    // Version + check
     {
         auto* grp = new QGroupBox("Version");
         auto* hlay = new QHBoxLayout(grp);
@@ -141,7 +140,6 @@ void EmulatorTab::buildUi()
         root->addWidget(grp);
     }
 
-    // Update + progress
     {
         auto* grp = new QGroupBox("Update");
         auto* vlay = new QVBoxLayout(grp);
@@ -166,7 +164,6 @@ void EmulatorTab::buildUi()
         root->addWidget(grp);
     }
 
-    // Log
     {
         auto* grp = new QGroupBox("Log");
         auto* lay = new QVBoxLayout(grp);
@@ -222,8 +219,6 @@ void EmulatorTab::onCheckForUpdate()
                     return;
                 }
 
-                // Match the asset the same way update() does, so the asset-level
-                // updatedAt timestamp is available for floating-tag comparison.
                 const QString& pattern =
                     (channel == ReleaseChannel::Nightly && !cfg.nightlyAssetPattern.isEmpty())
                     ? cfg.nightlyAssetPattern

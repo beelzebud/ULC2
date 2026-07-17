@@ -1,4 +1,4 @@
-#include "updater.h"
+﻿#include "updater.h"
 #include "constants.h"
 #include "downloader.h"
 #include "archive_zip.h"
@@ -8,6 +8,7 @@
 #include <QFile>
 #include <QFileInfo>
 #include <QFileInfoList>
+#include <QObject>
 #include <QTemporaryDir>
 #include <QEventLoop>
 #include <QTimer>

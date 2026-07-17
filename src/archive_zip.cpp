@@ -1,9 +1,11 @@
-#include "archive_zip.h"
+﻿#include "archive_zip.h"
 
+#include <QObject>
 #include <QFile>
 #include <QDir>
 #include <QFileInfo>
 #include <QTimeZone>
+#include <QByteArray>
 
 #include <stdexcept>
 #include <cstring>
