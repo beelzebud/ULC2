@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <QWidget>
 #include <QLabel>
@@ -39,6 +39,7 @@ private:
     void buildUi();
     void setStatus(const QString& id, const QString& text);
     void setVersion(const QString& id, const QString& version);
+    QString getStatus(const QString& id) const;
     void setButtonsEnabled(bool on);
     void startQueue(bool isUpdate);
 

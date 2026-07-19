@@ -157,7 +157,9 @@ void DashboardTab::buildUi()
             "QTreeWidget { background:#000; color:#00FF00; border:1px solid #005500; }"
             "QHeaderView::section { background:#001a00; color:#00FF00; "
             "border:1px solid #003300; padding:4px; }"
-            "QTreeWidget::item { padding:3px; }");
+            "QTreeWidget::item { padding:3px; }"
+            "QTreeWidget::item:selected { background:#003300; color:#00FF00; }"
+            "QTreeWidget::item:hover { background:#001a00; }");
 
         if (m_raTab) {
             auto* raItem = new QTreeWidgetItem(m_tree);
@@ -200,6 +202,16 @@ void DashboardTab::setVersion(const QString& id, const QString& version)
             return;
         }
     }
+}
+
+QString DashboardTab::getStatus(const QString& id) const
+{
+    for (int i = 0; i < m_tree->topLevelItemCount(); ++i) {
+        auto* item = m_tree->topLevelItem(i);
+        if (item->data(0, Qt::UserRole).toString() == id)
+            return item->text(2);
+    }
+    return {};
 }
 
 void DashboardTab::setButtonsEnabled(bool on)
@@ -255,7 +267,13 @@ void DashboardTab::startQueue(bool isUpdate)
         : QString("Checking %1 item(s)...").arg(m_queueTotal));
 
     if (m_raTab) setStatus("retroarch", "Queued");
-    for (auto* tab : m_tabs) setStatus(tab->config().id, "Queued");
+    for (auto* tab : m_tabs) {
+        const QString id = tab->config().id;
+        // Only mark as Queued if not already confirmed up to date
+        const QString current = getStatus(id);
+        if (current != "Up to date")
+            setStatus(id, "Queued");
+    }
 
     setButtonsEnabled(false);
     advanceQueue();
@@ -265,6 +283,19 @@ void DashboardTab::advanceQueue()
 {
     m_currentId.clear();
     m_currentStop = nullptr;
+
+    // Skip any queued items already known to be up to date
+    while (!m_queue.isEmpty()) {
+        const QString status = getStatus(m_queue.first().id);
+        if (status == "Up to date") {
+            ++m_queueDone;
+            m_overallBar->setValue(m_queueDone);
+            m_queue.takeFirst();
+        }
+        else {
+            break;
+        }
+    }
 
     if (m_queue.isEmpty()) {
         setButtonsEnabled(true);
