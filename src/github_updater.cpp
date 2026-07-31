@@ -1,4 +1,5 @@
-﻿#include "github_updater.h"
+﻿#include <QProcess>
+#include "github_updater.h"
 #include "downloader.h"
 #include "archive_zip.h"
 #include "archive_7z.h"
@@ -535,7 +536,35 @@ void GitHubUpdater::extractAndInstall(const EmulatorConfig& config,
     const QString& installPath,
     std::atomic<bool>& cancel)
 {
-    if (config.archiveType == ArchiveType::SingleFile) {
+    if (config.archiveType == ArchiveType::SevenZSfx) {
+        // MAME ships as a 7-Zip self-extracting archive.
+        // Run it silently with the output path flag to extract in place.
+        QDir().mkpath(installPath);
+        emit log(QString("[%1] Extracting self-installing archive...")
+            .arg(config.displayName));
+
+        QProcess proc;
+        proc.start(archivePath, {
+            QString("-o%1").arg(QDir::toNativeSeparators(installPath)),
+            "-y"
+            });
+
+        if (!proc.waitForFinished(300000)) {   // 5 minute timeout
+            proc.kill();
+            throw std::runtime_error("SFX extraction timed out.");
+        }
+
+        if (proc.exitCode() != 0) {
+            throw std::runtime_error(
+                "SFX extraction failed with exit code: " +
+                std::to_string(proc.exitCode()));
+        }
+
+        emit log(QString("[%1] Extraction complete.").arg(config.displayName));
+        return;
+    }
+
+        if (config.archiveType == ArchiveType::SingleFile) {
         QDir().mkpath(installPath);
         const QString dest = installPath + "/" + config.exeName;
         atomicReplace(archivePath, dest);

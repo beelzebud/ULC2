@@ -46,7 +46,7 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent)
     layout->addWidget(icon);
     layout->addSpacing(4);
     layout->addWidget(makeLabel("Emulator Updater", 14, true));
-    layout->addWidget(makeLabel("v2.0"));
+    layout->addWidget(makeLabel("v6.66"));
     layout->addWidget(makeLabel("Qt6  |  CMake  |  LZMA SDK"));
     layout->addWidget(makeLabel("\u00a9 2026 John N. Bilbrey + Claude"));
     layout->addStretch();

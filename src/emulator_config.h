@@ -4,7 +4,7 @@
 #include <QList>
 #include <QDir>
 
-enum class ArchiveType { Zip, SevenZ, SingleFile };
+enum class ArchiveType { Zip, SevenZ, SevenZSfx, SingleFile };
 enum class UpdateSource { GitHub, DolphinBuildbot, Rpcs3Net, Gitea, DirectUrl };
 enum class ReleaseChannel { Stable, Nightly };
 
@@ -27,7 +27,7 @@ struct EmulatorConfig {
 inline QList<EmulatorConfig> allEmulatorConfigs()
 {
 #ifdef Q_OS_WIN
-    const QString base = R"(C:\Emulators\)";
+    const QString base = R"(D:\Emulators\)";
 #else
     const QString base = QDir::homePath() + "/Emulators/";
 #endif
@@ -79,7 +79,7 @@ inline QList<EmulatorConfig> allEmulatorConfigs()
             UpdateSource::GitHub, "mamedev/mame", {},
             R"(mame\d+b_x64\.exe)",
             R"(mame\d+b_x64\.exe)",
-            ArchiveType::SingleFile,
+            ArchiveType::SevenZSfx,
             base + "MAME/",
             "mame.exe", false, ReleaseChannel::Stable,
             ":/icons/emulators/mame.png"

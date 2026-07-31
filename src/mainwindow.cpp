@@ -84,8 +84,6 @@ QPushButton:disabled { color: #004400; border-color: #004400; }
 QPushButton#stopBtn          { border-color: #FF4444; color: #FF4444; }
 QPushButton#stopBtn:hover    { background: #1a0000; }
 QPushButton#stopBtn:disabled { color: #440000; border-color: #440000; }
-QPushButton#aboutBtn         { border-color: #FF4444; color: #FF4444; }
-QPushButton#aboutBtn:hover   { background: #1a0000; }
 QProgressBar {
     border: 1px solid #005500;
     background: #000000;
@@ -214,23 +212,6 @@ void MainWindow::buildUi()
     splitter->setChildrenCollapsible(false);
     splitter->setSizes({ 120, 860 });
     root->addWidget(splitter, 1);
-
-    auto* bottomWidget = new QWidget;
-    bottomWidget->setStyleSheet("border-top: 1px solid #003300;");
-    auto* bar = new QHBoxLayout(bottomWidget);
-    bar->setContentsMargins(8, 4, 8, 4);
-
-    auto* btnSave = new QPushButton("Save Paths");
-    auto* btnAbout = new QPushButton("About");
-    btnAbout->setObjectName("aboutBtn");
-
-    connect(btnSave, &QPushButton::clicked, this, &MainWindow::onSavePaths);
-    connect(btnAbout, &QPushButton::clicked, this, &MainWindow::onAbout);
-
-    bar->addStretch();
-    bar->addWidget(btnSave);
-    bar->addWidget(btnAbout);
-    root->addWidget(bottomWidget);
 }
 
 void MainWindow::addPage(const QString& label,
@@ -251,9 +232,6 @@ void MainWindow::addPage(const QString& label,
 
     m_stack->addWidget(widget);
 }
-
-void MainWindow::onSavePaths() { saveSettings(); }
-void MainWindow::onAbout() { AboutDialog(this).exec(); }
 
 void MainWindow::loadSettings()
 {

@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <QMainWindow>
 #include <QListWidget>
@@ -17,10 +17,6 @@ public:
 
 protected:
     void closeEvent(QCloseEvent*) override;
-
-private slots:
-    void onSavePaths();
-    void onAbout();
 
 private:
     void buildUi();
