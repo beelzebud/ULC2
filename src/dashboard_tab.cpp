@@ -323,17 +323,23 @@ void DashboardTab::onStopAll()
 void DashboardTab::onCheckCores()
 {
     if (!m_raTab || m_coresRunning || !m_currentId.isEmpty()) return;
+
+    // Only set m_coresRunning if the operation actually starts.
+    // onCheckCores returns false if the RA tab is already busy.
+    if (!m_raTab->startCheckCores()) return;
+
     m_coresRunning = true;
     setButtonsEnabled(false);
     m_summaryLabel->setText("Checking RetroArch cores...");
-    m_raTab->onCheckCores();
 }
 
 void DashboardTab::onUpdateCores()
 {
     if (!m_raTab || m_coresRunning || !m_currentId.isEmpty()) return;
+
+    if (!m_raTab->startDownloadCores()) return;
+
     m_coresRunning = true;
     setButtonsEnabled(false);
     m_summaryLabel->setText("Updating RetroArch cores...");
-    m_raTab->onDownloadCores();
 }

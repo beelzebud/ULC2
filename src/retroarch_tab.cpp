@@ -52,6 +52,8 @@ public:
         const QString cached = m_cache->load(RetroArchTab::RaDownloadUrl);
         const QString current = fetchETag(RetroArchTab::RaDownloadUrl);
 
+        if (cancel->load()) { emit done(); return; }
+
         if (current.isEmpty()) {
             emit log("Could not reach RetroArch buildbot.");
             emit raCheckResult(false, cached);
@@ -523,9 +525,9 @@ void RetroArchTab::onDownloadRA()
         Qt::QueuedConnection);
 }
 
-void RetroArchTab::onCheckCores()
+bool RetroArchTab::startCheckCores()
 {
-    if (m_running.exchange(true)) return;
+    if (m_running.exchange(true)) return false;
     m_cancel = false;
     m_bar->setValue(0);
     setButtonsEnabled(false);
@@ -538,16 +540,12 @@ void RetroArchTab::onCheckCores()
     QMetaObject::invokeMethod(m_worker,
         [this, path]() { m_worker->checkCores(path, &m_cancel); },
         Qt::QueuedConnection);
+    return true;
 }
 
-void RetroArchTab::onDownloadCores()
+bool RetroArchTab::startDownloadCores()
 {
-    if (m_pendingCoreUpdates.isEmpty()) {
-        appendLog("No pending core updates — run Check for Core Updates first.");
-        emit coresUpdateFinished();
-        return;
-    }
-    if (m_running.exchange(true)) return;
+    if (m_running.exchange(true)) return false;
     m_cancel = false;
     m_bar->setValue(0);
     setButtonsEnabled(false);
@@ -559,6 +557,22 @@ void RetroArchTab::onDownloadCores()
     QMetaObject::invokeMethod(m_worker,
         [this, path, cores]() { m_worker->downloadCores(path, cores, &m_cancel); },
         Qt::QueuedConnection);
+    return true;
+}
+
+void RetroArchTab::onCheckCores()
+{
+    startCheckCores();
+}
+
+void RetroArchTab::onDownloadCores()
+{
+    if (m_pendingCoreUpdates.isEmpty()) {
+        appendLog("No pending core updates — run Check for Core Updates first.");
+        emit coresUpdateFinished();
+        return;
+    }
+    startDownloadCores();
 }
 
 void RetroArchTab::onBrowseRA()

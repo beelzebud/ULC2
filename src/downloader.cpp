@@ -65,7 +65,10 @@ void Downloader::onReadyRead()
     if (status == 304) return;
 
     if (!m_file) {
-        m_file = new QFile(m_outPath, this);
+        // Parent to nullptr to avoid double-delete in cleanup/cleanup: the
+        // QFile object is manually deleted in cleanup(); parenting it to `this`
+        // would cause QObject's child-deletion to also try to delete it.
+        m_file = new QFile(m_outPath);
         if (!m_file->open(QIODevice::WriteOnly | QIODevice::Truncate)) {
             emit log("Cannot open output file: " + m_outPath);
             m_reply->abort();

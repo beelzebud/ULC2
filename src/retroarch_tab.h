@@ -37,6 +37,10 @@ public slots:
     void onCheckCores();
     void onDownloadCores();
 
+    // Return true if the operation actually started (false = already running).
+    bool startCheckCores();
+    bool startDownloadCores();
+
 signals:
     void binaryCheckFinished(bool hasUpdate);
     void binaryUpdateFinished();

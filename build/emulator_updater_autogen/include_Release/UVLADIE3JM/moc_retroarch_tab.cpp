@@ -53,6 +53,8 @@ static constexpr auto qt_meta_stringdata_CLASSRetroArchTabENDCLASS = QtMocHelper
     "onDownloadRA",
     "onCheckCores",
     "onDownloadCores",
+    "startCheckCores",
+    "startDownloadCores",
     "onBrowseRA",
     "onBrowseCores",
     "appendLog",
@@ -68,7 +70,7 @@ static constexpr auto qt_meta_stringdata_CLASSRetroArchTabENDCLASS = QtMocHelper
 );
 #else  // !QT_MOC_HAS_STRING_DATA
 struct qt_meta_stringdata_CLASSRetroArchTabENDCLASS_t {
-    uint offsetsAndSizes[52];
+    uint offsetsAndSizes[56];
     char stringdata0[13];
     char stringdata1[20];
     char stringdata2[1];
@@ -83,18 +85,20 @@ struct qt_meta_stringdata_CLASSRetroArchTabENDCLASS_t {
     char stringdata11[13];
     char stringdata12[13];
     char stringdata13[16];
-    char stringdata14[11];
-    char stringdata15[14];
-    char stringdata16[10];
-    char stringdata17[4];
-    char stringdata18[11];
+    char stringdata14[16];
+    char stringdata15[19];
+    char stringdata16[11];
+    char stringdata17[14];
+    char stringdata18[10];
     char stringdata19[4];
-    char stringdata20[12];
-    char stringdata21[13];
-    char stringdata22[16];
-    char stringdata23[10];
-    char stringdata24[19];
-    char stringdata25[12];
+    char stringdata20[11];
+    char stringdata21[4];
+    char stringdata22[12];
+    char stringdata23[13];
+    char stringdata24[16];
+    char stringdata25[10];
+    char stringdata26[19];
+    char stringdata27[12];
 };
 #define QT_MOC_LITERAL(ofs, len) \
     uint(sizeof(qt_meta_stringdata_CLASSRetroArchTabENDCLASS_t::offsetsAndSizes) + ofs), len 
@@ -114,18 +118,20 @@ Q_CONSTINIT static const qt_meta_stringdata_CLASSRetroArchTabENDCLASS_t qt_meta_
         QT_MOC_LITERAL(144, 12),  // "onDownloadRA"
         QT_MOC_LITERAL(157, 12),  // "onCheckCores"
         QT_MOC_LITERAL(170, 15),  // "onDownloadCores"
-        QT_MOC_LITERAL(186, 10),  // "onBrowseRA"
-        QT_MOC_LITERAL(197, 13),  // "onBrowseCores"
-        QT_MOC_LITERAL(211, 9),  // "appendLog"
-        QT_MOC_LITERAL(221, 3),  // "msg"
-        QT_MOC_LITERAL(225, 10),  // "setProgMax"
-        QT_MOC_LITERAL(236, 3),  // "max"
-        QT_MOC_LITERAL(240, 11),  // "incProgress"
-        QT_MOC_LITERAL(252, 12),  // "onWorkerDone"
-        QT_MOC_LITERAL(265, 15),  // "onRACheckResult"
-        QT_MOC_LITERAL(281, 9),  // "latestTag"
-        QT_MOC_LITERAL(291, 18),  // "onCoresCheckResult"
-        QT_MOC_LITERAL(310, 11)   // "needsUpdate"
+        QT_MOC_LITERAL(186, 15),  // "startCheckCores"
+        QT_MOC_LITERAL(202, 18),  // "startDownloadCores"
+        QT_MOC_LITERAL(221, 10),  // "onBrowseRA"
+        QT_MOC_LITERAL(232, 13),  // "onBrowseCores"
+        QT_MOC_LITERAL(246, 9),  // "appendLog"
+        QT_MOC_LITERAL(256, 3),  // "msg"
+        QT_MOC_LITERAL(260, 10),  // "setProgMax"
+        QT_MOC_LITERAL(271, 3),  // "max"
+        QT_MOC_LITERAL(275, 11),  // "incProgress"
+        QT_MOC_LITERAL(287, 12),  // "onWorkerDone"
+        QT_MOC_LITERAL(300, 15),  // "onRACheckResult"
+        QT_MOC_LITERAL(316, 9),  // "latestTag"
+        QT_MOC_LITERAL(326, 18),  // "onCoresCheckResult"
+        QT_MOC_LITERAL(345, 11)   // "needsUpdate"
     },
     "RetroArchTab",
     "binaryCheckFinished",
@@ -141,6 +147,8 @@ Q_CONSTINIT static const qt_meta_stringdata_CLASSRetroArchTabENDCLASS_t qt_meta_
     "onDownloadRA",
     "onCheckCores",
     "onDownloadCores",
+    "startCheckCores",
+    "startDownloadCores",
     "onBrowseRA",
     "onBrowseCores",
     "appendLog",
@@ -164,7 +172,7 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSRetroArchTabENDCLASS[] = {
       11,       // revision
        0,       // classname
        0,    0, // classinfo
-      17,   14, // methods
+      19,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -172,25 +180,27 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSRetroArchTabENDCLASS[] = {
        4,       // signalCount
 
  // signals: name, argc, parameters, tag, flags, initial metatype offsets
-       1,    1,  116,    2, 0x06,    1 /* Public */,
-       4,    0,  119,    2, 0x06,    3 /* Public */,
-       5,    2,  120,    2, 0x06,    4 /* Public */,
-       8,    0,  125,    2, 0x06,    7 /* Public */,
+       1,    1,  128,    2, 0x06,    1 /* Public */,
+       4,    0,  131,    2, 0x06,    3 /* Public */,
+       5,    2,  132,    2, 0x06,    4 /* Public */,
+       8,    0,  137,    2, 0x06,    7 /* Public */,
 
  // slots: name, argc, parameters, tag, flags, initial metatype offsets
-       9,    0,  126,    2, 0x0a,    8 /* Public */,
-      10,    0,  127,    2, 0x0a,    9 /* Public */,
-      11,    0,  128,    2, 0x0a,   10 /* Public */,
-      12,    0,  129,    2, 0x0a,   11 /* Public */,
-      13,    0,  130,    2, 0x0a,   12 /* Public */,
-      14,    0,  131,    2, 0x08,   13 /* Private */,
-      15,    0,  132,    2, 0x08,   14 /* Private */,
-      16,    1,  133,    2, 0x08,   15 /* Private */,
-      18,    1,  136,    2, 0x08,   17 /* Private */,
-      20,    0,  139,    2, 0x08,   19 /* Private */,
-      21,    0,  140,    2, 0x08,   20 /* Private */,
-      22,    2,  141,    2, 0x08,   21 /* Private */,
-      24,    2,  146,    2, 0x08,   24 /* Private */,
+       9,    0,  138,    2, 0x0a,    8 /* Public */,
+      10,    0,  139,    2, 0x0a,    9 /* Public */,
+      11,    0,  140,    2, 0x0a,   10 /* Public */,
+      12,    0,  141,    2, 0x0a,   11 /* Public */,
+      13,    0,  142,    2, 0x0a,   12 /* Public */,
+      14,    0,  143,    2, 0x0a,   13 /* Public */,
+      15,    0,  144,    2, 0x0a,   14 /* Public */,
+      16,    0,  145,    2, 0x08,   15 /* Private */,
+      17,    0,  146,    2, 0x08,   16 /* Private */,
+      18,    1,  147,    2, 0x08,   17 /* Private */,
+      20,    1,  150,    2, 0x08,   19 /* Private */,
+      22,    0,  153,    2, 0x08,   21 /* Private */,
+      23,    0,  154,    2, 0x08,   22 /* Private */,
+      24,    2,  155,    2, 0x08,   23 /* Private */,
+      26,    2,  160,    2, 0x08,   26 /* Private */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Bool,    3,
@@ -204,14 +214,16 @@ Q_CONSTINIT static const uint qt_meta_data_CLASSRetroArchTabENDCLASS[] = {
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
+    QMetaType::Bool,
+    QMetaType::Bool,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::QString,   17,
-    QMetaType::Void, QMetaType::Int,   19,
+    QMetaType::Void, QMetaType::QString,   19,
+    QMetaType::Void, QMetaType::Int,   21,
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void, QMetaType::Bool, QMetaType::QString,    3,   23,
-    QMetaType::Void, QMetaType::QStringList, QMetaType::Int,   25,    7,
+    QMetaType::Void, QMetaType::Bool, QMetaType::QString,    3,   25,
+    QMetaType::Void, QMetaType::QStringList, QMetaType::Int,   27,    7,
 
        0        // eod
 };
@@ -246,6 +258,10 @@ Q_CONSTINIT const QMetaObject RetroArchTab::staticMetaObject = { {
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'onDownloadCores'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
+        // method 'startCheckCores'
+        QtPrivate::TypeAndForceComplete<bool, std::false_type>,
+        // method 'startDownloadCores'
+        QtPrivate::TypeAndForceComplete<bool, std::false_type>,
         // method 'onBrowseRA'
         QtPrivate::TypeAndForceComplete<void, std::false_type>,
         // method 'onBrowseCores'
@@ -287,14 +303,18 @@ void RetroArchTab::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id
         case 6: _t->onDownloadRA(); break;
         case 7: _t->onCheckCores(); break;
         case 8: _t->onDownloadCores(); break;
-        case 9: _t->onBrowseRA(); break;
-        case 10: _t->onBrowseCores(); break;
-        case 11: _t->appendLog((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
-        case 12: _t->setProgMax((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
-        case 13: _t->incProgress(); break;
-        case 14: _t->onWorkerDone(); break;
-        case 15: _t->onRACheckResult((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2]))); break;
-        case 16: _t->onCoresCheckResult((*reinterpret_cast< std::add_pointer_t<QStringList>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2]))); break;
+        case 9: { bool _r = _t->startCheckCores();
+            if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = std::move(_r); }  break;
+        case 10: { bool _r = _t->startDownloadCores();
+            if (_a[0]) *reinterpret_cast< bool*>(_a[0]) = std::move(_r); }  break;
+        case 11: _t->onBrowseRA(); break;
+        case 12: _t->onBrowseCores(); break;
+        case 13: _t->appendLog((*reinterpret_cast< std::add_pointer_t<QString>>(_a[1]))); break;
+        case 14: _t->setProgMax((*reinterpret_cast< std::add_pointer_t<int>>(_a[1]))); break;
+        case 15: _t->incProgress(); break;
+        case 16: _t->onWorkerDone(); break;
+        case 17: _t->onRACheckResult((*reinterpret_cast< std::add_pointer_t<bool>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<QString>>(_a[2]))); break;
+        case 18: _t->onCoresCheckResult((*reinterpret_cast< std::add_pointer_t<QStringList>>(_a[1])),(*reinterpret_cast< std::add_pointer_t<int>>(_a[2]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -349,13 +369,13 @@ int RetroArchTab::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 17)
+        if (_id < 19)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 17;
+        _id -= 19;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 17)
+        if (_id < 19)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 17;
+        _id -= 19;
     }
     return _id;
 }
