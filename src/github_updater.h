@@ -49,7 +49,8 @@ private:
     GitHubRelease fetchFromBuildbot(const EmulatorConfig& config);
     GitHubRelease fetchFromRpcs3Net(const EmulatorConfig& config);
     GitHubRelease fetchFromGitea(const EmulatorConfig& config, ReleaseChannel channel);
-    GitHubRelease fetchFromDirectUrl(const EmulatorConfig& config);
+    GitHubRelease fetchFromDirectUrl(const EmulatorConfig& config, const QString& url);
+    GitHubRelease fetchFromNightlyManifest(const EmulatorConfig& config);
 
     bool downloadSync(const QString& url, const QString& dest, std::atomic<bool>& cancel);
 

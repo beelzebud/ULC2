@@ -25,6 +25,14 @@ struct EmulatorConfig {
     // Forgejo/Gitea sources only: repo (owner/name) used by the Stable channel,
     // e.g. "eden-ci/master". When empty, githubRepo is used for both channels.
     QString        giteaStableRepo;
+    // Emulators that ship nightlies outside their main release source (e.g.
+    // GitHub Actions artifacts via nightly.link): direct URL used by the
+    // Nightly channel. When empty, the normal source fetch is used.
+    QString        nightlyDirectUrl;
+    // Nightly channel: URL of a JSON manifest that describes the newest build
+    // (e.g. PPSSPP's https://builds.ppsspp.org/meta/status.json). When empty,
+    // the normal source fetch (or nightlyDirectUrl) is used.
+    QString        nightlyManifestUrl;
 };
 
 inline QList<EmulatorConfig> allEmulatorConfigs()
@@ -66,7 +74,7 @@ inline QList<EmulatorConfig> allEmulatorConfigs()
             base + "Eden/",
             "eden.exe", false, ReleaseChannel::Nightly,
             ":/icons/emulators/eden.png",
-            "eden-ci/master"
+            "eden-ci/master", {}
         },
         {
             "hypseus_singe", "Hypseus Singe  (Laserdisc)",
@@ -92,11 +100,12 @@ inline QList<EmulatorConfig> allEmulatorConfigs()
             "mesen", "Mesen  (NES / SNES / GB)",
             UpdateSource::GitHub, "nesdev-org/MesenCE", {},
             R"(Mesen_.*_Windows\.zip)",
-            R"(Mesen_.*_Windows\.zip)",
+            R"(Mesen \(Windows - net10\.0\)\.zip)",
             ArchiveType::Zip,
             base + "Mesen/",
             "Mesen.exe", false, ReleaseChannel::Stable,
-            ":/icons/emulators/mesen.png"
+            ":/icons/emulators/mesen.png",
+            {}, "https://nightly.link/nesdev-org/MesenCE/workflows/build/master/Mesen%20%28Windows%20-%20net10.0%29.zip"
         },
         {
             "mgba", "mGBA  (GBA / GB)",
@@ -133,11 +142,12 @@ inline QList<EmulatorConfig> allEmulatorConfigs()
             "ppsspp", "PPSSPP  (PSP)",
             UpdateSource::GitHub, "hrydgard/ppsspp", {},
             R"(PPSSPP-.*-Windows-x64\.zip)",
-            R"(PPSSPP-.*-Windows-x64\.zip)",
+            R"(ppsspp_win_.*\.zip)",
             ArchiveType::Zip,
             base + "PPSSPP/",
-            "PPSSPPWindows64.exe", true, ReleaseChannel::Stable,
-            ":/icons/emulators/ppsspp.png"
+            "PPSSPPWindows64.exe", false, ReleaseChannel::Stable,
+            ":/icons/emulators/ppsspp.png",
+            {}, {}, "https://builds.ppsspp.org/meta/status.json"
         },
         {
             "rpcs3", "RPCS3  (PS3)",

@@ -33,6 +33,16 @@ GitHubUpdater::GitHubUpdater(EtagCache* cache, QObject* parent)
 GitHubRelease GitHubUpdater::fetchLatestRelease(const EmulatorConfig& config,
     ReleaseChannel channel)
 {
+    // Some emulators publish nightlies outside their main release source
+    // (e.g. GitHub Actions artifacts via nightly.link, or a JSON build
+    // manifest like builds.ppsspp.org) — use the dedicated nightly source.
+    if (channel == ReleaseChannel::Nightly) {
+        if (!config.nightlyManifestUrl.isEmpty())
+            return fetchFromNightlyManifest(config);
+        if (!config.nightlyDirectUrl.isEmpty())
+            return fetchFromDirectUrl(config, config.nightlyDirectUrl);
+    }
+
     switch (config.source) {
     case UpdateSource::GitHub:
         return fetchFromGitHub(config, channel);
@@ -43,7 +53,7 @@ GitHubRelease GitHubUpdater::fetchLatestRelease(const EmulatorConfig& config,
     case UpdateSource::Gitea:
         return fetchFromGitea(config, channel);
     case UpdateSource::DirectUrl:
-        return fetchFromDirectUrl(config);
+        return fetchFromDirectUrl(config, config.buildbotApiUrl);
     }
     return {};
 }
@@ -387,18 +397,22 @@ GitHubRelease GitHubUpdater::fetchFromGitea(const EmulatorConfig& config,
 // DirectUrl backend — HEAD request, ETag/Last-Modified as version identifier
 // ─────────────────────────────────────────────────────────────────────────────
 
-GitHubRelease GitHubUpdater::fetchFromDirectUrl(const EmulatorConfig& config)
+GitHubRelease GitHubUpdater::fetchFromDirectUrl(const EmulatorConfig& config,
+    const QString& url)
 {
     GitHubRelease result;
 
     QNetworkRequest req;
-    req.setUrl(QUrl(config.buildbotApiUrl));
+    req.setUrl(QUrl(url));
     req.setRawHeader("User-Agent", "ulc-emulator-updater/1.0");
+    // HEAD is rejected by some hosts (e.g. nightly.link returns 404), but a
+    // 1-byte ranged GET is served — and carries ETag / Last-Modified.
+    req.setRawHeader("Range", "bytes=0-0");
     req.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
         QVariant::fromValue(QNetworkRequest::NoLessSafeRedirectPolicy));
 
     QEventLoop loop;
-    QNetworkReply* reply = m_nam->head(req);
+    QNetworkReply* reply = m_nam->get(req);
     connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
     QTimer::singleShot(10000, &loop, &QEventLoop::quit);
     loop.exec();
@@ -426,8 +440,98 @@ GitHubRelease GitHubUpdater::fetchFromDirectUrl(const EmulatorConfig& config)
     result.valid = true;
 
     GitHubAsset asset;
-    asset.name = QFileInfo(QUrl(config.buildbotApiUrl).path()).fileName();
-    asset.downloadUrl = config.buildbotApiUrl;
+    asset.name = QFileInfo(QUrl(url).path()).fileName();
+    asset.downloadUrl = url;
+    result.assets.append(asset);
+
+    return result;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// JSON build manifest backend (tailored to PPSSPP's builds.ppsspp.org shape:
+// { "latest": { "description": "...", "builds": { "Windows": ["...zip"] } } })
+// ─────────────────────────────────────────────────────────────────────────────
+
+GitHubRelease GitHubUpdater::fetchFromNightlyManifest(const EmulatorConfig& config)
+{
+    GitHubRelease result;
+
+    auto fetchJson = [&](const QString& url) -> QJsonDocument {
+        QNetworkRequest req;
+        req.setUrl(QUrl(url));
+        req.setRawHeader("User-Agent", "ulc-emulator-updater/1.0");
+        req.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
+            QVariant::fromValue(QNetworkRequest::NoLessSafeRedirectPolicy));
+
+        QEventLoop loop;
+        QNetworkReply* reply = m_nam->get(req);
+        connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+        QTimer::singleShot(10000, &loop, &QEventLoop::quit);
+        loop.exec();
+
+        const QByteArray data = reply->readAll();
+        const QNetworkReply::NetworkError err = reply->error();
+        reply->deleteLater();
+        if (err != QNetworkReply::NoError) return {};
+        return QJsonDocument::fromJson(data);
+    };
+
+    auto entryWithWindowsZip = [](const QJsonObject& obj,
+        QString* description, QString* fileName) {
+        if (obj.isEmpty()) return false;
+        *description = obj.value("description").toString();
+        const QJsonArray win = obj.value("builds").toObject()
+            .value("Windows").toArray();
+        for (const auto& val : win) {
+            const QString name = val.toString();
+            if (name.endsWith(".zip", Qt::CaseInsensitive)) {
+                *fileName = name;
+                return !description->isEmpty();
+            }
+        }
+        return false;
+    };
+
+    const QUrl manifestUrl(config.nightlyManifestUrl);
+    const QString origin = manifestUrl.scheme() + "://" + manifestUrl.host();
+
+    QString description;
+    QString fileName;
+
+    QJsonDocument doc = fetchJson(config.nightlyManifestUrl);
+    if (doc.isObject())
+        entryWithWindowsZip(doc.object().value("latest").toObject(),
+            &description, &fileName);
+
+    // The "latest" entry may lack a Windows build (still building or the
+    // Windows job failed) — fall back to scanning recent history.
+    if (fileName.isEmpty()) {
+        const QString historyUrl = origin + "/meta/history-20.json";
+        doc = fetchJson(historyUrl);
+        if (doc.isArray()) {
+            for (const auto& val : doc.array()) {
+                if (entryWithWindowsZip(val.toObject(), &description, &fileName))
+                    break;
+            }
+        }
+    }
+
+    if (fileName.isEmpty()) {
+        emit log("Build manifest: no Windows build found for "
+            + config.displayName);
+        return result;
+    }
+
+    const QString downloadUrl =
+        origin + "/builds/" + description + "/" + fileName;
+
+    result.tagName = description;
+    result.isPreRelease = true;
+    result.valid = true;
+
+    GitHubAsset asset;
+    asset.name = fileName;
+    asset.downloadUrl = downloadUrl;
     result.assets.append(asset);
 
     return result;
