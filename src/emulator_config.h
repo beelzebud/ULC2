@@ -22,6 +22,9 @@ struct EmulatorConfig {
     bool           stripTopLevelDir;
     ReleaseChannel defaultChannel;
     QString        iconResource;
+    // Forgejo/Gitea sources only: repo (owner/name) used by the Stable channel,
+    // e.g. "eden-ci/master". When empty, githubRepo is used for both channels.
+    QString        giteaStableRepo;
 };
 
 inline QList<EmulatorConfig> allEmulatorConfigs()
@@ -55,14 +58,15 @@ inline QList<EmulatorConfig> allEmulatorConfigs()
         },
         {
             "eden", "Eden  (Switch)",
-            UpdateSource::Gitea, {},
-            "https://git.eden-emu.dev/api/v1/repos/eden-emu/eden/releases/latest",
-            R"(Eden-Windows-.*-amd64-clang-pgo\.zip)",
+            UpdateSource::Gitea, "eden-ci/nightly",
+            "https://git.eden-emu.dev",
+            R"(Eden-Windows-.*-amd64-gcc-standard\.zip)",
             R"(Eden-Windows-.*-amd64-clang-pgo\.zip)",
             ArchiveType::Zip,
             base + "Eden/",
-            "eden.exe", true, ReleaseChannel::Stable,
-            ":/icons/emulators/eden.png"
+            "eden.exe", false, ReleaseChannel::Nightly,
+            ":/icons/emulators/eden.png",
+            "eden-ci/master"
         },
         {
             "hypseus_singe", "Hypseus Singe  (Laserdisc)",

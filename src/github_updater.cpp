@@ -41,7 +41,7 @@ GitHubRelease GitHubUpdater::fetchLatestRelease(const EmulatorConfig& config,
     case UpdateSource::Rpcs3Net:
         return fetchFromRpcs3Net(config);
     case UpdateSource::Gitea:
-        return fetchFromGitea(config);
+        return fetchFromGitea(config, channel);
     case UpdateSource::DirectUrl:
         return fetchFromDirectUrl(config);
     }
@@ -273,12 +273,28 @@ GitHubRelease GitHubUpdater::fetchFromRpcs3Net(const EmulatorConfig& config)
 // Gitea backend
 // ─────────────────────────────────────────────────────────────────────────────
 
-GitHubRelease GitHubUpdater::fetchFromGitea(const EmulatorConfig& config)
+GitHubRelease GitHubUpdater::fetchFromGitea(const EmulatorConfig& config,
+    ReleaseChannel channel)
 {
     GitHubRelease result;
 
+    QString repo = config.githubRepo;
+    if (channel == ReleaseChannel::Stable && !config.giteaStableRepo.isEmpty())
+        repo = config.giteaStableRepo;
+
+    QString base = config.buildbotApiUrl.trimmed();
+    while (base.endsWith('/')) base.chop(1);
+
+    if (base.isEmpty() || repo.isEmpty()) {
+        emit log("Gitea: missing base URL or repo for " + config.displayName);
+        return result;
+    }
+
+    const QString endpoint =
+        base + "/api/v1/repos/" + repo + "/releases?limit=10";
+
     QNetworkRequest req;
-    req.setUrl(QUrl(config.buildbotApiUrl));
+    req.setUrl(QUrl(endpoint));
     req.setRawHeader("User-Agent", "ulc-emulator-updater/1.0");
     req.setRawHeader("Accept", "application/json");
     req.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
@@ -300,27 +316,70 @@ GitHubRelease GitHubUpdater::fetchFromGitea(const EmulatorConfig& config)
     const QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
     reply->deleteLater();
 
-    if (!doc.isObject()) {
+    auto addBodyLinks = [&](const QString& body) {
+        const QRegularExpression linkRx(R"((https?://[^\s)\]>]+))");
+        auto it = linkRx.globalMatch(body);
+        while (it.hasNext()) {
+            const QString url = it.next().captured(1);
+            const QString name = QFileInfo(QUrl(url).path()).fileName();
+            if (!name.endsWith(".zip", Qt::CaseInsensitive) &&
+                !name.endsWith(".7z", Qt::CaseInsensitive) &&
+                !name.endsWith(".exe", Qt::CaseInsensitive))
+                continue;
+            bool dup = false;
+            for (const auto& a : result.assets)
+                if (a.downloadUrl == url) { dup = true; break; }
+            if (dup) continue;
+            GitHubAsset asset;
+            asset.name = name;
+            asset.downloadUrl = url;
+            result.assets.append(asset);
+        }
+    };
+
+    auto parseRelease = [&](const QJsonObject& obj) {
+        result.tagName = obj.value("tag_name").toString();
+        result.publishedAt = obj.value("published_at").toString();
+        result.isPreRelease = obj.value("prerelease").toBool();
+        for (const auto& val : obj.value("assets").toArray()) {
+            const auto a = val.toObject();
+            GitHubAsset asset;
+            asset.name = a.value("name").toString();
+            asset.downloadUrl = a.value("browser_download_url").toString();
+            asset.updatedAt = a.value("updated_at").toString();
+            asset.size = a.value("size").toInteger();
+            result.assets.append(asset);
+        }
+        // Some Forgejo releases publish downloads only as links in the
+        // release body (no API attachments) — surface those as assets too.
+        addBodyLinks(obj.value("body").toString());
+        result.valid = !result.tagName.isEmpty();
+    };
+
+    if (!doc.isArray()) {
         emit log("Gitea API: unexpected response for " + config.displayName);
         return result;
     }
 
-    const QJsonObject root = doc.object();
-    result.tagName = root.value("tag_name").toString();
-    result.publishedAt = root.value("published_at").toString();
-    result.isPreRelease = root.value("prerelease").toBool();
-
-    for (const auto& val : root.value("assets").toArray()) {
-        const auto a = val.toObject();
-        GitHubAsset asset;
-        asset.name = a.value("name").toString();
-        asset.downloadUrl = a.value("browser_download_url").toString();
-        asset.updatedAt = a.value("updated_at").toString();
-        asset.size = a.value("size").toInteger();
-        result.assets.append(asset);
+    const QJsonArray arr = doc.array();
+    if (arr.isEmpty()) {
+        emit log("Gitea API: no releases found for " + config.displayName);
+        return result;
     }
 
-    result.valid = !result.tagName.isEmpty();
+    QJsonObject best;
+    const bool wantPrerelease = (channel == ReleaseChannel::Nightly);
+    for (const auto& val : arr) {
+        const auto obj = val.toObject();
+        const bool isPre = obj.value("prerelease").toBool();
+        if (isPre == wantPrerelease) { best = obj; break; }
+    }
+    if (best.isEmpty())
+        best = arr.first().toObject();
+
+    if (!best.isEmpty())
+        parseRelease(best);
+
     return result;
 }
 

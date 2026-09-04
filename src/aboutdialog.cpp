@@ -19,7 +19,7 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent)
 
     auto* icon = new QLabel;
     icon->setPixmap(
-        QPixmap(":/icons/ulc.png").scaled(80, 80,
+        QPixmap(":/icons/emu-updater.png").scaled(80, 80,
             Qt::KeepAspectRatio, Qt::SmoothTransformation));
     icon->setAlignment(Qt::AlignCenter);
 
