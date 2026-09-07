@@ -22,8 +22,11 @@ D:/Build/ULC2/build/emulator_updater_autogen/include_Release/retroarch_tab.moc: 
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/QTimer \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/QUrl \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/QVariant \
+  C:/Qt/6.5.3/msvc2019_64/include/QtCore/q20algorithm.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtCore/q20functional.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/q20memory.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/q20type_traits.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtCore/qabstractitemmodel.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qalgorithms.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qanystringview.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qarraydata.h \
@@ -40,6 +43,8 @@ D:/Build/ULC2/build/emulator_updater_autogen/include_Release/retroarch_tab.moc: 
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qbytearraylist.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qbytearrayview.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qcalendar.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtCore/qcborcommon.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtCore/qcborvalue.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qchar.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qcompare.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qcompare_impl.h \
@@ -50,6 +55,8 @@ D:/Build/ULC2/build/emulator_updater_autogen/include_Release/retroarch_tab.moc: 
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qcontainerinfo.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qcontainertools_impl.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qcontiguouscache.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtCore/qcoreapplication.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtCore/qcoreapplication_platform.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qcoreevent.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qcryptographichash.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qdarwinhelpers.h \
@@ -61,6 +68,7 @@ D:/Build/ULC2/build/emulator_updater_autogen/include_Release/retroarch_tab.moc: 
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qelapsedtimer.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qeventloop.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qexceptionhandling.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtCore/qfactoryinterface.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qfile.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qfiledevice.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qfileinfo.h \
@@ -75,8 +83,11 @@ D:/Build/ULC2/build/emulator_updater_autogen/include_Release/retroarch_tab.moc: 
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qhashfunctions.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qiodevice.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qiodevicebase.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtCore/qitemselectionmodel.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qiterable.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qiterator.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtCore/qjsonobject.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtCore/qjsonvalue.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qline.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qlist.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qlocale.h \
@@ -97,11 +108,13 @@ D:/Build/ULC2/build/emulator_updater_autogen/include_Release/retroarch_tab.moc: 
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qobjectdefs_impl.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qoverload.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qpair.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtCore/qplugin.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qpoint.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qpointer.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qprocessordetection.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qrect.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qrefcount.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtCore/qregularexpression.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qscopedpointer.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qscopeguard.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qset.h \
@@ -146,10 +159,16 @@ D:/Build/ULC2/build/emulator_updater_autogen/include_Release/retroarch_tab.moc: 
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qtypes.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qurl.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qutf8stringview.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtCore/quuid.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qvariant.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qvarlengtharray.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qversiontagging.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qxptype_traits.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtGui/QHideEvent \
+  C:/Qt/6.5.3/msvc2019_64/include/QtGui/QMovie \
+  C:/Qt/6.5.3/msvc2019_64/include/QtGui/QPaintEvent \
+  C:/Qt/6.5.3/msvc2019_64/include/QtGui/QPainter \
+  C:/Qt/6.5.3/msvc2019_64/include/QtGui/QShowEvent \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/QTextBlock \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/QTextCursor \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/QTextDocument \
@@ -168,9 +187,13 @@ D:/Build/ULC2/build/emulator_updater_autogen/include_Release/retroarch_tab.moc: 
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qglyphrun.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qicon.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qimage.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtGui/qimageiohandler.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtGui/qimagereader.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qinputdevice.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qkeysequence.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtGui/qmovie.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qpaintdevice.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtGui/qpainter.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qpalette.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qpen.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qpicture.h \
@@ -193,6 +216,7 @@ D:/Build/ULC2/build/emulator_updater_autogen/include_Release/retroarch_tab.moc: 
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qtguiexports.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qtguiglobal.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qtransform.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtGui/qvalidator.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qvector2d.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qvectornd.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qwindowdefs.h \
@@ -227,11 +251,15 @@ D:/Build/ULC2/build/emulator_updater_autogen/include_Release/retroarch_tab.moc: 
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QPushButton \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QScrollBar \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QTextEdit \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QTreeWidget \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QVBoxLayout \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/QWidget \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qabstractbutton.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qabstractitemdelegate.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qabstractitemview.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qabstractscrollarea.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qabstractslider.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qabstractspinbox.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qboxlayout.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qdialog.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qfiledialog.h \
@@ -244,15 +272,25 @@ D:/Build/ULC2/build/emulator_updater_autogen/include_Release/retroarch_tab.moc: 
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qlineedit.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qprogressbar.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qpushbutton.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qrubberband.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qscrollbar.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qsizepolicy.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qslider.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qstyle.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qstyleoption.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qtabbar.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qtabwidget.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qtextedit.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qtreeview.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qtreewidget.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qtreewidgetitemiterator.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qtwidgets-config.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qtwidgetsexports.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qtwidgetsglobal.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtWidgets/qwidget.h \
   D:/Build/ULC2/src/archive_7z.h \
   D:/Build/ULC2/src/archive_zip.h \
+  D:/Build/ULC2/src/backdrop_pane.h \
   D:/Build/ULC2/src/constants.h \
   D:/Build/ULC2/src/downloader.h \
   D:/Build/ULC2/src/emulator_config.h \

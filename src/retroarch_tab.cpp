@@ -484,7 +484,7 @@ void RetroArchTab::buildUi()
     {
         auto* grp = new QGroupBox("Log");
         auto* lay = new QVBoxLayout(grp);
-        m_log = new QTextEdit;
+        m_log = new LogView;
         m_log->setReadOnly(true);
         lay->addWidget(m_log);
         root->addWidget(grp, 1);
@@ -672,6 +672,7 @@ void RetroArchTab::incProgress()
 
 void RetroArchTab::setButtonsEnabled(bool on)
 {
+    m_log->setBusy(!on); // backdrop animates only while a task runs
     m_btnCheckRA->setEnabled(on);
     m_btnCheckCores->setEnabled(on);
     m_btnDownloadRA->setEnabled(on && m_raHasUpdate);

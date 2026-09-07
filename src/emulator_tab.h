@@ -10,6 +10,7 @@
 #include <QThread>
 #include <atomic>
 
+#include "backdrop_pane.h"
 #include "emulator_config.h"
 #include "settings.h"
 #include "etag_cache.h"
@@ -63,7 +64,7 @@ private:
     QPushButton* m_btnBrowse = nullptr;
     QLabel* m_verLabel = nullptr;
     QProgressBar* m_bar = nullptr;
-    QTextEdit* m_log = nullptr;
+    LogView* m_log = nullptr;
 
     GitHubUpdater* m_updater = nullptr;
     QThread* m_worker = nullptr;

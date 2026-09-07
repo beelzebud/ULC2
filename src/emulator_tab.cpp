@@ -167,7 +167,7 @@ void EmulatorTab::buildUi()
     {
         auto* grp = new QGroupBox("Log");
         auto* lay = new QVBoxLayout(grp);
-        m_log = new QTextEdit;
+        m_log = new LogView;
         m_log->setReadOnly(true);
         lay->addWidget(m_log);
         root->addWidget(grp, 1);
@@ -203,6 +203,7 @@ void EmulatorTab::onCheckForUpdate()
     appendLog(QString("Checking latest %1 release for %2...")
         .arg(channelLabel, m_config.displayName));
     m_btnCheck->setEnabled(false);
+    m_log->setBusy(true);
 
     const EmulatorConfig cfg = m_config;
     const ReleaseChannel channel = selectedChannel();
@@ -212,6 +213,7 @@ void EmulatorTab::onCheckForUpdate()
             const GitHubRelease r = m_updater->fetchLatestRelease(cfg, channel);
             QMetaObject::invokeMethod(this, [this, r, cfg, channel]() {
                 m_btnCheck->setEnabled(true);
+                m_log->setBusy(false);
 
                 if (!r.valid) {
                     appendLog("Could not fetch release info.");
@@ -318,6 +320,7 @@ void EmulatorTab::updateVersionLabel()
 
 void EmulatorTab::setButtonsEnabled(bool on)
 {
+    m_log->setBusy(!on); // backdrop animates only while this tab works
     m_btnUpdate->setEnabled(on);
     m_btnCheck->setEnabled(on);
     m_btnBrowse->setEnabled(on);

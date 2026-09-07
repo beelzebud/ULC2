@@ -45,6 +45,16 @@ inline QList<EmulatorConfig> allEmulatorConfigs()
 
     return QList<EmulatorConfig>({
         {
+            "ares", "ares  (Multi-system)",
+            UpdateSource::GitHub, "ares-emulator/ares", {},
+            R"(ares-windows-x64\.zip)",
+            R"(ares-windows-x64\.zip)",
+            ArchiveType::Zip,
+            base + "ares/",
+            "ares.exe", true, ReleaseChannel::Nightly,
+            ":/icons/emulators/ares.png"
+        },
+        {
             "cemu", "Cemu  (Wii U)",
             UpdateSource::GitHub, "cemu-project/Cemu", {},
             R"(cemu-.*-windows-x64\.zip)",

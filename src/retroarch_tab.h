@@ -10,6 +10,7 @@
 #include <QStringList>
 #include <atomic>
 
+#include "backdrop_pane.h"
 #include "settings.h"
 #include "etag_cache.h"
 
@@ -73,7 +74,7 @@ private:
     QLabel* m_raStatusLabel = nullptr;
     QLabel* m_coreStatusLabel = nullptr;
     QProgressBar* m_bar = nullptr;
-    QTextEdit* m_log = nullptr;
+    LogView* m_log = nullptr;
 
     RetroArchWorker* m_worker = nullptr;
     QThread* m_thread = nullptr;

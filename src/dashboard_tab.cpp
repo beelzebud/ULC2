@@ -143,7 +143,7 @@ void DashboardTab::buildUi()
         auto* grp = new QGroupBox("Status");
         auto* lay = new QVBoxLayout(grp);
 
-        m_tree = new QTreeWidget;
+        m_tree = new StatusTree;
         m_tree->setColumnCount(3);
         m_tree->setHeaderLabels({ "Emulator", "Current Version", "Status" });
         m_tree->setRootIsDecorated(false);
@@ -154,7 +154,7 @@ void DashboardTab::buildUi()
         m_tree->header()->setSectionResizeMode(2, QHeaderView::Fixed);
         m_tree->header()->resizeSection(2, 160);
         m_tree->setStyleSheet(
-            "QTreeWidget { background:#000; color:#00FF00; border:1px solid #005500; }"
+            "QTreeWidget { background:transparent; color:#00FF00; border:1px solid #005500; }"
             "QHeaderView::section { background:#001a00; color:#00FF00; "
             "border:1px solid #003300; padding:4px; }"
             "QTreeWidget::item { padding:3px; }"
@@ -216,6 +216,7 @@ QString DashboardTab::getStatus(const QString& id) const
 
 void DashboardTab::setButtonsEnabled(bool on)
 {
+    m_tree->setBusy(!on); // backdrop animates only while work is running
     m_btnCheckAll->setEnabled(on);
     m_btnUpdateAll->setEnabled(on);
     m_btnCheckCores->setEnabled(on);

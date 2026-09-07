@@ -9,6 +9,7 @@
 #include <QMap>
 #include <functional>
 
+#include "backdrop_pane.h"
 #include "emulator_tab.h"
 #include "retroarch_tab.h"
 
@@ -46,7 +47,7 @@ private:
     QList<EmulatorTab*> m_tabs;
     RetroArchTab* m_raTab = nullptr;
 
-    QTreeWidget* m_tree = nullptr;
+    StatusTree* m_tree = nullptr;
     QPushButton* m_btnCheckAll = nullptr;
     QPushButton* m_btnUpdateAll = nullptr;
     QPushButton* m_btnCheckCores = nullptr;
