@@ -40,7 +40,9 @@ jobs:
         run: vcpkg install openssl zlib --triplet x64-windows
 
       - name: Configure
-        run: cmake -S . -B build -G "Visual Studio 17 2022" -A x64
+        # No explicit generator: pick whatever Visual Studio the image has
+        # (image VS versions shift over time; default platform is x64).
+        run: cmake -S . -B build
           -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
 
       - name: Build
