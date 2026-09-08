@@ -42,8 +42,17 @@ jobs:
       - name: Configure
         # No explicit generator: pick whatever Visual Studio the image has
         # (image VS versions shift over time; default platform is x64).
-        run: cmake -S . -B build
-          -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake
+        # Tagged builds stamp the About-dialog version with the tag;
+        # manual runs fall back to CMake's git describe.
+        shell: bash
+        run: |
+          VER=""
+          if [[ "$GITHUB_REF" == refs/tags/* ]]; then
+            VER="-DAPP_VERSION=${GITHUB_REF_NAME}"
+          fi
+          cmake -S . -B build \
+            -DCMAKE_TOOLCHAIN_FILE=C:/vcpkg/scripts/buildsystems/vcpkg.cmake \
+            $VER
 
       - name: Build
         run: cmake --build build --config Release --target emulator_updater

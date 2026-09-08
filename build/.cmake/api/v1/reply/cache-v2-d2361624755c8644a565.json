@@ -1506,6 +1506,22 @@
 			"value" : "[optimized;C:/Users/Beelz/vcpkg/installed/x64-windows/lib/zlib.lib;debug;C:/Users/Beelz/vcpkg/installed/x64-windows/debug/lib/zlibd.lib][C:/Users/Beelz/vcpkg/installed/x64-windows/include][c ][v1.3.1()]"
 		},
 		{
+			"name" : "GIT_EXECUTABLE",
+			"properties" : 
+			[
+				{
+					"name" : "ADVANCED",
+					"value" : "1"
+				},
+				{
+					"name" : "HELPSTRING",
+					"value" : "Git command line client"
+				}
+			],
+			"type" : "FILEPATH",
+			"value" : "C:/Program Files/Git/mingw64/bin/git.exe"
+		},
+		{
 			"name" : "HAVE_STDATOMIC",
 			"properties" : 
 			[

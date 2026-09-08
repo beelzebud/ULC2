@@ -46,6 +46,9 @@
 		"C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/Internal/CMakeCommonLinkerInformation.cmake",
 		"C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/Platform/Linker/Windows-MSVC-C.cmake",
 		"C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/Platform/Linker/Windows-MSVC.cmake",
+		"C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/FindGit.cmake",
+		"C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/FindPackageHandleStandardArgs.cmake",
+		"C:/Program Files/Microsoft Visual Studio/2022/Community/Common7/IDE/CommonExtensions/Microsoft/CMake/CMake/share/cmake-3.31/Modules/FindPackageMessage.cmake",
 		"C:/Qt/6.5.3/msvc2019_64/lib/cmake/Qt6/Qt6ConfigVersion.cmake",
 		"C:/Qt/6.5.3/msvc2019_64/lib/cmake/Qt6/Qt6ConfigVersionImpl.cmake",
 		"C:/Qt/6.5.3/msvc2019_64/lib/cmake/Qt6/Qt6Config.cmake",
@@ -452,6 +455,7 @@
 	"MOC_DEFINITIONS" : [],
 	"MOC_DEFINITIONS_Debug" : 
 	[
+		"APP_VERSION=\"v1.0-27-g1ed0fc9-dirty\"",
 		"NOMINMAX",
 		"QT_CONCURRENT_LIB",
 		"QT_CORE_LIB",
@@ -470,6 +474,7 @@
 	],
 	"MOC_DEFINITIONS_MinSizeRel" : 
 	[
+		"APP_VERSION=\"v1.0-27-g1ed0fc9-dirty\"",
 		"NOMINMAX",
 		"QT_CONCURRENT_LIB",
 		"QT_CORE_LIB",
@@ -489,6 +494,7 @@
 	],
 	"MOC_DEFINITIONS_RelWithDebInfo" : 
 	[
+		"APP_VERSION=\"v1.0-27-g1ed0fc9-dirty\"",
 		"NOMINMAX",
 		"QT_CONCURRENT_LIB",
 		"QT_CORE_LIB",
@@ -508,6 +514,7 @@
 	],
 	"MOC_DEFINITIONS_Release" : 
 	[
+		"APP_VERSION=\"v1.0-27-g1ed0fc9-dirty\"",
 		"NOMINMAX",
 		"QT_CONCURRENT_LIB",
 		"QT_CORE_LIB",

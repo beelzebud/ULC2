@@ -260,6 +260,9 @@ CMAKE_TOOLCHAIN_FILE:FILEPATH=C:/Users/Beelz/vcpkg/scripts/buildsystems/vcpkg.cm
 // Studio IDE projects all commands are done without /nologo.
 CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 
+//Git command line client
+GIT_EXECUTABLE:FILEPATH=C:/Program Files/Git/mingw64/bin/git.exe
+
 //Path to a library.
 LIB_EAY_DEBUG:FILEPATH=C:/Users/Beelz/vcpkg/installed/x64-windows/debug/lib/libcrypto.lib
 
@@ -588,6 +591,8 @@ FIND_PACKAGE_MESSAGE_DETAILS_Threads:INTERNAL=[TRUE][v()]
 FIND_PACKAGE_MESSAGE_DETAILS_WrapAtomic:INTERNAL=[1][v()]
 //Details about finding ZLIB
 FIND_PACKAGE_MESSAGE_DETAILS_ZLIB:INTERNAL=[optimized;C:/Users/Beelz/vcpkg/installed/x64-windows/lib/zlib.lib;debug;C:/Users/Beelz/vcpkg/installed/x64-windows/debug/lib/zlibd.lib][C:/Users/Beelz/vcpkg/installed/x64-windows/include][c ][v1.3.1()]
+//ADVANCED property for variable: GIT_EXECUTABLE
+GIT_EXECUTABLE-ADVANCED:INTERNAL=1
 //Test HAVE_STDATOMIC
 HAVE_STDATOMIC:INTERNAL=1
 //ADVANCED property for variable: OPENSSL_INCLUDE_DIR

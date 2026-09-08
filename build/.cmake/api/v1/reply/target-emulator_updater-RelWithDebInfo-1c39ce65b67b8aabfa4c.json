@@ -2,10 +2,10 @@
 	"artifacts" : 
 	[
 		{
-			"path" : "Debug/emulator_updater.exe"
+			"path" : "RelWithDebInfo/emulator_updater.exe"
 		},
 		{
-			"path" : "Debug/emulator_updater.pdb"
+			"path" : "RelWithDebInfo/emulator_updater.pdb"
 		}
 	],
 	"backtrace" : 2,
@@ -54,7 +54,7 @@
 			{
 				"command" : 1,
 				"file" : 1,
-				"line" : 90,
+				"line" : 110,
 				"parent" : 0
 			},
 			{
@@ -66,19 +66,19 @@
 			{
 				"command" : 2,
 				"file" : 1,
-				"line" : 96,
+				"line" : 116,
 				"parent" : 0
 			},
 			{
 				"command" : 2,
 				"file" : 1,
-				"line" : 119,
+				"line" : 143,
 				"parent" : 0
 			},
 			{
 				"command" : 6,
 				"file" : 1,
-				"line" : 22,
+				"line" : 42,
 				"parent" : 0
 			},
 			{
@@ -304,19 +304,25 @@
 			{
 				"command" : 9,
 				"file" : 1,
-				"line" : 125,
+				"line" : 149,
 				"parent" : 0
 			},
 			{
 				"command" : 10,
 				"file" : 1,
-				"line" : 114,
+				"line" : 133,
+				"parent" : 0
+			},
+			{
+				"command" : 10,
+				"file" : 1,
+				"line" : 138,
 				"parent" : 0
 			},
 			{
 				"command" : 11,
 				"file" : 1,
-				"line" : 107,
+				"line" : 127,
 				"parent" : 0
 			}
 		]
@@ -327,7 +333,7 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /permissive- /Zc:inline /Zi /Ob0 /Od /RTC1 -std:c++17 -MDd"
+					"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /permissive- /Zc:inline /Zi /O2 /Ob1 /DNDEBUG -std:c++17 -MD"
 				},
 				{
 					"backtrace" : 47,
@@ -362,6 +368,10 @@
 			[
 				{
 					"backtrace" : 48,
+					"define" : "APP_VERSION=\"v1.0-27-g1ed0fc9-dirty\""
+				},
+				{
+					"backtrace" : 49,
 					"define" : "NOMINMAX"
 				},
 				{
@@ -382,6 +392,10 @@
 				},
 				{
 					"backtrace" : 3,
+					"define" : "QT_NO_DEBUG"
+				},
+				{
+					"backtrace" : 3,
 					"define" : "QT_WIDGETS_LIB"
 				},
 				{
@@ -393,7 +407,7 @@
 					"define" : "WIN32"
 				},
 				{
-					"backtrace" : 48,
+					"backtrace" : 49,
 					"define" : "WIN32_LEAN_AND_MEAN"
 				},
 				{
@@ -405,7 +419,7 @@
 					"define" : "_7ZIP_ST"
 				},
 				{
-					"backtrace" : 48,
+					"backtrace" : 49,
 					"define" : "_CRT_SECURE_NO_WARNINGS"
 				},
 				{
@@ -425,14 +439,14 @@
 			[
 				{
 					"backtrace" : 0,
-					"path" : "D:/Build/ULC2/build/emulator_updater_autogen/include_Debug"
+					"path" : "D:/Build/ULC2/build/emulator_updater_autogen/include_RelWithDebInfo"
 				},
 				{
-					"backtrace" : 49,
+					"backtrace" : 50,
 					"path" : "D:/Build/ULC2/src"
 				},
 				{
-					"backtrace" : 49,
+					"backtrace" : 50,
 					"path" : "D:/Build/ULC2/third_party/lzma"
 				},
 				{
@@ -510,13 +524,17 @@
 			"compileCommandFragments" : 
 			[
 				{
-					"fragment" : "-DWIN32 -D_DEBUG"
+					"fragment" : "-DWIN32"
 				}
 			],
 			"defines" : 
 			[
 				{
 					"backtrace" : 48,
+					"define" : "APP_VERSION=\"v1.0-27-g1ed0fc9-dirty\""
+				},
+				{
+					"backtrace" : 49,
 					"define" : "NOMINMAX"
 				},
 				{
@@ -537,6 +555,10 @@
 				},
 				{
 					"backtrace" : 3,
+					"define" : "QT_NO_DEBUG"
+				},
+				{
+					"backtrace" : 3,
 					"define" : "QT_WIDGETS_LIB"
 				},
 				{
@@ -548,7 +570,7 @@
 					"define" : "WIN32"
 				},
 				{
-					"backtrace" : 48,
+					"backtrace" : 49,
 					"define" : "WIN32_LEAN_AND_MEAN"
 				},
 				{
@@ -560,7 +582,7 @@
 					"define" : "_7ZIP_ST"
 				},
 				{
-					"backtrace" : 48,
+					"backtrace" : 49,
 					"define" : "_CRT_SECURE_NO_WARNINGS"
 				},
 				{
@@ -580,14 +602,14 @@
 			[
 				{
 					"backtrace" : 0,
-					"path" : "D:/Build/ULC2/build/emulator_updater_autogen/include_Debug"
+					"path" : "D:/Build/ULC2/build/emulator_updater_autogen/include_RelWithDebInfo"
 				},
 				{
-					"backtrace" : 49,
+					"backtrace" : 50,
 					"path" : "D:/Build/ULC2/src"
 				},
 				{
-					"backtrace" : 49,
+					"backtrace" : 50,
 					"path" : "D:/Build/ULC2/third_party/lzma"
 				},
 				{
@@ -654,7 +676,7 @@
 		"commandFragments" : 
 		[
 			{
-				"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /permissive- /Zc:inline /Zi /Ob0 /Od /RTC1 -MDd",
+				"fragment" : "/DWIN32 /D_WINDOWS /GR /EHsc /permissive- /Zc:inline /Zi /O2 /Ob1 /DNDEBUG -MD",
 				"role" : "flags"
 			},
 			{
@@ -663,32 +685,32 @@
 			},
 			{
 				"backtrace" : 3,
-				"fragment" : "C:\\Qt\\6.5.3\\msvc2019_64\\lib\\Qt6Widgetsd.lib",
+				"fragment" : "C:\\Qt\\6.5.3\\msvc2019_64\\lib\\Qt6Widgets.lib",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 3,
-				"fragment" : "C:\\Qt\\6.5.3\\msvc2019_64\\lib\\Qt6Networkd.lib",
+				"fragment" : "C:\\Qt\\6.5.3\\msvc2019_64\\lib\\Qt6Network.lib",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 3,
-				"fragment" : "C:\\Qt\\6.5.3\\msvc2019_64\\lib\\Qt6Concurrentd.lib",
+				"fragment" : "C:\\Qt\\6.5.3\\msvc2019_64\\lib\\Qt6Concurrent.lib",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 3,
-				"fragment" : "C:\\Users\\Beelz\\vcpkg\\installed\\x64-windows\\debug\\lib\\libcrypto.lib",
+				"fragment" : "C:\\Users\\Beelz\\vcpkg\\installed\\x64-windows\\lib\\libcrypto.lib",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 3,
-				"fragment" : "C:\\Users\\Beelz\\vcpkg\\installed\\x64-windows\\debug\\lib\\zlibd.lib",
+				"fragment" : "C:\\Users\\Beelz\\vcpkg\\installed\\x64-windows\\lib\\zlib.lib",
 				"role" : "libraries"
 			},
 			{
 				"backtrace" : 3,
-				"fragment" : "Debug\\lzma_sdk.lib",
+				"fragment" : "RelWithDebInfo\\lzma_sdk.lib",
 				"role" : "libraries"
 			},
 			{
@@ -698,7 +720,7 @@
 			},
 			{
 				"backtrace" : 13,
-				"fragment" : "C:\\Qt\\6.5.3\\msvc2019_64\\lib\\Qt6Guid.lib",
+				"fragment" : "C:\\Qt\\6.5.3\\msvc2019_64\\lib\\Qt6Gui.lib",
 				"role" : "libraries"
 			},
 			{
@@ -723,7 +745,7 @@
 			},
 			{
 				"backtrace" : 3,
-				"fragment" : "C:\\Qt\\6.5.3\\msvc2019_64\\lib\\Qt6Cored.lib",
+				"fragment" : "C:\\Qt\\6.5.3\\msvc2019_64\\lib\\Qt6Core.lib",
 				"role" : "libraries"
 			},
 			{
@@ -738,7 +760,7 @@
 			},
 			{
 				"backtrace" : 45,
-				"fragment" : "C:\\Qt\\6.5.3\\msvc2019_64\\lib\\Qt6EntryPointd.lib",
+				"fragment" : "C:\\Qt\\6.5.3\\msvc2019_64\\lib\\Qt6EntryPoint.lib",
 				"role" : "libraries"
 			},
 			{
@@ -825,7 +847,7 @@
 			"backtrace" : 0,
 			"compileGroupIndex" : 0,
 			"isGenerated" : true,
-			"path" : "build/emulator_updater_autogen/mocs_compilation_Debug.cpp",
+			"path" : "build/emulator_updater_autogen/mocs_compilation_RelWithDebInfo.cpp",
 			"sourceGroupIndex" : 0
 		},
 		{

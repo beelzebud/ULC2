@@ -2,6 +2,26 @@
 
 project(ulc VERSION 1.0 LANGUAGES CXX C)
 
+# App version for the About dialog.
+# CI (release workflow) passes -DAPP_VERSION=<tag> when building a tagged
+# release; local builds fall back to git describe, then to the project version.
+if(NOT APP_VERSION)
+    find_package(Git QUIET)
+    if(Git_FOUND)
+        execute_process(
+            COMMAND "${GIT_EXECUTABLE}" describe --tags --dirty=-dirty --always
+            WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+            OUTPUT_VARIABLE APP_VERSION
+            OUTPUT_STRIP_TRAILING_WHITESPACE
+            ERROR_QUIET
+        )
+    endif()
+endif()
+if(NOT APP_VERSION)
+    set(APP_VERSION "${PROJECT_VERSION}")
+endif()
+message(STATUS "App version: ${APP_VERSION}")
+
 # Set C++ standard early and with proper MSVC flags
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -110,6 +130,10 @@ target_include_directories(emulator_updater PRIVATE
 )
 
 # Platform-specific settings
+target_compile_definitions(emulator_updater PRIVATE
+    APP_VERSION="${APP_VERSION}"
+)
+
 if(WIN32)
     target_compile_definitions(emulator_updater PRIVATE 
         NOMINMAX 
