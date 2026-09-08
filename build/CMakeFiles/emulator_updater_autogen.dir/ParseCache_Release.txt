@@ -264,6 +264,7 @@ D:/Build/ULC2/src/emulator_tab.h
  mdp:D:/Build/ULC2/src/settings.h
 D:/Build/ULC2/src/aboutdialog.h
  mmc:Q_OBJECT
+ mdp:C:/Qt/6.5.3/msvc2019_64/include/QtCore/QSize
  mdp:C:/Qt/6.5.3/msvc2019_64/include/QtCore/q20memory.h
  mdp:C:/Qt/6.5.3/msvc2019_64/include/QtCore/q20type_traits.h
  mdp:C:/Qt/6.5.3/msvc2019_64/include/QtCore/qalgorithms.h
@@ -372,6 +373,7 @@ D:/Build/ULC2/src/aboutdialog.h
  mdp:C:/Qt/6.5.3/msvc2019_64/include/QtCore/qvarlengtharray.h
  mdp:C:/Qt/6.5.3/msvc2019_64/include/QtCore/qversiontagging.h
  mdp:C:/Qt/6.5.3/msvc2019_64/include/QtCore/qxptype_traits.h
+ mdp:C:/Qt/6.5.3/msvc2019_64/include/QtGui/QPixmap
  mdp:C:/Qt/6.5.3/msvc2019_64/include/QtGui/qaction.h
  mdp:C:/Qt/6.5.3/msvc2019_64/include/QtGui/qbitmap.h
  mdp:C:/Qt/6.5.3/msvc2019_64/include/QtGui/qbrush.h

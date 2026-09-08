@@ -1,4 +1,5 @@
 D:/Build/ULC2/build/emulator_updater_autogen/include_Release/UVLADIE3JM/moc_aboutdialog.cpp: D:/Build/ULC2/src/aboutdialog.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtCore/QSize \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/q20memory.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/q20type_traits.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qalgorithms.h \
@@ -107,6 +108,7 @@ D:/Build/ULC2/build/emulator_updater_autogen/include_Release/UVLADIE3JM/moc_abou
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qvarlengtharray.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qversiontagging.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtCore/qxptype_traits.h \
+  C:/Qt/6.5.3/msvc2019_64/include/QtGui/QPixmap \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qaction.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qbitmap.h \
   C:/Qt/6.5.3/msvc2019_64/include/QtGui/qbrush.h \

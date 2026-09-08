@@ -129,7 +129,7 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
 
     resize(980, 780);
     setWindowTitle("Emulator Updater");
-    setWindowIcon(QIcon(":/icons/emu_udpater.png"));
+    setWindowIcon(QIcon(":/icons/emu_updater.png"));
 }
 
 void MainWindow::closeEvent(QCloseEvent* e)
