@@ -63,6 +63,10 @@ jobs:
           Remove-Item -ErrorAction SilentlyContinue build/Release/lzma_sdk.lib
           Remove-Item -ErrorAction SilentlyContinue build/Release/*.exp, build/Release/*.ilk
 
+      - name: Bundle VC++ redistributable
+        shell: pwsh
+        run: Invoke-WebRequest -Uri 'https://aka.ms/vs/17/release/vc_redist.x64.exe' -OutFile build/Release/vc_redist.x64.exe
+
       - name: Package
         shell: pwsh
         run: Compress-Archive -Path 'build/Release/*' -DestinationPath 'Release.zip' -Force
