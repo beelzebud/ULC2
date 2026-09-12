@@ -40,6 +40,7 @@ private:
     void buildUi();
     void setStatus(const QString& id, const QString& text);
     void setVersion(const QString& id, const QString& version);
+    void setRunState(const QString& id, bool running);
     QString getStatus(const QString& id) const;
     void setButtonsEnabled(bool on);
     void startQueue(bool isUpdate);
@@ -48,6 +49,7 @@ private:
     RetroArchTab* m_raTab = nullptr;
 
     StatusTree* m_tree = nullptr;
+    QList<QPushButton*> m_launchButtons;
     QPushButton* m_btnCheckAll = nullptr;
     QPushButton* m_btnUpdateAll = nullptr;
     QPushButton* m_btnCheckCores = nullptr;

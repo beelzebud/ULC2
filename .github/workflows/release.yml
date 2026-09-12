@@ -55,10 +55,10 @@ jobs:
             $VER
 
       - name: Build
-        run: cmake --build build --config Release --target emulator_updater
+        run: cmake --build build --config Release --target Emu-Manager
 
       - name: Deploy Qt runtime
-        run: windeployqt --release --compiler-runtime build/Release/emulator_updater.exe
+        run: windeployqt --release --compiler-runtime build/Release/Emu-Manager.exe
 
       - name: Copy OpenSSL runtime DLLs (if dynamically linked)
         shell: pwsh
@@ -93,10 +93,10 @@ jobs:
         if: ${{ startsWith(github.ref, 'refs/tags/') }}
         uses: softprops/action-gh-release@v2
         with:
-          name: ULC2 ${{ github.ref_name }}
+          name: Emu-Manager ${{ github.ref_name }}
           body: |
-            Multi-Emulator updating utility.
+            Emu-Manager — multi-emulator updating utility.
 
-            **Install:** unzip and run `emulator_updater.exe`. If Windows complains about missing VC runtime, run the included `vc_redist.x64.exe` once.
+            **Install:** unzip and run `Emu-Manager.exe`. If Windows complains about missing VC runtime, run the included `vc_redist.x64.exe` once.
           files: Release.zip
           fail_on_unmatched_files: true

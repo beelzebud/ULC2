@@ -6,8 +6,8 @@
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
-    app.setApplicationName("Emulator Updater");
-    app.setOrganizationName("Emu-Updater");
+    app.setApplicationName("Emu-Manager");
+    app.setOrganizationName("Emu-Manager");
 
     // Embed and register Aldrich so it works without system installation
     const int fontId = QFontDatabase::addApplicationFont(":/fonts/Aldrich-Regular.ttf");

@@ -15,6 +15,7 @@
 #include "etag_cache.h"
 
 class RetroArchWorker;
+class LaunchedProcess;
 
 class RetroArchTab : public QWidget
 {
@@ -29,6 +30,9 @@ public:
     // Installed RetroArch binary version, derived from the cached ETag.
     QString currentVersion() const;
 
+    // True while the RetroArch started from this tab is still running.
+    bool emulatorRunning() const;
+
     static const QString RaDownloadUrl;
 
 public slots:
@@ -37,6 +41,7 @@ public slots:
     void onDownloadRA();
     void onCheckCores();
     void onDownloadCores();
+    void onLaunchRA();
 
     // Return true if the operation actually started (false = already running).
     bool startCheckCores();
@@ -47,6 +52,7 @@ signals:
     void binaryUpdateFinished();
     void coresCheckFinished(int needCount, int total);
     void coresUpdateFinished();
+    void launchStateChanged(bool running);
 
 private slots:
     void onBrowseRA();
@@ -70,6 +76,7 @@ private:
     QPushButton* m_btnDownloadRA = nullptr;
     QPushButton* m_btnCheckCores = nullptr;
     QPushButton* m_btnDlCores = nullptr;
+    QPushButton* m_btnLaunchRA = nullptr;
     QPushButton* m_btnStop = nullptr;
     QLabel* m_raStatusLabel = nullptr;
     QLabel* m_coreStatusLabel = nullptr;
@@ -77,6 +84,7 @@ private:
     LogView* m_log = nullptr;
 
     RetroArchWorker* m_worker = nullptr;
+    LaunchedProcess* m_launcher = nullptr;
     QThread* m_thread = nullptr;
     EtagCache* m_cache = nullptr;
     std::atomic<bool> m_cancel{ false };

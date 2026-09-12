@@ -174,9 +174,9 @@ if %errorlevel% neq 0 goto :VCEnd</Command>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </ProjectReference>
-    <ProjectReference Include="D:\Build\ULC2\build\emulator_updater.vcxproj">
-      <Project>{B6121891-40AB-3371-9FAE-562BC00CAD98}</Project>
-      <Name>emulator_updater</Name>
+    <ProjectReference Include="D:\Build\ULC2\build\Emu-Manager.vcxproj">
+      <Project>{0D3D3A50-0663-3DB7-BD3E-562910BBDEDA}</Project>
+      <Name>Emu-Manager</Name>
     </ProjectReference>
     <ProjectReference Include="D:\Build\ULC2\build\lzma_sdk.vcxproj">
       <Project>{72F7BBB6-73DA-3388-A8D1-4913203DAE01}</Project>

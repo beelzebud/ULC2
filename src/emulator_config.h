@@ -33,6 +33,14 @@ struct EmulatorConfig {
     // (e.g. PPSSPP's https://builds.ppsspp.org/meta/status.json). When empty,
     // the normal source fetch (or nightlyDirectUrl) is used.
     QString        nightlyManifestUrl;
+    // Repository (owner/name) the Changelog button reads from, for emulators
+    // whose update source isn't a forge the app can read (RPCS3's own update
+    // API, mGBA's direct download). When empty, githubRepo is used.
+    QString        changelogRepo;
+    // Repository the Readme button reads from, when the changelog repository
+    // holds only build artifacts (e.g. Eden's CI repo). When empty,
+    // changelogRepo is used.
+    QString        readmeRepo;
 };
 
 inline QList<EmulatorConfig> allEmulatorConfigs()
@@ -84,7 +92,7 @@ inline QList<EmulatorConfig> allEmulatorConfigs()
             base + "Eden/",
             "eden.exe", false, ReleaseChannel::Nightly,
             ":/icons/emulators/eden.png",
-            "eden-ci/master", {}
+            "eden-ci/master", {}, {}, {}, "eden-emu/eden"
         },
         {
             "hypseus_singe", "Hypseus Singe  (Laserdisc)",
@@ -126,7 +134,8 @@ inline QList<EmulatorConfig> allEmulatorConfigs()
             ArchiveType::SevenZ,
             base + "mGBA/",
             "mGBA.exe", true, ReleaseChannel::Nightly,
-            ":/icons/emulators/mgba.png"
+            ":/icons/emulators/mgba.png",
+            {}, {}, {}, "mgba-emu/mgba"
         },
         {
             "pcsx2", "PCSX2  (PS2)",
@@ -168,7 +177,8 @@ inline QList<EmulatorConfig> allEmulatorConfigs()
             ArchiveType::SevenZ,
             base + "RPCS3/",
             "rpcs3.exe", true, ReleaseChannel::Nightly,
-            ":/icons/emulators/rpcs3.png"
+            ":/icons/emulators/rpcs3.png",
+            {}, {}, {}, "RPCS3/rpcs3"
         },
         {
             "supermodel", "Supermodel  (Sega Model 3)",

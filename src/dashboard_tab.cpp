@@ -6,6 +6,8 @@
 #include <QGroupBox>
 #include <QHeaderView>
 #include <QFont>
+#include <QBrush>
+#include <QColor>
 
 DashboardTab::DashboardTab(const QList<EmulatorTab*>& tabs,
     RetroArchTab* raTab,
@@ -30,6 +32,15 @@ DashboardTab::DashboardTab(const QList<EmulatorTab*>& tabs,
             ++m_queueDone;
             m_overallBar->setValue(m_queueDone);
             advanceQueue();
+            });
+        connect(tab, &EmulatorTab::launchStateChanged, this,
+            [this, tab](bool running) {
+                setRunState(tab->config().id, running);
+                // Don't stomp the progress summary while a bulk run is going.
+                if (m_currentId.isEmpty() && m_queue.isEmpty() && !m_coresRunning)
+                    m_summaryLabel->setText(QString("%1 %2.")
+                        .arg(tab->config().displayName,
+                            running ? "is running" : "closed"));
             });
     }
 
@@ -63,6 +74,13 @@ DashboardTab::DashboardTab(const QList<EmulatorTab*>& tabs,
             setButtonsEnabled(true);
             m_summaryLabel->setText("Core updates complete.");
             });
+        connect(m_raTab, &RetroArchTab::launchStateChanged, this,
+            [this](bool running) {
+                setRunState("retroarch", running);
+                if (m_currentId.isEmpty() && m_queue.isEmpty() && !m_coresRunning)
+                    m_summaryLabel->setText(running ? "RetroArch is running."
+                                                    : "RetroArch closed.");
+            });
     }
 }
 
@@ -72,7 +90,7 @@ void DashboardTab::buildUi()
     root->setSpacing(8);
     root->setContentsMargins(10, 10, 10, 8);
 
-    auto* title = new QLabel("Emulator Updater  —  Dashboard");
+    auto* title = new QLabel("Emu-Manager  —  Dashboard");
     QFont tf = title->font();
     tf.setFamily("Aldrich");
     tf.setPointSize(13);
@@ -144,15 +162,31 @@ void DashboardTab::buildUi()
         auto* lay = new QVBoxLayout(grp);
 
         m_tree = new StatusTree;
-        m_tree->setColumnCount(3);
-        m_tree->setHeaderLabels({ "Emulator", "Current Version", "Status" });
+        m_tree->setColumnCount(5);
+        m_tree->setHeaderLabels(
+            { "Emulator", "Current Version", "Status", "State", "Launch" });
         m_tree->setRootIsDecorated(false);
         m_tree->setUniformRowHeights(true);
         m_tree->header()->setStretchLastSection(false);
         m_tree->header()->setSectionResizeMode(0, QHeaderView::Stretch);
         m_tree->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
         m_tree->header()->setSectionResizeMode(2, QHeaderView::Fixed);
+        m_tree->header()->setSectionResizeMode(3, QHeaderView::Fixed);
+        m_tree->header()->setSectionResizeMode(4, QHeaderView::Fixed);
         m_tree->header()->resizeSection(2, 160);
+        m_tree->header()->resizeSection(3, 88);
+        m_tree->header()->resizeSection(4, 96);
+
+        // One Launch button per row, wired straight to the owning tab.
+        auto addLaunchButton = [this](QTreeWidgetItem* item) {
+            item->setSizeHint(0, QSize(0, 32));
+            auto* btn = new QPushButton("Launch");
+            btn->setFixedSize(84, 24);
+            btn->setToolTip("Start this emulator");
+            m_tree->setItemWidget(item, 4, btn);
+            m_launchButtons.append(btn);
+            return btn;
+        };
         m_tree->setStyleSheet(
             "QTreeWidget { background:transparent; color:#00FF00; border:1px solid #005500; }"
             "QHeaderView::section { background:#001a00; color:#00FF00; "
@@ -167,6 +201,9 @@ void DashboardTab::buildUi()
             raItem->setText(1, m_raTab->currentVersion());
             raItem->setText(2, "Not checked");
             raItem->setData(0, Qt::UserRole, "retroarch");
+            connect(addLaunchButton(raItem), &QPushButton::clicked,
+                m_raTab, &RetroArchTab::onLaunchRA);
+            setRunState("retroarch", m_raTab->emulatorRunning());
         }
 
         for (auto* tab : m_tabs) {
@@ -175,6 +212,9 @@ void DashboardTab::buildUi()
             item->setText(1, tab->currentVersion());
             item->setText(2, "Not checked");
             item->setData(0, Qt::UserRole, tab->config().id);
+            connect(addLaunchButton(item), &QPushButton::clicked,
+                tab, &EmulatorTab::onLaunch);
+            setRunState(tab->config().id, tab->emulatorRunning());
         }
 
         lay->addWidget(m_tree);
@@ -190,6 +230,18 @@ void DashboardTab::setStatus(const QString& id, const QString& text)
             item->setText(2, text);
             return;
         }
+    }
+}
+
+void DashboardTab::setRunState(const QString& id, bool running)
+{
+    for (int i = 0; i < m_tree->topLevelItemCount(); ++i) {
+        auto* item = m_tree->topLevelItem(i);
+        if (item->data(0, Qt::UserRole).toString() != id) continue;
+        item->setText(3, running ? "Running" : "Stopped");
+        item->setForeground(3, running ? QBrush(QColor("#00FF00"))
+                                       : QBrush(QColor("#308030")));
+        return;
     }
 }
 
@@ -221,6 +273,8 @@ void DashboardTab::setButtonsEnabled(bool on)
     m_btnUpdateAll->setEnabled(on);
     m_btnCheckCores->setEnabled(on);
     m_btnUpdateCores->setEnabled(on);
+    for (auto* btn : m_launchButtons)
+        btn->setEnabled(on);
     m_btnStopAll->setEnabled(!on);
 }
 

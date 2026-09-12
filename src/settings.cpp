@@ -20,6 +20,7 @@ AppSettings AppSettings::defaults()
     for (const EmulatorConfig& cfg : allEmulatorConfigs()) {
         EmulatorSettings es;
         es.installPath = cfg.defaultInstallPath;
+        es.launchPath = cfg.defaultInstallPath + cfg.exeName;
         es.channel = cfg.defaultChannel;
         s.emulators[cfg.id] = es;
     }
@@ -47,14 +48,27 @@ AppSettings SettingsManager::load() const
     const QJsonObject emuObj = root.value("emulators").toObject();
     for (auto it = emuObj.begin(); it != emuObj.end(); ++it) {
         const QJsonObject obj = it.value().toObject();
+
+        // Start from the built-in defaults for this emulator so fields the
+        // JSON omits (e.g. launchPath) keep their configured defaults.
         EmulatorSettings es;
-        es.installPath = obj.value("installPath").toString();
+        const auto def = s.emulators.find(it.key());
+        if (def != s.emulators.end())
+            es = def.value();
+
+        const QString installPath = obj.value("installPath").toString();
+        if (!installPath.isEmpty())
+            es.installPath = installPath;
+        const QString launchPath = obj.value("launchPath").toString();
+        if (!launchPath.isEmpty())
+            es.launchPath = launchPath;
+
         es.lastKnownTag = obj.value("lastKnownTag").toString();
+        es.lastKnownTagDisplay = obj.value("lastKnownTagDisplay").toString();
         es.channel = (obj.value("channel").toString() == "nightly")
             ? ReleaseChannel::Nightly
             : ReleaseChannel::Stable;
-        if (!es.installPath.isEmpty())
-            s.emulators[it.key()] = es;
+        s.emulators[it.key()] = es;
     }
     return s;
 }
@@ -69,7 +83,9 @@ void SettingsManager::save(const AppSettings& s) const
     for (auto it = s.emulators.begin(); it != s.emulators.end(); ++it) {
         QJsonObject obj;
         obj["installPath"] = it.value().installPath;
+        obj["launchPath"] = it.value().launchPath;
         obj["lastKnownTag"] = it.value().lastKnownTag;
+        obj["lastKnownTagDisplay"] = it.value().lastKnownTagDisplay;
         obj["channel"] = (it.value().channel == ReleaseChannel::Nightly)
             ? "nightly" : "stable";
         emuObj[it.key()] = obj;

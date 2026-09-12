@@ -38,7 +38,7 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent)
 
     auto* icon = new QLabel;
     icon->setPixmap(
-        QPixmap(":/icons/emu_updater.png").scaled(80, 80,
+        QPixmap(":/icons/emu_manager.png").scaled(80, 80,
             Qt::KeepAspectRatio, Qt::SmoothTransformation));
     icon->setAlignment(Qt::AlignCenter);
 
@@ -64,7 +64,7 @@ AboutDialog::AboutDialog(QWidget* parent) : QDialog(parent)
 
     layout->addWidget(icon);
     layout->addSpacing(4);
-    layout->addWidget(makeLabel("Emulator Updater", 14, true));
+    layout->addWidget(makeLabel("Emu-Manager", 14, true));
     layout->addWidget(makeLabel(QStringLiteral("v" APP_VERSION)));
     layout->addWidget(makeLabel("Qt6  |  CMake  |  LZMA SDK"));
     layout->addWidget(makeLabel("\u00a9 2026 John N. Bilbrey + Claude"));

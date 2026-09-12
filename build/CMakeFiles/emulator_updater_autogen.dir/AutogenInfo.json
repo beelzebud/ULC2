@@ -455,7 +455,7 @@
 	"MOC_DEFINITIONS" : [],
 	"MOC_DEFINITIONS_Debug" : 
 	[
-		"APP_VERSION=\"v1.0-27-g1ed0fc9-dirty\"",
+		"APP_VERSION=\"v1.2-dirty\"",
 		"NOMINMAX",
 		"QT_CONCURRENT_LIB",
 		"QT_CORE_LIB",
@@ -474,7 +474,7 @@
 	],
 	"MOC_DEFINITIONS_MinSizeRel" : 
 	[
-		"APP_VERSION=\"v1.0-27-g1ed0fc9-dirty\"",
+		"APP_VERSION=\"v1.2-dirty\"",
 		"NOMINMAX",
 		"QT_CONCURRENT_LIB",
 		"QT_CORE_LIB",
@@ -494,7 +494,7 @@
 	],
 	"MOC_DEFINITIONS_RelWithDebInfo" : 
 	[
-		"APP_VERSION=\"v1.0-27-g1ed0fc9-dirty\"",
+		"APP_VERSION=\"v1.2-dirty\"",
 		"NOMINMAX",
 		"QT_CONCURRENT_LIB",
 		"QT_CORE_LIB",
@@ -514,7 +514,7 @@
 	],
 	"MOC_DEFINITIONS_Release" : 
 	[
-		"APP_VERSION=\"v1.0-27-g1ed0fc9-dirty\"",
+		"APP_VERSION=\"v1.2-dirty\"",
 		"NOMINMAX",
 		"QT_CONCURRENT_LIB",
 		"QT_CORE_LIB",

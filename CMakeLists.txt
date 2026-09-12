@@ -1,6 +1,6 @@
 ﻿cmake_minimum_required(VERSION 3.16)
 
-project(ulc VERSION 1.0 LANGUAGES CXX C)
+project(emu_manager VERSION 1.0 LANGUAGES CXX C)
 
 # App version for the About dialog.
 # CI (release workflow) passes -DAPP_VERSION=<tag> when building a tagged
@@ -86,6 +86,8 @@ set(SOURCES
     src/retroarch_tab.h
     src/emulator_tab.cpp
     src/emulator_tab.h
+    src/launched_process.cpp
+    src/launched_process.h
     src/github_updater.cpp
     src/github_updater.h
     src/aboutdialog.cpp
@@ -107,13 +109,13 @@ set(SOURCES
 
 if(WIN32)
     list(APPEND SOURCES resources/app.rc)
-    add_executable(emulator_updater WIN32 ${SOURCES})
+    add_executable(Emu-Manager WIN32 ${SOURCES})
 else()
-    add_executable(emulator_updater ${SOURCES})
+    add_executable(Emu-Manager ${SOURCES})
 endif()
 
 # Link libraries
-target_link_libraries(emulator_updater PRIVATE
+target_link_libraries(Emu-Manager PRIVATE
     Qt6::Core 
     Qt6::Widgets 
     Qt6::Network 
@@ -124,36 +126,36 @@ target_link_libraries(emulator_updater PRIVATE
 )
 
 # Include directories
-target_include_directories(emulator_updater PRIVATE 
+target_include_directories(Emu-Manager PRIVATE 
     src 
     third_party/lzma
 )
 
 # Platform-specific settings
-target_compile_definitions(emulator_updater PRIVATE
+target_compile_definitions(Emu-Manager PRIVATE
     APP_VERSION="${APP_VERSION}"
 )
 
 if(WIN32)
-    target_compile_definitions(emulator_updater PRIVATE 
+    target_compile_definitions(Emu-Manager PRIVATE 
         NOMINMAX 
         WIN32_LEAN_AND_MEAN
         _CRT_SECURE_NO_WARNINGS
     )
-    target_link_libraries(emulator_updater PRIVATE version)
+    target_link_libraries(Emu-Manager PRIVATE version)
 endif()
 
 # Compiler-specific flags
 if(MSVC)
     # Apply C++17 standards conformance to main executable as well
-    target_compile_options(emulator_updater PRIVATE 
+    target_compile_options(Emu-Manager PRIVATE 
         /W3          # Warning level 3
         /utf-8       # UTF-8 source/execution charset
         /permissive- # Standards conformance
         /Zc:inline   # C++17 inline removal
     )
 else()
-    target_compile_options(emulator_updater PRIVATE 
+    target_compile_options(Emu-Manager PRIVATE 
         -Wall 
         -Wextra
     )

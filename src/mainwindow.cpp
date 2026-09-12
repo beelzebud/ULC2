@@ -128,8 +128,8 @@ MainWindow::MainWindow(QWidget* parent) : QMainWindow(parent)
     loadSettings();
 
     resize(980, 780);
-    setWindowTitle("Emulator Updater");
-    setWindowIcon(QIcon(":/icons/emu_updater.png"));
+    setWindowTitle("Emu-Manager");
+    setWindowIcon(QIcon(":/icons/emu_manager.png"));
 }
 
 void MainWindow::closeEvent(QCloseEvent* e)
@@ -171,7 +171,7 @@ void MainWindow::buildUi()
     m_dashboard = new DashboardTab(m_emuTabs, m_raTab);
 
     // Register pages: Dashboard, RetroArch, emulators
-    addPage("Dashboard", "Overview", ":/icons/emu_updater.png", m_dashboard);
+    addPage("Dashboard", "Overview", ":/icons/emu_manager.png", m_dashboard);
     addPage("RetroArch", "Libretro", ":/icons/emulators/retroarch.png", m_raTab);
 
     for (int i = 0; i < configs.size(); ++i)
@@ -181,9 +181,9 @@ void MainWindow::buildUi()
     {
         auto* aboutItem = new QListWidgetItem(m_sidebar);
         aboutItem->setData(Qt::DisplayRole, "About");
-        aboutItem->setData(Qt::UserRole, "emulator updater");
+        aboutItem->setData(Qt::UserRole, "emu manager");
         aboutItem->setSizeHint(QSize(120, SidebarDelegate::ItemHeight));
-        QPixmap pm(":/icons/emu_updater.png");
+        QPixmap pm(":/icons/emu_manager.png");
         if (!pm.isNull())
             aboutItem->setData(Qt::DecorationRole, pm);
         m_aboutRow = m_sidebar->count() - 1;

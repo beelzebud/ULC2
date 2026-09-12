@@ -1,5 +1,6 @@
 ﻿#include "retroarch_tab.h"
 #include "downloader.h"
+#include "launched_process.h"
 #include "archive_zip.h"
 #include "archive_7z.h"
 #include "constants.h"
@@ -24,6 +25,8 @@
 #include <QTextBlock>
 #include <QDateTime>
 #include <QVariant>
+#include <QProcess>
+#include <QMessageBox>
 
 const QString RetroArchTab::RaDownloadUrl =
 "https://buildbot.libretro.com/nightly/windows/x86_64/RetroArch.7z";
@@ -348,6 +351,13 @@ RetroArchTab::RetroArchTab(EtagCache* cache, QWidget* parent)
     connect(m_worker, &RetroArchWorker::raCheckResult, this, &RetroArchTab::onRACheckResult);
     connect(m_worker, &RetroArchWorker::coresCheckResult, this, &RetroArchTab::onCoresCheckResult);
 
+    m_launcher = new LaunchedProcess(this);
+    connect(m_launcher, &LaunchedProcess::runningChanged,
+        this, [this](bool running) {
+            if (!running) appendLog("RetroArch closed.");
+            emit launchStateChanged(running);
+        });
+
     buildUi();
 }
 
@@ -414,10 +424,15 @@ void RetroArchTab::buildUi()
         connect(m_btnCheckRA, &QPushButton::clicked, this, &RetroArchTab::onCheckRA);
         connect(m_btnDownloadRA, &QPushButton::clicked, this, &RetroArchTab::onDownloadRA);
 
+        m_btnLaunchRA = new QPushButton("Launch");
+        connect(m_btnLaunchRA, &QPushButton::clicked,
+            this, &RetroArchTab::onLaunchRA);
+
         auto* btnRow = new QHBoxLayout;
         btnRow->addWidget(m_btnCheckRA);
         btnRow->addWidget(m_btnDownloadRA);
         btnRow->addStretch();
+        btnRow->addWidget(m_btnLaunchRA);
 
         grid->addWidget(new QLabel("Path:"), 0, 0);
         grid->addWidget(m_raPathEdit, 0, 1);
@@ -589,6 +604,46 @@ void RetroArchTab::onBrowseCores()
     if (!p.isEmpty()) m_corePathEdit->setText(p + "/");
 }
 
+bool RetroArchTab::emulatorRunning() const
+{
+    return m_launcher && m_launcher->isRunning();
+}
+
+void RetroArchTab::onLaunchRA()
+{
+    const QString dir = m_raPathEdit->text().trimmed();
+    if (dir.isEmpty()) {
+        appendLog("No RetroArch path set \u2014 use Browse to select it.");
+        return;
+    }
+
+#ifdef Q_OS_WIN
+    const QString exeName = "retroarch.exe";
+#else
+    const QString exeName = "retroarch";
+#endif
+
+    // The path may be either the install folder or the executable itself.
+    QFileInfo fi(dir);
+    const QString exe = fi.isFile() ? dir : QDir(dir).filePath(exeName);
+    fi.setFile(exe);
+
+    if (!fi.exists() || !fi.isFile()) {
+        appendLog("RetroArch not found: " + exe);
+        QMessageBox::warning(this, "Emu-Manager",
+            QString("RetroArch not found:\n%1\n\n"
+                    "Check the RetroArch path above.")
+                .arg(QDir::toNativeSeparators(exe)));
+        return;
+    }
+
+    QString error;
+    if (m_launcher->launch(fi.absoluteFilePath(), &error))
+        appendLog("Launched RetroArch: " + fi.absoluteFilePath());
+    else
+        appendLog("Launch failed \u2014 " + error);
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Slots — worker results
 // ─────────────────────────────────────────────────────────────────────────────
@@ -677,5 +732,6 @@ void RetroArchTab::setButtonsEnabled(bool on)
     m_btnCheckCores->setEnabled(on);
     m_btnDownloadRA->setEnabled(on && m_raHasUpdate);
     m_btnDlCores->setEnabled(on && !m_pendingCoreUpdates.isEmpty());
+    m_btnLaunchRA->setEnabled(on);
     m_btnStop->setEnabled(!on);
 }

@@ -1,5 +1,6 @@
 ﻿#include "emulator_tab.h"
 #include "constants.h"
+#include "launched_process.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -14,6 +15,9 @@
 #include <QTextBlock>
 #include <QStyleOption>
 #include <QRegularExpression>
+#include <QProcess>
+#include <QFileInfo>
+#include <QMessageBox>
 
 static bool isFloatingTag(const QString& tag)
 {
@@ -39,6 +43,13 @@ EmulatorTab::EmulatorTab(const EmulatorConfig& config,
     connect(m_updater, &GitHubUpdater::progressInc, this, &EmulatorTab::incProgress);
     connect(m_updater, &GitHubUpdater::done, this, &EmulatorTab::onDone);
 
+    m_launcher = new LaunchedProcess(this);
+    connect(m_launcher, &LaunchedProcess::runningChanged,
+        this, [this](bool running) {
+            if (!running) appendLog("Emulator closed.");
+            emit launchStateChanged(running);
+        });
+
     buildUi();
 }
 
@@ -54,8 +65,11 @@ void EmulatorTab::applySettings(const EmulatorSettings& s)
 {
     if (!s.installPath.isEmpty())
         m_pathEdit->setText(s.installPath);
+    if (!s.launchPath.isEmpty())
+        m_launchPathEdit->setText(s.launchPath);
 
     m_lastKnownTag = s.lastKnownTag;
+    m_lastKnownTagDisplay = s.lastKnownTagDisplay;
 
     m_channelBox->setCurrentIndex(
         s.channel == ReleaseChannel::Nightly ? 1 : 0);
@@ -66,7 +80,9 @@ void EmulatorTab::applySettings(const EmulatorSettings& s)
 void EmulatorTab::collectSettings(EmulatorSettings& s) const
 {
     s.installPath = m_pathEdit->text();
+    s.launchPath = m_launchPathEdit->text();
     s.lastKnownTag = m_lastKnownTag;
+    s.lastKnownTagDisplay = m_lastKnownTagDisplay;
     s.channel = selectedChannel();
 }
 
@@ -125,6 +141,35 @@ void EmulatorTab::buildUi()
     }
 
     {
+        auto* grp = new QGroupBox("Launch");
+        auto* grid = new QGridLayout(grp);
+        grid->setColumnStretch(1, 1);
+        grid->setSpacing(4);
+
+        m_launchPathEdit = new QLineEdit(
+            m_config.defaultInstallPath + m_config.exeName);
+        m_launchPathEdit->setToolTip(
+            "Path to the emulator executable this tab launches.");
+
+        m_btnBrowseExe = new QPushButton("Browse");
+        m_btnBrowseExe->setFixedWidth(72);
+        connect(m_btnBrowseExe, &QPushButton::clicked,
+            this, &EmulatorTab::onBrowseLaunchPath);
+
+        m_btnLaunch = new QPushButton("Launch");
+        m_btnLaunch->setFixedWidth(90);
+        connect(m_btnLaunch, &QPushButton::clicked,
+            this, &EmulatorTab::onLaunch);
+
+        grid->addWidget(new QLabel("Emulator:"), 0, 0);
+        grid->addWidget(m_launchPathEdit, 0, 1);
+        grid->addWidget(m_btnBrowseExe, 0, 2);
+        grid->addWidget(m_btnLaunch, 0, 3);
+
+        root->addWidget(grp);
+    }
+
+    {
         auto* grp = new QGroupBox("Version");
         auto* hlay = new QHBoxLayout(grp);
 
@@ -165,11 +210,47 @@ void EmulatorTab::buildUi()
     }
 
     {
-        auto* grp = new QGroupBox("Log");
+        auto* grp = new QGroupBox("Log / Docs");
         auto* lay = new QVBoxLayout(grp);
+
+        // The pane below shows either the live log or fetched release/repo
+        // documentation — these buttons pick which.
+        auto* hlay = new QHBoxLayout;
+        m_btnLog = new QPushButton("Log");
+        m_btnChangelog = new QPushButton("Changelog");
+        m_btnReadme = new QPushButton("Readme");
+        for (QPushButton* b : { m_btnLog, m_btnChangelog, m_btnReadme }) {
+            b->setFixedWidth(96);
+            hlay->addWidget(b);
+        }
+        hlay->addStretch();
+
+        connect(m_btnLog, &QPushButton::clicked,
+            this, &EmulatorTab::onShowLog);
+        connect(m_btnChangelog, &QPushButton::clicked,
+            this, &EmulatorTab::onShowChangelog);
+        connect(m_btnReadme, &QPushButton::clicked,
+            this, &EmulatorTab::onShowReadme);
+
+        m_btnChangelog->setToolTip(
+            "Show the release notes for the newest build");
+        m_btnReadme->setToolTip("Show this emulator's README");
+
         m_log = new LogView;
         m_log->setReadOnly(true);
-        lay->addWidget(m_log);
+
+        m_doc = new LogView;
+        m_doc->setReadOnly(true);
+        m_doc->setToolTip("Changelog / README appears here");
+        m_doc->setPlainText(
+            "Click Changelog or Readme above to load it here.\n");
+
+        m_paneStack = new QStackedWidget;
+        m_paneStack->addWidget(m_log);
+        m_paneStack->addWidget(m_doc);
+
+        lay->addLayout(hlay);
+        lay->addWidget(m_paneStack, 1);
         root->addWidget(grp, 1);
     }
 
@@ -232,14 +313,16 @@ void EmulatorTab::onCheckForUpdate()
                 }
 
                 const bool floating = isFloatingTag(r.tagName);
+                // Prefer the tag's commit SHA for floating nightlies — the same
+                // marker the emulator's own updater compares against.
                 const QString storedTag = floating
-                    ? (!chosen.updatedAt.isEmpty() ? chosen.updatedAt
+                    ? (!r.tagSha.isEmpty() ? r.tagSha
+                        : !chosen.updatedAt.isEmpty() ? chosen.updatedAt
                         : !r.publishedAt.isEmpty() ? r.publishedAt
                         : chosen.name)
                     : r.tagName;
-
-                const QString preTag = r.isPreRelease ? " [pre-release]" : "";
-                const QString displayTag = r.tagName + preTag;
+                const QString displayTag = displayTagFor(r, floating, storedTag)
+                    + (r.isPreRelease ? " [pre-release]" : "");
 
                 bool hasUpdate;
                 if (m_lastKnownTag.isEmpty()) {
@@ -248,18 +331,28 @@ void EmulatorTab::onCheckForUpdate()
                 }
                 else if (m_lastKnownTag == storedTag) {
                     appendLog(QString("Up to date (%1).").arg(displayTag));
+                    // Backfill the display string for versions recorded before
+                    // it was persisted (marker itself is unchanged).
+                    if (m_lastKnownTagDisplay.isEmpty())
+                        m_lastKnownTagDisplay = displayTag;
                     hasUpdate = false;
                 }
                 else {
                     appendLog(QString("Update available: %1 -> %2")
-                        .arg(m_lastKnownTag, displayTag));
+                        .arg(m_lastKnownTagDisplay.isEmpty()
+                                 ? m_lastKnownTag : m_lastKnownTagDisplay,
+                             displayTag));
                     hasUpdate = true;
                 }
 
                 m_verLabel->setText(
                     QString("Installed: %1   |   Latest: %2")
-                    .arg(m_lastKnownTag.isEmpty() ? "unknown" : m_lastKnownTag,
-                        displayTag));
+                    .arg(m_lastKnownTagDisplay.isEmpty()
+                             ? (m_lastKnownTag.isEmpty()
+                                    ? QStringLiteral("unknown")
+                                    : m_lastKnownTag)
+                             : m_lastKnownTagDisplay,
+                         displayTag));
 
                 emit checkComplete(hasUpdate);
 
@@ -272,6 +365,107 @@ void EmulatorTab::onBrowse()
     const QString p = QFileDialog::getExistingDirectory(
         this, "Select install folder", m_pathEdit->text());
     if (!p.isEmpty()) m_pathEdit->setText(p + "/");
+}
+
+void EmulatorTab::onBrowseLaunchPath()
+{
+#ifdef Q_OS_WIN
+    const QString filter = "Executables (*.exe);;All files (*)";
+#else
+    const QString filter = "All files (*)";
+#endif
+    const QString p = QFileDialog::getOpenFileName(
+        this, "Select emulator executable", m_launchPathEdit->text(), filter);
+    if (!p.isEmpty())
+        m_launchPathEdit->setText(QDir::toNativeSeparators(p));
+}
+
+bool EmulatorTab::emulatorRunning() const
+{
+    return m_launcher && m_launcher->isRunning();
+}
+
+void EmulatorTab::onLaunch()
+{
+    const QString path = m_launchPathEdit->text().trimmed();
+    if (path.isEmpty()) {
+        appendLog("No emulator path set \u2014 click Browse to choose one.");
+        return;
+    }
+
+    const QFileInfo fi(path);
+    if (!fi.exists() || !fi.isFile()) {
+        appendLog("Emulator not found: " + path);
+        QMessageBox::warning(this, "Emu-Manager",
+            QString("Emulator not found:\n%1\n\n"
+                    "Set the correct path in the Launch section.")
+                .arg(path));
+        return;
+    }
+
+    QString error;
+    if (m_launcher->launch(fi.absoluteFilePath(), &error))
+        appendLog("Launched: " + fi.absoluteFilePath());
+    else
+        appendLog("Launch failed \u2014 " + error);
+}
+
+void EmulatorTab::onShowLog()
+{
+    m_paneStack->setCurrentWidget(m_log);
+}
+
+void EmulatorTab::onShowChangelog()
+{
+    showDoc(true);
+}
+
+void EmulatorTab::onShowReadme()
+{
+    showDoc(false);
+}
+
+// Fetch the changelog or README on the updater's worker thread (the network
+// manager lives there) and show it in this tab's docs pane.
+void EmulatorTab::showDoc(bool changelog)
+{
+    const QString title = changelog ? "Changelog" : "Readme";
+
+    m_paneStack->setCurrentWidget(m_doc);
+    m_doc->setPlainText(QString("Fetching %1 for %2 ...\n")
+        .arg(title.toLower(), m_config.displayName));
+    m_btnChangelog->setEnabled(false);
+    m_btnReadme->setEnabled(false);
+
+    const EmulatorConfig  cfg = m_config;
+    const ReleaseChannel  channel = selectedChannel();
+
+    QMetaObject::invokeMethod(m_updater,
+        [this, cfg, channel, title, changelog]() {
+            const QString text = changelog
+                ? m_updater->fetchChangelogText(cfg, channel)
+                : m_updater->fetchReadmeText(cfg);
+
+            QMetaObject::invokeMethod(this, [this, title, text]() {
+                m_btnChangelog->setEnabled(true);
+                m_btnReadme->setEnabled(true);
+
+                if (text.trimmed().isEmpty()) {
+                    m_doc->setPlainText(QString(
+                        "No %1 available for %2.\n\n"
+                        "Some emulators don't publish release notes, or their "
+                        "repository isn't readable from Emu-Manager.\n")
+                        .arg(title.toLower(), m_config.displayName));
+                    appendLog(QString("%1 unavailable.").arg(title));
+                    return;
+                }
+
+                m_doc->setPlainText(text);
+                m_doc->verticalScrollBar()->setValue(0);
+                appendLog(QString("%1 loaded (%2 lines).")
+                    .arg(title).arg(text.count('\n') + 1));
+            }, Qt::QueuedConnection);
+        }, Qt::QueuedConnection);
 }
 
 void EmulatorTab::appendLog(const QString& msg)
@@ -299,11 +493,13 @@ void EmulatorTab::incProgress()
         m_bar->setValue(m_bar->value() + 1);
 }
 
-void EmulatorTab::onDone(bool updated, const QString& newTag)
+void EmulatorTab::onDone(bool updated, const QString& newTag,
+    const QString& displayTag)
 {
     m_running = false;
     if (updated) {
         m_lastKnownTag = newTag;
+        m_lastKnownTagDisplay = displayTag;
         emit versionChanged();
     }
     updateVersionLabel();
@@ -313,9 +509,11 @@ void EmulatorTab::onDone(bool updated, const QString& newTag)
 
 void EmulatorTab::updateVersionLabel()
 {
-    m_verLabel->setText(m_lastKnownTag.isEmpty()
-        ? "Installed: unknown"
-        : QString("Installed: %1").arg(m_lastKnownTag));
+    const QString ver = m_lastKnownTagDisplay.isEmpty()
+        ? (m_lastKnownTag.isEmpty() ? QStringLiteral("unknown")
+                                    : m_lastKnownTag)
+        : m_lastKnownTagDisplay;
+    m_verLabel->setText(QString("Installed: %1").arg(ver));
 }
 
 void EmulatorTab::setButtonsEnabled(bool on)
@@ -324,6 +522,10 @@ void EmulatorTab::setButtonsEnabled(bool on)
     m_btnUpdate->setEnabled(on);
     m_btnCheck->setEnabled(on);
     m_btnBrowse->setEnabled(on);
+    m_btnBrowseExe->setEnabled(on);
+    m_btnLaunch->setEnabled(on);
+    m_btnChangelog->setEnabled(on);
+    m_btnReadme->setEnabled(on);
     m_channelBox->setEnabled(on);
     m_btnStop->setEnabled(!on);
 }

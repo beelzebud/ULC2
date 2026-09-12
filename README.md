@@ -1,6 +1,7 @@
-# libretro Updater — Qt6 Port
+# Emu-Manager — Qt6
 
-Qt6 C++ port of the original C# WinForms libretro updater.
+Emu-Manager (formerly the libretro Updater) — Qt6 C++ port of the original
+C# WinForms libretro updater.
 Builds on Windows (MSVC) and Linux (GCC/Clang).
 
 ## Dependencies
@@ -53,7 +54,7 @@ Open CMakeUserPresets.json and update:
 ### 4. Deploy Qt DLLs
 After building, run from a Developer Command Prompt:
 
-    C:\Qt\6.7.3\msvc2019_64\bin\windeployqt.exe build\Release\ulc.exe
+    C:\Qt\6.7.3\msvc2019_64\bin\windeployqt.exe build\Release\Emu-Manager.exe
 
 ## Building on Linux
 
@@ -63,8 +64,8 @@ After building, run from a Developer Command Prompt:
     cmake --build . -j$(nproc)
 
 ## Icon
-Replace resources/icons/ulc.png with your own 64x64 PNG icon.
-The current placeholder is a simple green square.
+Replace resources/icons/emu_manager.png (and the matching emu_manager.ico for
+the Windows executable) with your own artwork.
 
 ## Project Structure
 
@@ -73,7 +74,7 @@ The current placeholder is a simple green square.
     ├── CMakeUserPresets.json   VS2022 preset (edit paths here)
     ├── resources/
     │   ├── resources.qrc       Qt resource file
-    │   └── icons/ulc.png       Application icon (replace with yours)
+    │   └── icons/emu_manager.png   Application icon (replace with yours)
     ├── third_party/
     │   └── lzma/               LZMA SDK goes here (download separately)
     └── src/

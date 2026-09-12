@@ -27,6 +27,67 @@ GitHubUpdater::GitHubUpdater(EtagCache* cache, QObject* parent)
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// Helper: commit SHA a tag/ref points at (GitHub tag / branch API)
+// ─────────────────────────────────────────────────────────────────────────────
+
+static QString fetchTagSha(QNetworkAccessManager* nam, const QString& repo,
+    const QString& tag)
+{
+    auto fetchJson = [nam](const QString& url) -> QJsonObject {
+        QNetworkRequest req;
+        req.setUrl(QUrl(url));
+        req.setRawHeader("User-Agent", "ulc-emulator-updater/1.0");
+        req.setRawHeader("Accept", "application/vnd.github+json");
+        req.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
+            QVariant::fromValue(QNetworkRequest::NoLessSafeRedirectPolicy));
+
+        QEventLoop loop;
+        QNetworkReply* reply = nam->get(req);
+        QObject::connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+        QTimer::singleShot(10000, &loop, &QEventLoop::quit);
+        loop.exec();
+
+        if (reply->error() != QNetworkReply::NoError) {
+            reply->deleteLater();
+            return {};
+        }
+        const QJsonDocument doc = QJsonDocument::fromJson(reply->readAll());
+        reply->deleteLater();
+        return doc.isObject() ? doc.object() : QJsonObject();
+    };
+
+    // Lightweight ref endpoint: { "ref": "refs/tags/preview", "object": {"sha": ...} }
+    const QJsonObject ref = fetchJson(
+        "https://api.github.com/repos/" + repo + "/git/ref/tags/" + tag);
+    if (ref.isEmpty()) return {};
+
+    QString sha = ref.value("object").toObject().value("sha").toString();
+
+    // Annotated tags point at a tag object, not the commit — dereference once.
+    if (!sha.isEmpty() &&
+        ref.value("object").toObject().value("type").toString() == "tag") {
+        const QJsonObject tagObj = fetchJson(
+            "https://api.github.com/repos/" + repo + "/git/tags/" + sha);
+        const QString commit = tagObj.value("object").toObject().value("sha").toString();
+        if (!commit.isEmpty()) sha = commit;
+    }
+    return sha;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Helper: is this a floating tag that never changes between builds?
+// ─────────────────────────────────────────────────────────────────────────────
+
+static bool isFloatingTag(const QString& tag)
+{
+    const QStringList floating = {
+        "latest-nightly", "latest", "nightly", "preview",
+        "canary", "dev", "master", "main", "edge", "pre-release"
+    };
+    return floating.contains(tag.toLower());
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Public: fetch release — routes to the correct backend
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -127,6 +188,13 @@ GitHubRelease GitHubUpdater::fetchFromGitHub(const EmulatorConfig& config,
             if (!best.isEmpty()) parseRelease(best);
         }
     }
+
+    // Floating nightly tags (e.g. DuckStation's "preview") are retargeted on
+    // every build, so the tag's commit SHA is the stable identifier for "which
+    // build is current" — the same value the emulator's own updater compares
+    // against its compiled-in SHA.
+    if (result.valid && isFloatingTag(result.tagName))
+        result.tagSha = fetchTagSha(m_nam, config.githubRepo, result.tagName);
 
     return result;
 }
@@ -538,16 +606,206 @@ GitHubRelease GitHubUpdater::fetchFromNightlyManifest(const EmulatorConfig& conf
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Helper: is this a floating tag that never changes between builds?
+// Changelog / readme helpers for the tab's docs pane
 // ─────────────────────────────────────────────────────────────────────────────
 
-static bool isFloatingTag(const QString& tag)
+// Repository the changelog reads from — githubRepo unless the emulator lives
+// somewhere else (RPCS3, mGBA).
+static QString changelogRepoFor(const EmulatorConfig& config)
 {
-    const QStringList floating = {
-        "latest-nightly", "latest", "nightly", "preview",
-        "canary", "dev", "master", "main", "edge", "pre-release"
-    };
-    return floating.contains(tag.toLower());
+    return config.changelogRepo.isEmpty() ? config.githubRepo
+                                          : config.changelogRepo;
+}
+
+// Repository the README reads from. May differ from the changelog repo when
+// that one is build-only, e.g. Eden's CI repo vs. the emulator's own repo.
+static QString readmeRepoFor(const EmulatorConfig& config)
+{
+    if (!config.readmeRepo.isEmpty()) return config.readmeRepo;
+    return changelogRepoFor(config);
+}
+
+static QString notesHeader(const QString& tag, const QString& date)
+{
+    if (tag.isEmpty()) return {};
+    return tag + (date.isEmpty() ? QString() : "  (" + date.left(10) + ")")
+        + "\n\n";
+}
+
+// Trim a trailing "/" run so we can append API paths safely.
+static QString trimSlashes(QString s)
+{
+    s = s.trimmed();
+    while (s.endsWith('/')) s.chop(1);
+    return s;
+}
+
+QByteArray GitHubUpdater::httpGetText(const QString& url, int* httpCode,
+    QString* error, const QString& accept)
+{
+    QNetworkRequest req;
+    req.setUrl(QUrl(url));
+    req.setRawHeader("User-Agent", "ulc-emulator-updater/1.0");
+    if (!accept.isEmpty())
+        req.setRawHeader("Accept", accept.toUtf8());
+    req.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
+        QVariant::fromValue(QNetworkRequest::NoLessSafeRedirectPolicy));
+
+    QEventLoop loop;
+    QNetworkReply* reply = m_nam->get(req);
+    connect(reply, &QNetworkReply::finished, &loop, &QEventLoop::quit);
+    QTimer::singleShot(15000, &loop, &QEventLoop::quit);
+    loop.exec();
+
+    const bool ok = (reply->error() == QNetworkReply::NoError);
+    if (httpCode) *httpCode = reply->attribute(
+        QNetworkRequest::HttpStatusCodeAttribute).toInt();
+    if (error) *error = reply->errorString();
+    const QByteArray data = reply->readAll();
+    reply->deleteLater();
+    return ok ? data : QByteArray();
+}
+
+QString GitHubUpdater::fetchChangelogText(const EmulatorConfig& config,
+    ReleaseChannel channel)
+{
+    const QString repo = changelogRepoFor(config);
+    if (repo.isEmpty()) {
+        emit log(QString("[%1] No repository configured for changelogs.")
+            .arg(config.displayName));
+        return {};
+    }
+
+    // Gitea/Forgejo hosts expose their own releases API.
+    if (config.source == UpdateSource::Gitea) {
+        const QString base = trimSlashes(config.buildbotApiUrl);
+        const QByteArray data = httpGetText(
+            base + "/api/v1/repos/" + repo + "/releases?limit=1",
+            nullptr, nullptr, "application/json");
+
+        const QJsonDocument doc = QJsonDocument::fromJson(data);
+        if (!doc.isArray() || doc.array().isEmpty()) {
+            emit log(QString("[%1] Could not read the changelog from %2.")
+                .arg(config.displayName, base));
+            return {};
+        }
+
+        const QJsonObject rel = doc.array().first().toObject();
+        return notesHeader(rel.value("tag_name").toString(),
+            rel.value("published_at").toString())
+            + rel.value("body").toString().trimmed();
+    }
+
+    // GitHub releases — stable uses /latest; nightly scans the newest few so a
+    // prerelease (where most nightly builds live) is picked up too.
+    const bool nightly = (channel == ReleaseChannel::Nightly);
+    const QString endpoint = nightly
+        ? "https://api.github.com/repos/" + repo + "/releases?per_page=5"
+        : "https://api.github.com/repos/" + repo + "/releases/latest";
+
+    const QJsonDocument doc = QJsonDocument::fromJson(
+        httpGetText(endpoint, nullptr, nullptr, "application/vnd.github+json"));
+
+    QJsonObject rel;
+    // Nightly builds that live in GitHub releases are almost always marked
+    // prerelease; if none is, the repo's releases are version tags and the
+    // commit list is a better answer for "what changed lately".
+    bool fellBackToTaggedRelease = false;
+    if (nightly) {
+        if (doc.isArray()) {
+            const QJsonArray arr = doc.array();
+            for (const auto& val : arr) {
+                const QJsonObject o = val.toObject();
+                if (o.value("prerelease").toBool()) { rel = o; break; }
+            }
+            if (rel.isEmpty() && !arr.isEmpty()) {
+                rel = arr.first().toObject();
+                fellBackToTaggedRelease = true;
+            }
+        }
+    }
+    else if (doc.isObject()) {
+        rel = doc.object();
+    }
+
+    if (rel.isEmpty()) {
+        emit log(QString("[%1] Could not fetch release notes for %2.")
+            .arg(config.displayName, repo));
+        return {};
+    }
+
+    const QString body = rel.value("body").toString().trimmed();
+    if (!body.isEmpty() && !fellBackToTaggedRelease)
+        return notesHeader(rel.value("tag_name").toString(),
+            rel.value("published_at").toString()) + body;
+
+    // No release notes of their own (common for floating nightly tags like
+    // DuckStation's "preview", and for build-only repos) — fall back to the
+    // newest commits on the default branch.
+    emit log(QString("[%1] No release notes for the current build — "
+        "listing recent commits.").arg(config.displayName));
+
+    const QJsonDocument cdoc = QJsonDocument::fromJson(httpGetText(
+        "https://api.github.com/repos/" + repo + "/commits?per_page=25",
+        nullptr, nullptr, "application/vnd.github+json"));
+    if (!cdoc.isArray()) return {};
+
+    QString out = QString("Recent commits (%1):\n\n").arg(repo);
+    for (const auto& val : cdoc.array()) {
+        const QJsonObject c = val.toObject().value("commit").toObject();
+        QString msg = c.value("message").toString();
+        const int nl = msg.indexOf('\n');
+        if (nl >= 0) msg = msg.left(nl);
+        msg = msg.trimmed();
+        if (msg.isEmpty()) continue;
+        const QString date = c.value("author").toObject()
+            .value("date").toString().left(10);
+        out += QString("- %1   %2\n").arg(msg, date);
+    }
+    return out;
+}
+
+QString GitHubUpdater::fetchReadmeText(const EmulatorConfig& config)
+{
+    const QString repo = readmeRepoFor(config);
+    if (repo.isEmpty()) {
+        emit log(QString("[%1] No repository configured for a README.")
+            .arg(config.displayName));
+        return {};
+    }
+
+    const QStringList names = { QStringLiteral("README.md"),
+                                QStringLiteral("readme.md") };
+
+    if (config.source == UpdateSource::Gitea) {
+        const QString base = trimSlashes(config.buildbotApiUrl);
+        for (const QString& name : names) {
+            const QJsonDocument doc = QJsonDocument::fromJson(httpGetText(
+                base + "/api/v1/repos/" + repo + "/contents/" + name,
+                nullptr, nullptr, "application/json"));
+            if (!doc.isObject()) continue;
+
+            QByteArray raw = doc.object().value("content").toString().toLatin1();
+            raw.replace("\n", "").replace("\r", "");
+            const QByteArray decoded = QByteArray::fromBase64(raw);
+            if (!decoded.trimmed().isEmpty())
+                return QString::fromUtf8(decoded);
+        }
+        emit log(QString("[%1] No README found at %2.")
+            .arg(config.displayName, base));
+        return {};
+    }
+
+    // GitHub serves raw file content without the API (and without rate limits).
+    for (const QString& name : names) {
+        const QByteArray data = httpGetText(
+            "https://raw.githubusercontent.com/" + repo + "/HEAD/" + name);
+        if (!data.trimmed().isEmpty())
+            return QString::fromUtf8(data);
+    }
+    emit log(QString("[%1] No README found for %2.")
+        .arg(config.displayName, repo));
+    return {};
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -590,10 +848,12 @@ void GitHubUpdater::update(const EmulatorConfig& config,
 
     const bool floating = isFloatingTag(release.tagName);
     const QString storedTag = floating
-        ? (!chosen.updatedAt.isEmpty() ? chosen.updatedAt
+        ? (!release.tagSha.isEmpty() ? release.tagSha
+            : !chosen.updatedAt.isEmpty() ? chosen.updatedAt
             : !release.publishedAt.isEmpty() ? release.publishedAt
             : chosen.name)
         : release.tagName;
+    const QString displayTag = displayTagFor(release, floating, storedTag);
 
     if (!knownTag.isEmpty() && knownTag == storedTag) {
         emit log(QString("[%1] Already up to date (%2).")
@@ -641,8 +901,8 @@ void GitHubUpdater::update(const EmulatorConfig& config,
         QDir().mkpath(installPath);
         extractAndInstall(config, archivePath, installPath, cancel);
 
-        emit log(QString("[%1] Updated to %2.").arg(config.displayName, storedTag));
-        emit done(true, storedTag);
+        emit log(QString("[%1] Updated to %2.").arg(config.displayName, displayTag));
+        emit done(true, storedTag, displayTag);
     }
     catch (const std::exception& ex) {
         emit log(QString("[%1] Update error: %2")
